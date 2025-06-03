@@ -1,7 +1,8 @@
 import "@schedulant/styles/schedulant.scss";
-import {Flex, Splitter, Typography} from "antd";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
+import {type MouseEventHandler, useCallback, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
+import {numberToPixels} from "@schedulant/utils/dom.ts";
 
 export const Schedulant = () => {
     return (
@@ -13,29 +14,105 @@ export const Schedulant = () => {
 
 const Main = () => {
     const {state, dispatch} = useSchedulantContext();
+    const scheduleElRef = useRef<HTMLDivElement>(null);
+    const headerLeftScrollerRef = useRef<HTMLDivElement>(null);
+    const headerRightScrollerRef = useRef<HTMLDivElement>(null);
+    const bodyRightScrollerRef = useRef<HTMLDivElement>(null);
+    const bodyLeftScrollerRef = useRef<HTMLDivElement>(null);
+    const resourceAreaColRef = useRef<HTMLTableColElement>(null);
+
+    const handleMouseMove = useCallback((event: MouseEvent) => {
+        event.preventDefault();
+        const resourceAreaCol = resourceAreaColRef.current;
+        if (resourceAreaCol) {
+            const rect = resourceAreaCol.getBoundingClientRect();
+            const offset = event.clientX - rect.left;
+            resourceAreaCol.style.width = numberToPixels(offset);
+            dispatch({type: "SET_RESOURCE_AREA_WIDTH", width: resourceAreaCol.style.width});
+        }
+    }, [dispatch]);
+
+    const handleMouseUp: MouseEventHandler<HTMLDivElement> = useCallback(event => {
+        event.preventDefault();
+        const scheduleEl = scheduleElRef.current;
+        if (scheduleEl) {
+            scheduleEl.removeEventListener("mousemove", handleMouseMove);
+        } else {
+            console.error("scheduleEl", scheduleEl);
+        }
+    }, [handleMouseMove]);
+
+    const handleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(event => {
+        event.preventDefault();
+        const scheduleEl = scheduleElRef.current;
+        if (scheduleEl) {
+            scheduleEl.addEventListener("mousemove", handleMouseMove);
+        } else {
+            console.error("scheduleEl", scheduleEl);
+        }
+    }, [handleMouseMove]);
+
     return (
-        <div className={"schedulant"}>
-            <Splitter onResizeEnd={(size) => {
-                dispatch({
-                    type: "SET_RESOURCE_AREA_WIDTH",
-                    width: size[0],
-                });
-            }}>
-                <Splitter.Panel defaultSize={state.resourceAreaWidth}>
-                    <Flex justify="center" align="center" style={{height: '100%'}}>
-                        <Typography.Title type="secondary" level={5} style={{whiteSpace: 'nowrap'}}>
-                            First Panel
-                        </Typography.Title>
-                    </Flex>
-                </Splitter.Panel>
-                <Splitter.Panel>
-                    <Flex justify="center" align="center" style={{height: '100%'}}>
-                        <Typography.Title type="secondary" level={5} style={{whiteSpace: 'nowrap'}}>
-                            Second Panel
-                        </Typography.Title>
-                    </Flex>
-                </Splitter.Panel>
-            </Splitter>
+        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={handleMouseUp}>
+            <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
+                <div className={"schedulant-view"}>
+                    <table role={"grid"} className={"schedulant-scrollgrid"}>
+                        <colgroup>
+                            <col style={{width: state.resourceAreaWidth}} ref={resourceAreaColRef}/>
+                            <col/>
+                            <col/>
+                        </colgroup>
+                        <thead>
+                        <tr role={"presentation"}
+                            className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-header"}>
+                            <th role={"presentation"}>
+                                <div className={"schedulant-scroller-harness"}>
+                                    <div className={"schedulant-scroller-header-left"} ref={headerLeftScrollerRef}>
+                                        {/*<SchedulantDatagridHeader schedulantView={scheduleView}/>*/}
+                                    </div>
+                                </div>
+                            </th>
+                            <th role={"presentation"} className={"schedulant-resource-timeline-divider"}
+                                onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}></th>
+                            <th role={"presentation"}>
+                                <div className={"schedulant-scroller-harness"}>
+                                    <div className={"schedulant-scroller-header-right"} ref={headerRightScrollerRef}>
+                                        <div id={"schedulant-timeline-header"}
+                                             className={"schedulant-timeline-header"}>
+                                            {/*<SchedulantTimelineHeaderTable schedulantView={scheduleView}/>*/}
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr role={"presentation"}
+                            className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-body"}>
+                            <td role={"presentation"}>
+                                <div className={"schedulant-scroller-harness"}>
+                                    <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerRef}>
+                                        {/*<SchedulantDatagridBody schedulantView={scheduleView}/>*/}
+                                    </div>
+                                </div>
+                            </td>
+                            <td role={"presentation"} className={"schedulant-resource-timeline-divider"}
+                                onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}></td>
+                            <td role={"presentation"}>
+                                <div className={"schedulant-scroller-harness"}>
+                                    <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerRef}>
+                                        <div className={"schedulant-timeline-body"}>
+                                            {/*<SchedulantTimelineBodyTable schedulantView={scheduleView}/>*/}
+                                            {/*<SchedulantTimelineDrawingBoardTable schedulantView={scheduleView}/>*/}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     )
 }
