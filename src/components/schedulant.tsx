@@ -3,16 +3,20 @@ import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
 import {type MouseEventHandler, useCallback, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
+import type {SchedulantProps} from "@schedulant/types";
+import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
+import {useSyncScroll} from "@schedulant/hooks/use-sync-scroll.ts";
+import {useResourceAreaWidth} from "@schedulant/hooks/use-resource-area-width.ts";
 
-export const Schedulant = () => {
+export const Schedulant = (props: SchedulantProps) => {
     return (
         <SchedulantProvider>
-            <Main/>
+            <Main {...props}/>
         </SchedulantProvider>
     )
 }
 
-const Main = () => {
+const Main = (props: SchedulantProps) => {
     const {state, dispatch} = useSchedulantContext();
     const scheduleElRef = useRef<HTMLDivElement>(null);
     const headerLeftScrollerRef = useRef<HTMLDivElement>(null);
@@ -51,6 +55,13 @@ const Main = () => {
             console.error("scheduleEl", scheduleEl);
         }
     }, [handleMouseMove]);
+
+    useSchedulantHeight(props.schedulantMaxHeight);
+    useResourceAreaWidth(resourceAreaColRef, props.resourceAreaWidth);
+    useSyncScroll(bodyRightScrollerRef, Array.of(headerRightScrollerRef), "left");
+    useSyncScroll(bodyRightScrollerRef, Array.of(bodyLeftScrollerRef), "top");
+    useSyncScroll(bodyLeftScrollerRef, Array.of(bodyRightScrollerRef), "top");
+    useSyncScroll(bodyLeftScrollerRef, Array.of(headerLeftScrollerRef), "left");
 
     return (
         <div className={"schedulant"} ref={scheduleElRef} onMouseUp={handleMouseUp}>

@@ -1,4 +1,5 @@
 import type {Dayjs} from "dayjs";
+import type {Event} from "@schedulant/types/event.ts";
 import type {Resource} from "@schedulant/types/resource.ts";
 import type {Milestone} from "@schedulant/types/milestone.ts";
 import type {Checkpoint} from "@schedulant/types/checkpoint.ts";
