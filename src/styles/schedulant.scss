@@ -1,0 +1,279 @@
+@use "scrollbar";
+.schedulant, .schedulant * {
+  box-sizing: border-box;
+}
+
+.schedulant {
+  direction: ltr;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  font-size: 1em;
+  position: relative;
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 1em;
+    table-layout: fixed;
+    width: 100%;
+
+    td, th {
+      padding: 0;
+      border: 1px solid #CED4DA;
+    }
+
+    th {
+      text-align: center;
+    }
+  }
+
+  .schedulant-view-harness {
+    flex-grow: 1;
+    position: relative;
+
+    .schedulant-view {
+      inset: 0;
+      position: absolute;
+
+      .schedulant-scrollgrid {
+        height: 100%;
+
+        .schedulant-scrollgrid-section {
+
+          .schedulant-scroller-harness {
+            height: 100%;
+            direction: ltr;
+            overflow: hidden;
+            position: relative;
+          }
+
+          .schedulant-resource-timeline-divider {
+            cursor: col-resize;
+            width: 3px;
+            background-color: #E9ECEF;
+          }
+
+          .schedulant-datagrid-cell-frame {
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            .schedulant-datagrid-cell-cushion {
+              overflow: hidden;
+              padding-left: 8px;
+              white-space: nowrap;
+            }
+          }
+
+        }
+
+        .schedulant-scrollgrid-section-header > td {
+          border-bottom-style: hidden;
+        }
+
+        .schedulant-scrollgrid-section-header {
+
+          .schedulant-scroller-harness {
+
+            .schedulant-scroller-header-left {
+              height: 100%;
+              overflow: hidden;
+
+              .schedulant-datagrid-header {
+                height: 100%;
+
+                td, th {
+                  border-bottom-style: hidden;
+                }
+
+                .schedulant-datagrid-cell-resizer {
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  cursor: col-resize;
+                  width: 10px;
+                  z-index: 1;
+                  right: -5px;
+                }
+              }
+            }
+
+            .schedulant-scroller-header-right {
+              overflow: hidden scroll;
+
+              .schedulant-timeline-header {
+                table tr:last-child {
+                  td, th {
+                    border-bottom-style: hidden;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .schedulant-scrollgrid-section-body {
+
+          .schedulant-scroller-harness {
+
+            .schedulant-scroller-body-left {
+              inset: 0;
+              position: absolute;
+              overflow: scroll;
+            }
+
+            .schedulant-scroller-body-left::-webkit-scrollbar {
+              width: 0;
+            }
+
+            .schedulant-scroller-body-right {
+              inset: 0;
+              position: absolute;
+              overflow: scroll;
+            }
+          }
+
+          .schedulant-timeline-body {
+            min-height: 100%;
+            position: relative;
+            z-index: 1;
+
+            .schedulant-timeline-slots {
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              z-index: 1;
+
+              .schedulant-timeline-slot-frame {
+                height: 100%;
+              }
+            }
+
+            .schedulant-timeline-slots > table {
+              height: 100%;
+            }
+
+            .schedulant-timeline-drawing-board {
+
+              .schedulant-timeline-lane-frame {
+                position: relative;
+
+                .schedulant-timeline-lane {
+                  position: absolute;
+                  inset: 0;
+                  z-index: 1;
+                }
+
+                //.schedulant-timeline-lane-bg {
+                //  position: absolute;
+                //  inset: 0;
+                //  z-index: 2;
+                //}
+
+                .schedulant-timeline-events {
+                  position: relative;
+                  width: 0;
+                  z-index: 3;
+
+                  .schedulant-timeline-event-harness {
+                    position: absolute;
+                    z-index: 2;
+
+                    .schedulant-timeline-event {
+                      border-radius: 5px;
+                      display: flex;
+                      justify-content: space-between;
+
+                      .schedulant-event-main {
+                        padding-left: 5px;
+                        font-size: 14px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      }
+                    }
+                  }
+                }
+
+                .schedulant-timeline-milestones {
+                  position: relative;
+                  width: 0;
+                  z-index: 4;
+
+                  .schedulant-timeline-milestone-harness {
+                    position: absolute;
+                    z-index: 2;
+
+                    .schedulant-timeline-milestone {
+                      width: 100%;
+                      text-align: center;
+
+                      .schedulant-milestone-main {
+                        svg {
+                          transition: transform 0.3s ease;
+                        }
+
+                        svg:hover {
+                          transform: scale(1.2);
+                          cursor: pointer;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                .schedulant-timeline-checkpoints {
+                  position: relative;
+                  width: 0;
+                  z-index: 4;
+
+                  .schedulant-timeline-checkpoint-harness {
+                    position: absolute;
+                    z-index: 2;
+
+                    .schedulant-timeline-checkpoint {
+                      width: 100%;
+                      text-align: center;
+
+                      .schedulant-checkpoint-main {
+                        svg {
+                          transition: transform 0.3s ease;
+                        }
+
+                        svg:hover {
+                          transform: scale(1.2);
+                          cursor: pointer;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        table {
+          border-left-style: hidden;
+          border-right-style: hidden;
+          border-top-style: hidden;
+        }
+      }
+    }
+  }
+
+  .schedulant-icon {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    margin-right: 1px;
+  }
+
+  .schedulant-holiday {
+    background-color: #E9ECEF;
+  }
+}
+

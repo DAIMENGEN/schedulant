@@ -22,9 +22,9 @@ export default defineConfig({
     ],
     build: {
         lib: {
-            entry: resolve(__dirname, "src/index.ts"),
+            entry: resolve(__dirname, "src/schedulant.ts"),
             formats: ["es"],
-            fileName: "index",
+            fileName: "schedulant",
         },
         rollupOptions: {
             external: ["react", "react-dom"],

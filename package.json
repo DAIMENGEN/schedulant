@@ -8,8 +8,8 @@
   "license": "MIT",
   "author": "mengen.dai@outlook.com",
   "version": "1.0.0-alpha.1",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/schedulant.js",
+  "typings": "dist/schedulant.d.ts",
   "keywords": [
     "gantt",
     "timeline",

@@ -1,3 +1,4 @@
+import "@schedulant/styles/schedulant.scss";
 import {Flex, Splitter, Typography} from "antd";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
