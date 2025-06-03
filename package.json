@@ -28,22 +28,16 @@
     "preview": "yarn build && cd example && yarn dev"
   },
   "peerDependencies": {
-    "@reduxjs/toolkit": "^2.6.1",
-    "@types/react-redux": "^7.1.34",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@ant-design/icons": "^5.6.1",
     "@eslint/js": "^9.21.0",
-    "@reduxjs/toolkit": "^2.6.1",
     "@types/node": "^22.13.9",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
-    "@types/react-redux": "^7.1.34",
     "@vitejs/plugin-react": "^4.4.1",
     "antd": "^5.24.3",
     "dayjs": "^1.11.13",
@@ -53,8 +47,6 @@
     "globals": "^16.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0",
     "rollup-plugin-scss": "^4.0.1",
     "sass": "^1.85.1",
     "typescript": "^5.8.3",
