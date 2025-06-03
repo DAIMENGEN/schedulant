@@ -19,9 +19,8 @@ const Main = () => {
                     type: "SET_RESOURCE_AREA_WIDTH",
                     width: size[0],
                 });
-                console.log(size);
             }}>
-                <Splitter.Panel defaultSize={state.resourceAreaWidth} min="10%" max="50%">
+                <Splitter.Panel defaultSize={state.resourceAreaWidth}>
                     <Flex justify="center" align="center" style={{height: '100%'}}>
                         <Typography.Title type="secondary" level={5} style={{whiteSpace: 'nowrap'}}>
                             First Panel
