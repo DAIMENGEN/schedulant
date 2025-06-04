@@ -1,4 +1,4 @@
-import type {Checkpoint} from "schedulant/dist/types/checkpoint";
+import type {Checkpoint} from "schedulant";
 import dayjs from "dayjs";
 
 export const mockCheckpoints: Array<Checkpoint> = [

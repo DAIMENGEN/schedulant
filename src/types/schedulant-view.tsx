@@ -25,7 +25,6 @@ export class SchedulantView {
 
     constructor(props: SchedulantProps, schedulantElRef: MutableRefObject<HTMLDivElement | null>) {
         this.schedulantElRef = schedulantElRef;
-        console.log(props);
         this.schedulantApi = new SchedulantApi(this, props);
         const schedulantViewType = this.schedulantApi.getSchedulantViewType();
         switch (schedulantViewType) {

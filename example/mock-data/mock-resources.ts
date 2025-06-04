@@ -1,4 +1,4 @@
-import {Resource} from "schedulant/dist/types/resource";
+import type {Resource} from "schedulant";
 
 export const mockResources: Array<Resource> = [
     {

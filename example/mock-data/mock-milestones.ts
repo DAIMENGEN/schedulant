@@ -1,4 +1,4 @@
-import type {Milestone} from "schedulant/dist/types/milestone";
+import type {Milestone} from "schedulant";
 import dayjs from "dayjs";
 
 export const mockMilestones: Array<Milestone> = [

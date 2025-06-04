@@ -418,16 +418,14 @@ export class SchedulantApi implements PublicSchedulantApi {
     }
 }
 
-export type PublicSchedulantApiMethods =
+export type PublicSchedulantApi = Pick<SchedulantApi,
     "getEnd" |
     "getStart" |
     "isEditable" |
     "isSelectable" |
     "getLineHeight" |
     "getSlotMinWidth" |
-    "getSchedulantMaxHeight";
-
-export type PublicSchedulantApi = Pick<SchedulantApi, PublicSchedulantApiMethods>
+    "getSchedulantMaxHeight">
 
 export type SchedulantMountArg = MountArg<{ schedulantApi: PublicSchedulantApi }>;
 

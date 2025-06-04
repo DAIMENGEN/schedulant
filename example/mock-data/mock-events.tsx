@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import type {Event} from "schedulant/dist/types/event";
+import type {Event} from "schedulant";
 export const mockEvents: Array<Event> = [
     {
         id: "8968845952632643583",
