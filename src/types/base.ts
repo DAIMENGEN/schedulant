@@ -10,6 +10,12 @@ export type Position = {
     right: number;
 }
 
+export type TimeStage = {
+    isPast: boolean;
+    isFuture: boolean;
+    isProcess: boolean;
+}
+
 export type MenuArg<ContentArg> = ContentArg & {
     key: string,
     keyPath: string[],
