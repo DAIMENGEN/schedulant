@@ -5,7 +5,7 @@ import {groupBy} from "@schedulant/utils/array.ts";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import type {MountArg, TimeStage} from "@schedulant/types/base.ts";
-import {type PublicSchedulantApi} from "@schedulant/types/schedulant.ts";
+import type {PublicSchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {SchedulantViewType} from "@schedulant/types/schedulant-view.tsx";
 
 dayjs.extend(isSameOrBefore);
