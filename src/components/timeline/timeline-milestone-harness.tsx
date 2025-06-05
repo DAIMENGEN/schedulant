@@ -8,7 +8,7 @@ import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown} from "antd";
 import {FlagIcon} from "@schedulant/icons/flag-icon.tsx";
 
-export const SchedulantTimelineMilestoneHarness = (props: {
+export const TimelineMilestoneHarness = (props: {
     schedulantApi: SchedulantApi,
     milestoneApi: MilestoneApi,
     timelineWidth: number,

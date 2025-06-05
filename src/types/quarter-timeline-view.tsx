@@ -1,10 +1,10 @@
-import { SchedulantTimelineTableColgroup } from "@schedulant/components/table-colgroup/schedulant-timeline-table-colgroup";
-import { SchedulantTimelineHeaderTableSlot } from "@schedulant/components/timeline/schedulant-timeline-header-table-slot";
+import { TimelineColgroup } from "@schedulant/components/timeline/timeline-colgroup.tsx";
+import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import type { ReactNode } from "react";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
-import {SchedulantTimelineBodyTableSlot} from "@schedulant/components/timeline/schedulant-timeline-body-table-slot.tsx";
+import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
 
 export class QuarterTimelineView extends TimelineView {
 
@@ -13,7 +13,7 @@ export class QuarterTimelineView extends TimelineView {
         const timelineApi = this.getTimelineApi();
         const quarters = timelineApi.getQuarters();
         const slotMinWidth = schedulantApi.getSlotMinWidth();
-        return <SchedulantTimelineTableColgroup dates={quarters} minWidth={slotMinWidth}/>;
+        return <TimelineColgroup dates={quarters} minWidth={slotMinWidth}/>;
     }
 
     renderBodySlots(): ReactNode {
@@ -24,10 +24,10 @@ export class QuarterTimelineView extends TimelineView {
             <tr role={"row"}>
                 {
                     quarters.map(date => (
-                        <SchedulantTimelineBodyTableSlot key={`${date.year()}-Q${date.quarter()}`}
-                                                         date={date}
-                                                         dataDate={`${date.year()}-Q${date.quarter()}`}
-                                                         classNames={["schedulant-quarter"]}/>
+                        <TimelineBodySlot key={`${date.year()}-Q${date.quarter()}`}
+                                          date={date}
+                                          dataDate={`${date.year()}-Q${date.quarter()}`}
+                                          classNames={["schedulant-quarter"]}/>
                     ))
                 }
             </tr>
@@ -44,26 +44,26 @@ export class QuarterTimelineView extends TimelineView {
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     years.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.year.year()}
-                                                           level={1}
-                                                           date={date.year}
-                                                           dataDate={date.year.year().toString()}
-                                                           colSpan={date.quarters.length}
-                                                           timeText={date.year.year().toString()}
-                                                           classNames={["schedulant-year"]}/>
+                        <TimelineHeaderSlot key={date.year.year()}
+                                            level={1}
+                                            date={date.year}
+                                            dataDate={date.year.year().toString()}
+                                            colSpan={date.quarters.length}
+                                            timeText={date.year.year().toString()}
+                                            classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     quarters.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={`${date.year()}-Q${date.quarter()}`}
-                                                           level={2}
-                                                           date={date}
-                                                           dataDate={`${date.year()}-Q${date.quarter()}`}
-                                                           colSpan={1}
-                                                           timeText={`Q${date.quarter()}`}
-                                                           classNames={["schedulant-quarter"]}/>
+                        <TimelineHeaderSlot key={`${date.year()}-Q${date.quarter()}`}
+                                            level={2}
+                                            date={date}
+                                            dataDate={`${date.year()}-Q${date.quarter()}`}
+                                            colSpan={1}
+                                            timeText={`Q${date.quarter()}`}
+                                            classNames={["schedulant-quarter"]}/>
                     ))
                 }
             </tr>

@@ -5,7 +5,7 @@ import {message} from "antd";
 import {numberToPixels, pixelsToNumber} from "@schedulant/utils/dom.ts";
 import {If} from "@schedulant/utils/if.tsx";
 
-export const SchedulantTimelineLane = (props: {
+export const TimelineLane = (props: {
     schedulantApi: SchedulantApi,
     resourceApi: ResourceApi,
     timelineWidth: number

@@ -4,14 +4,14 @@ import type {TimelineApi} from "@schedulant/types/timeline.ts";
 import type {ReactNode} from "react";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
-import {SchedulantTimelineLane} from "@schedulant/components/timeline/schedulant-timeline-lane.tsx";
-import {SchedulantTimelineEventHarness} from "@schedulant/components/timeline/schedulant-timeline-event-harness.tsx";
+import {TimelineLane} from "@schedulant/components/timeline/timeline-lane.tsx";
+import {TimelineEventHarness} from "@schedulant/components/timeline/timeline-event-harness.tsx";
 import {
-    SchedulantTimelineMilestoneHarness
-} from "@schedulant/components/timeline/schedulant-timeline-milestone-harness.tsx";
+    TimelineMilestoneHarness
+} from "@schedulant/components/timeline/timeline-milestone-harness.tsx";
 import {
-    SchedulantTimelineCheckpointHarness
-} from "@schedulant/components/timeline/schedulant-timeline-checkpoint-harness.tsx";
+    TimelineCheckpointHarness
+} from "@schedulant/components/timeline/timeline-checkpoint-harness.tsx";
 
 export abstract class TimelineView {
 
@@ -31,8 +31,8 @@ export abstract class TimelineView {
 
     renderLane(resourceApi: ResourceApi, timelineWidth: number): ReactNode {
         return (
-            <SchedulantTimelineLane schedulantApi={this.schedulantApi} resourceApi={resourceApi}
-                                    timelineWidth={timelineWidth}/>
+            <TimelineLane schedulantApi={this.schedulantApi} resourceApi={resourceApi}
+                          timelineWidth={timelineWidth}/>
         )
     }
 
@@ -45,12 +45,12 @@ export abstract class TimelineView {
                     eventApis.filter(eventApi => !eventApi.getStart().isAfter(timelineApi.getEnd()) && !eventApi.getEnd().getOrElse(timelineApi.getEnd()).isBefore(timelineApi.getStart())).map(eventApi => {
                         const position = this.calculatePosition(timelineWidth, eventApi.getStart(), eventApi.getEnd().getOrElse(timelineApi.getEnd()));
                         return (
-                            <SchedulantTimelineEventHarness key={eventApi.getId()}
-                                                            eventApi={eventApi}
-                                                            position={position}
-                                                            resourceApi={resourceApi}
-                                                            schedulantApi={this.schedulantApi}
-                                                            timelineWidth={timelineWidth}/>
+                            <TimelineEventHarness key={eventApi.getId()}
+                                                  eventApi={eventApi}
+                                                  position={position}
+                                                  resourceApi={resourceApi}
+                                                  schedulantApi={this.schedulantApi}
+                                                  timelineWidth={timelineWidth}/>
                         )
                     })
                 }
@@ -66,11 +66,11 @@ export abstract class TimelineView {
                 {
                     milestoneApis.filter(milestoneApi => (milestoneApi.getTime().isAfter(timelineApi.getStart(), "day") || milestoneApi.getTime().isSame(timelineApi.getStart(), "day")) && milestoneApi.getTime().isSameOrBefore(timelineApi.getEnd(), "day")).map(milestoneApi => {
                         const position = this.calculatePosition(timelineWidth, milestoneApi.getTime(), milestoneApi.getTime());
-                        return <SchedulantTimelineMilestoneHarness key={milestoneApi.getId()}
-                                                                   position={position}
-                                                                   milestoneApi={milestoneApi}
-                                                                   timelineWidth={timelineWidth}
-                                                                   schedulantApi={this.schedulantApi}/>
+                        return <TimelineMilestoneHarness key={milestoneApi.getId()}
+                                                         position={position}
+                                                         milestoneApi={milestoneApi}
+                                                         timelineWidth={timelineWidth}
+                                                         schedulantApi={this.schedulantApi}/>
                     })
                 }
             </div>
@@ -85,11 +85,11 @@ export abstract class TimelineView {
                 {
                     checkpointApis.filter(checkpointApi => (checkpointApi.getTime().isAfter(timelineApi.getStart(), "day") || checkpointApi.getTime().isSame(timelineApi.getStart(), "day")) && checkpointApi.getTime().isSameOrBefore(timelineApi.getEnd(), "day")).map(checkpointApi => {
                         const position = this.calculatePosition(timelineWidth, checkpointApi.getTime(), checkpointApi.getTime());
-                        return <SchedulantTimelineCheckpointHarness key={checkpointApi.getId()}
-                                                                    position={position}
-                                                                    timelineWidth={timelineWidth}
-                                                                    checkpointApi={checkpointApi}
-                                                                    schedulantApi={this.schedulantApi}/>
+                        return <TimelineCheckpointHarness key={checkpointApi.getId()}
+                                                          position={position}
+                                                          timelineWidth={timelineWidth}
+                                                          checkpointApi={checkpointApi}
+                                                          schedulantApi={this.schedulantApi}/>
                     })
                 }
             </div>

@@ -8,12 +8,12 @@ import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
 import {useSyncScroll} from "@schedulant/hooks/use-sync-scroll.ts";
 import {useResourceAreaWidth} from "@schedulant/hooks/use-resource-area-width.ts";
 import {DatagridHead} from "@schedulant/components/datagrid/datagrid-head.tsx";
-import {SchedulantTimelineHeaderTable} from "@schedulant/components/timeline/schedulant-timeline-header-table.tsx";
+import {TimelineHeader} from "@schedulant/components/timeline/timeline-header.tsx";
 import {DatagridBody} from "@schedulant/components/datagrid/datagrid-body.tsx";
-import {SchedulantTimelineBodyTable} from "@schedulant/components/timeline/schedulant-timeline-body-table.tsx";
+import {TimelineBody} from "@schedulant/components/timeline/timeline-body.tsx";
 import {
-    SchedulantTimelineDrawingBoardTable
-} from "@schedulant/components/timeline/schedulant-timeline-drawing-board-table.tsx";
+    TimelineDrawingBoard
+} from "@schedulant/components/timeline/timeline-drawing-board.tsx";
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 
 export const Schedulant = (props: SchedulantProps) => {
@@ -100,7 +100,7 @@ const Main = (props: SchedulantProps) => {
                                     <div className={"schedulant-scroller-header-right"} ref={headerRightScrollerRef}>
                                         <div id={"schedulant-timeline-header"}
                                              className={"schedulant-timeline-header"}>
-                                            <SchedulantTimelineHeaderTable schedulantView={scheduleView}/>
+                                            <TimelineHeader schedulantView={scheduleView}/>
                                         </div>
                                     </div>
                                 </div>
@@ -123,8 +123,8 @@ const Main = (props: SchedulantProps) => {
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerRef}>
                                         <div className={"schedulant-timeline-body"}>
-                                            <SchedulantTimelineBodyTable schedulantView={scheduleView}/>
-                                            <SchedulantTimelineDrawingBoardTable schedulantView={scheduleView}/>
+                                            <TimelineBody schedulantView={scheduleView}/>
+                                            <TimelineDrawingBoard schedulantView={scheduleView}/>
                                         </div>
                                     </div>
                                 </div>

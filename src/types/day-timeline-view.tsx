@@ -1,10 +1,10 @@
 import type {ReactNode} from "react";
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import {
-    SchedulantTimelineTableColgroup
-} from "@schedulant/components/table-colgroup/schedulant-timeline-table-colgroup";
-import {SchedulantTimelineBodyTableSlot} from "@schedulant/components/timeline/schedulant-timeline-body-table-slot";
-import {SchedulantTimelineHeaderTableSlot} from "@schedulant/components/timeline/schedulant-timeline-header-table-slot";
+    TimelineColgroup
+} from "@schedulant/components/timeline/timeline-colgroup.tsx";
+import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
+import {TimelineHeaderSlot} from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Position} from "@schedulant/types/base";
 import type {Dayjs} from "dayjs";
 
@@ -15,7 +15,7 @@ export class DayTimelineView extends TimelineView {
         const timelineApi = this.getTimelineApi();
         const days = timelineApi.getDays();
         const slotMinWidth = scheduleApi.getSlotMinWidth();
-        return <SchedulantTimelineTableColgroup dates={days} minWidth={slotMinWidth}/>;
+        return <TimelineColgroup dates={days} minWidth={slotMinWidth}/>;
     }
 
     renderBodySlots(): ReactNode {
@@ -26,10 +26,10 @@ export class DayTimelineView extends TimelineView {
             <tr role={"row"}>
                 {
                     days.map(date => (
-                        <SchedulantTimelineBodyTableSlot key={date.format("YYYY-MM-DD")}
-                                                         date={date}
-                                                         dataDate={date.format("YYYY-MM-DD")}
-                                                         classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                        <TimelineBodySlot key={date.format("YYYY-MM-DD")}
+                                          date={date}
+                                          dataDate={date.format("YYYY-MM-DD")}
+                                          classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
                     ))
                 }
             </tr>
@@ -47,52 +47,52 @@ export class DayTimelineView extends TimelineView {
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     years.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.year.year()}
-                                                           level={1}
-                                                           date={date.year}
-                                                           dataDate={date.year.year().toString()}
-                                                           colSpan={date.days.length}
-                                                           timeText={date.year.year().toString()}
-                                                           classNames={["schedulant-year"]}/>
+                        <TimelineHeaderSlot key={date.year.year()}
+                                            level={1}
+                                            date={date.year}
+                                            dataDate={date.year.year().toString()}
+                                            colSpan={date.days.length}
+                                            timeText={date.year.year().toString()}
+                                            classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     months.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={`${date.month.format("YYYY-MM")}`}
-                                                           level={2}
-                                                           date={date.month}
-                                                           dataDate={date.month.format("YYYY-MM")}
-                                                           colSpan={date.days.length}
-                                                           timeText={date.month.format("MMM")}
-                                                           classNames={["schedulant-month"]}/>
+                        <TimelineHeaderSlot key={`${date.month.format("YYYY-MM")}`}
+                                            level={2}
+                                            date={date.month}
+                                            dataDate={date.month.format("YYYY-MM")}
+                                            colSpan={date.days.length}
+                                            timeText={date.month.format("MMM")}
+                                            classNames={["schedulant-month"]}/>
                     ))
                 }
             </tr>
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     days.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.format("YYYY-MM-DD")}
-                                                           level={3}
-                                                           date={date}
-                                                           dataDate={date.format("YYYY-MM-DD")}
-                                                           colSpan={1}
-                                                           timeText={date.format("ddd")}
-                                                           classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                        <TimelineHeaderSlot key={date.format("YYYY-MM-DD")}
+                                            level={3}
+                                            date={date}
+                                            dataDate={date.format("YYYY-MM-DD")}
+                                            colSpan={1}
+                                            timeText={date.format("ddd")}
+                                            classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
                     ))
                 }
             </tr>
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     days.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.format("YYYY-MM-DD")}
-                                                           level={4}
-                                                           date={date}
-                                                           dataDate={date.format("YYYY-MM-DD")}
-                                                           colSpan={1}
-                                                           timeText={date.format("DD")}
-                                                           classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                        <TimelineHeaderSlot key={date.format("YYYY-MM-DD")}
+                                            level={4}
+                                            date={date}
+                                            dataDate={date.format("YYYY-MM-DD")}
+                                            colSpan={1}
+                                            timeText={date.format("DD")}
+                                            classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
                     ))
                 }
             </tr>

@@ -8,7 +8,7 @@ import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown} from "antd";
 import {DropletIcon} from "@schedulant/icons/droplet-icon.tsx";
 
-export const SchedulantTimelineCheckpointHarness = (props: {
+export const TimelineCheckpointHarness = (props: {
     schedulantApi: SchedulantApi,
     checkpointApi: CheckpointApi,
     timelineWidth: number,

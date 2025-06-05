@@ -1,10 +1,10 @@
-import {SchedulantTimelineBodyTableSlot} from "@schedulant/components/timeline/schedulant-timeline-body-table-slot.tsx";
+import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
 import {
-    SchedulantTimelineTableColgroup
-} from "@schedulant/components/table-colgroup/schedulant-timeline-table-colgroup.tsx";
+    TimelineColgroup
+} from "@schedulant/components/timeline/timeline-colgroup.tsx";
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import type { ReactNode } from "react";
-import { SchedulantTimelineHeaderTableSlot } from "@schedulant/components/timeline/schedulant-timeline-header-table-slot";
+import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 
@@ -15,7 +15,7 @@ export class WeekTimelineView extends TimelineView {
         const timelineApi = this.getTimelineApi();
         const weeks = timelineApi.getWeeks();
         const slotMinWidth = schedulantApi.getSlotMinWidth();
-        return <SchedulantTimelineTableColgroup dates={weeks} minWidth={slotMinWidth}/>;
+        return <TimelineColgroup dates={weeks} minWidth={slotMinWidth}/>;
     }
 
     renderBodySlots(): ReactNode {
@@ -26,10 +26,10 @@ export class WeekTimelineView extends TimelineView {
             <tr role={"row"}>
                 {
                     weeks.map(date => (
-                        <SchedulantTimelineBodyTableSlot key={`${date.format("YYYY-MM-DD")}`}
-                                                         date={date}
-                                                         dataDate={`${date.format("YYYY-MM-DD")}`}
-                                                         classNames={["schedulant-week"]}/>
+                        <TimelineBodySlot key={`${date.format("YYYY-MM-DD")}`}
+                                          date={date}
+                                          dataDate={`${date.format("YYYY-MM-DD")}`}
+                                          classNames={["schedulant-week"]}/>
                     ))
                 }
             </tr>
@@ -45,13 +45,13 @@ export class WeekTimelineView extends TimelineView {
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     weeks.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={`${date.format("YYYY-MM-DD")}`}
-                                                           level={2}
-                                                           date={date}
-                                                           dataDate={`${date.format("YYYY-MM-DD")}`}
-                                                           colSpan={1}
-                                                           timeText={`W${date.week().toString().padStart(2, '0')}`}
-                                                           classNames={["schedulant-week"]}/>
+                        <TimelineHeaderSlot key={`${date.format("YYYY-MM-DD")}`}
+                                            level={2}
+                                            date={date}
+                                            dataDate={`${date.format("YYYY-MM-DD")}`}
+                                            colSpan={1}
+                                            timeText={`W${date.week().toString().padStart(2, '0')}`}
+                                            classNames={["schedulant-week"]}/>
                     ))
                 }
             </tr>

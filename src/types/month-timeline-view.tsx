@@ -1,11 +1,11 @@
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
-import {SchedulantTimelineBodyTableSlot} from "@schedulant/components/timeline/schedulant-timeline-body-table-slot.tsx";
-import { SchedulantTimelineHeaderTableSlot } from "@schedulant/components/timeline/schedulant-timeline-header-table-slot";
+import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
+import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Position} from "@schedulant/types/base.ts";
 import type {Dayjs} from "dayjs";
 import {
-    SchedulantTimelineTableColgroup
-} from "@schedulant/components/table-colgroup/schedulant-timeline-table-colgroup.tsx";
+    TimelineColgroup
+} from "@schedulant/components/timeline/timeline-colgroup.tsx";
 import type {ReactNode} from "react";
 
 export class MonthTimelineView extends TimelineView {
@@ -15,7 +15,7 @@ export class MonthTimelineView extends TimelineView {
         const timelineApi = this.getTimelineApi();
         const months = timelineApi.getMonths();
         const slotMinWidth = schedulantApi.getSlotMinWidth();
-        return <SchedulantTimelineTableColgroup dates={months} minWidth={slotMinWidth}/>;
+        return <TimelineColgroup dates={months} minWidth={slotMinWidth}/>;
     }
 
     renderBodySlots(): ReactNode {
@@ -26,10 +26,10 @@ export class MonthTimelineView extends TimelineView {
             <tr role={"row"}>
                 {
                     months.map(date => (
-                        <SchedulantTimelineBodyTableSlot key={date.format("YYYY-MM")}
-                                                         date={date}
-                                                         dataDate={date.format("YYYY-MM")}
-                                                         classNames={["schedulant-month"]}/>
+                        <TimelineBodySlot key={date.format("YYYY-MM")}
+                                          date={date}
+                                          dataDate={date.format("YYYY-MM")}
+                                          classNames={["schedulant-month"]}/>
                     ))
                 }
             </tr>
@@ -46,26 +46,26 @@ export class MonthTimelineView extends TimelineView {
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     years.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.year.year()}
-                                                           level={1}
-                                                           date={date.year}
-                                                           dataDate={date.year.year().toString()}
-                                                           colSpan={date.months.length}
-                                                           timeText={date.year.year().toString()}
-                                                           classNames={["schedulant-year"]}/>
+                        <TimelineHeaderSlot key={date.year.year()}
+                                            level={1}
+                                            date={date.year}
+                                            dataDate={date.year.year().toString()}
+                                            colSpan={date.months.length}
+                                            timeText={date.year.year().toString()}
+                                            classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     months.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.format("YYYY-MM")}
-                                                           level={2}
-                                                           date={date}
-                                                           dataDate={date.format("YYYY-MM")}
-                                                           colSpan={1}
-                                                           timeText={date.format("MMM")}
-                                                           classNames={["schedulant-month"]}/>
+                        <TimelineHeaderSlot key={date.format("YYYY-MM")}
+                                            level={2}
+                                            date={date}
+                                            dataDate={date.format("YYYY-MM")}
+                                            colSpan={1}
+                                            timeText={date.format("MMM")}
+                                            classNames={["schedulant-month"]}/>
                     ))
                 }
             </tr>

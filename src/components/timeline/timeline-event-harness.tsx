@@ -12,7 +12,7 @@ import {TriangleLeftIcon} from "@schedulant/icons/triangle-left-icon.tsx";
 import {DragIcon} from "@schedulant/icons/drag-icon.tsx";
 import {TriangleRightIcon} from "@schedulant/icons/triangle-right-icon.tsx";
 
-export const SchedulantTimelineEventHarness = (props: {
+export const TimelineEventHarness = (props: {
     schedulantApi: SchedulantApi,
     resourceApi: ResourceApi,
     eventApi: EventApi,

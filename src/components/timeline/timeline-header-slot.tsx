@@ -1,6 +1,6 @@
 import type {Dayjs} from "dayjs";
 
-export const SchedulantTimelineHeaderTableSlot = (props: {
+export const TimelineHeaderSlot = (props: {
     date: Dayjs, 
     level: number, 
     colSpan: number, 

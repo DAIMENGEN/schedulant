@@ -5,8 +5,8 @@ import type {ResourceApi} from "@schedulant/types/resource.ts";
 import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
 import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
 import {
-    SchedulantResourceTableColgroup
-} from "@schedulant/components/table-colgroup/schedulant-resource-table-colgroup.tsx";
+    DatagridColgroup
+} from "@schedulant/components/datagrid/datagrid-colgroup.tsx";
 import {DayTimelineView} from "@schedulant/types/day-timeline-view.tsx";
 import {MonthTimelineView} from "@schedulant/types/month-timeline-view.tsx";
 import {QuarterTimelineView} from "@schedulant/types/quarter-timeline-view.tsx";
@@ -94,7 +94,7 @@ export class SchedulantView {
 
     renderResourceTableColgroup(): ReactNode {
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
-        return <SchedulantResourceTableColgroup resourceAreaColumns={resourceAreaColumns}/>;
+        return <DatagridColgroup resourceAreaColumns={resourceAreaColumns}/>;
     }
 
     renderResourceLabel(): ReactNode {

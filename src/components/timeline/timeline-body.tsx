@@ -1,6 +1,6 @@
 import type {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 
-export const SchedulantTimelineBodyTable = (props: {
+export const TimelineBody = (props: {
     schedulantView: SchedulantView
 }) => {
     return (

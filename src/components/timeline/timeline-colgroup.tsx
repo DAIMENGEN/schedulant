@@ -1,6 +1,6 @@
 import type {Dayjs} from "dayjs";
 
-export const SchedulantTimelineTableColgroup = (props: {
+export const TimelineColgroup = (props: {
     dates: Dayjs[],
     minWidth: number
 }) => {

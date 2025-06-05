@@ -1,6 +1,6 @@
 import type {ResourceAreaColumn} from "@schedulant/types/resource.ts";
 
-export const SchedulantResourceTableColgroup = (props: {
+export const DatagridColgroup = (props: {
     resourceAreaColumns: ResourceAreaColumn[]
 }) => {
     return (

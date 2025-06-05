@@ -3,7 +3,7 @@ import {useTimelineWidth} from "@schedulant/hooks/use-timeline-width.tsx";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 
-export const SchedulantTimelineDrawingBoardTable = (props: {
+export const TimelineDrawingBoard = (props: {
     schedulantView: SchedulantView
 }) => {
     const timelineWidth = useTimelineWidth();

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { TimelineView } from "./timeline-view";
 import {
-    SchedulantTimelineTableColgroup
-} from "@schedulant/components/table-colgroup/schedulant-timeline-table-colgroup.tsx";
-import { SchedulantTimelineBodyTableSlot } from "@schedulant/components/timeline/schedulant-timeline-body-table-slot";
-import { SchedulantTimelineHeaderTableSlot } from "@schedulant/components/timeline/schedulant-timeline-header-table-slot";
+    TimelineColgroup
+} from "@schedulant/components/timeline/timeline-colgroup.tsx";
+import { TimelineBodySlot } from "@schedulant/components/timeline/timeline-body-slot.tsx";
+import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 
@@ -15,7 +15,7 @@ export class YearTimelineView extends TimelineView {
         const timelineApi = this.getTimelineApi();
         const years = timelineApi.getYears();
         const slotMinWidth = schedulantApi.getSlotMinWidth();
-        return <SchedulantTimelineTableColgroup dates={years} minWidth={slotMinWidth}/>;
+        return <TimelineColgroup dates={years} minWidth={slotMinWidth}/>;
     }
 
     renderBodySlots(): ReactNode {
@@ -26,10 +26,10 @@ export class YearTimelineView extends TimelineView {
             <tr role={"row"}>
                 {
                     years.map(date => (
-                        <SchedulantTimelineBodyTableSlot key={date.year()}
-                                                         date={date}
-                                                         dataDate={date.year().toString()}
-                                                         classNames={["schedulant-year"]}/>
+                        <TimelineBodySlot key={date.year()}
+                                          date={date}
+                                          dataDate={date.year().toString()}
+                                          classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
@@ -45,13 +45,13 @@ export class YearTimelineView extends TimelineView {
             <tr role={"row"} className={"schedulant-timeline-header-row"}>
                 {
                     years.map(date => (
-                        <SchedulantTimelineHeaderTableSlot key={date.year()}
-                                                           level={1}
-                                                           date={date}
-                                                           dataDate={date.year().toString()}
-                                                           colSpan={1}
-                                                           timeText={date.year().toString()}
-                                                           classNames={["schedulant-year"]}/>
+                        <TimelineHeaderSlot key={date.year()}
+                                            level={1}
+                                            date={date}
+                                            dataDate={date.year().toString()}
+                                            colSpan={1}
+                                            timeText={date.year().toString()}
+                                            classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
