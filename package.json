@@ -24,8 +24,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "build": "tsc -b && vite build",
-    "preview": "yarn build && cd example && yarn dev"
+    "build": "tsc -b && vite build --config vite.config.prod.ts",
+    "build-dev": "tsc -b && vite build --config vite.config.dev.ts",
+    "preview": "yarn build-dev && cd example && yarn dev"
   },
   "peerDependencies": {
     "dayjs": "^1.11.13",
