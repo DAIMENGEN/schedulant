@@ -7,7 +7,7 @@ import {Dropdown, Space} from "antd";
 import {MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 
-export const SchedulantResourceLaneCell = (props: {
+export const BodyCell = (props: {
     schedulantApi: SchedulantApi,
     resourceApi: ResourceApi,
     collapseIds: Array<string>,

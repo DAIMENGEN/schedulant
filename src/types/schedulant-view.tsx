@@ -2,8 +2,8 @@ import {SchedulantApi, type SchedulantProps} from "./schedulant";
 import type {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import type {MutableRefObject, ReactNode} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
-import {SchedulantResourceLabelCell} from "@schedulant/components/datagrid-cell/schedulant-resource-label-cell.tsx";
-import {SchedulantResourceLaneCell} from "@schedulant/components/datagrid-cell/schedulant-resource-lane-cell.tsx";
+import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
+import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
 import {
     SchedulantResourceTableColgroup
 } from "@schedulant/components/table-colgroup/schedulant-resource-table-colgroup.tsx";
@@ -103,7 +103,7 @@ export class SchedulantView {
             <thead>
             <tr role={"row"}>
                 {
-                    resourceAreaColumns.map((resourceAreaColumn, index) => <SchedulantResourceLabelCell
+                    resourceAreaColumns.map((resourceAreaColumn, index) => <HeadCell
                         key={resourceAreaColumn.field}
                         schedulantApi={this.schedulantApi}
                         resourceAreaColumn={resourceAreaColumn}
@@ -118,7 +118,7 @@ export class SchedulantView {
         const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {
-            return resourceAreaColumns.map((resourceAreaColumn, index) => <SchedulantResourceLaneCell
+            return resourceAreaColumns.map((resourceAreaColumn, index) => <BodyCell
                 key={resourceAreaColumn.field}
                 schedulantApi={this.schedulantApi}
                 resourceApi={resourceApi}

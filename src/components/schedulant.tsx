@@ -7,9 +7,9 @@ import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
 import {useSyncScroll} from "@schedulant/hooks/use-sync-scroll.ts";
 import {useResourceAreaWidth} from "@schedulant/hooks/use-resource-area-width.ts";
-import {SchedulantDatagridHeader} from "@schedulant/components/datagrid-header/schedulant-datagrid-header.tsx";
+import {DatagridHead} from "@schedulant/components/datagrid/datagrid-head.tsx";
 import {SchedulantTimelineHeaderTable} from "@schedulant/components/timeline/schedulant-timeline-header-table.tsx";
-import {SchedulantDatagridBody} from "@schedulant/components/datagrid-body/schedulant-datagrid-body.tsx";
+import {DatagridBody} from "@schedulant/components/datagrid/datagrid-body.tsx";
 import {SchedulantTimelineBodyTable} from "@schedulant/components/timeline/schedulant-timeline-body-table.tsx";
 import {
     SchedulantTimelineDrawingBoardTable
@@ -89,7 +89,7 @@ const Main = (props: SchedulantProps) => {
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-header-left"} ref={headerLeftScrollerRef}>
-                                        <SchedulantDatagridHeader schedulantView={scheduleView}/>
+                                        <DatagridHead schedulantView={scheduleView}/>
                                     </div>
                                 </div>
                             </th>
@@ -113,7 +113,7 @@ const Main = (props: SchedulantProps) => {
                             <td role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerRef}>
-                                        <SchedulantDatagridBody schedulantView={scheduleView}/>
+                                        <DatagridBody schedulantView={scheduleView}/>
                                     </div>
                                 </div>
                             </td>

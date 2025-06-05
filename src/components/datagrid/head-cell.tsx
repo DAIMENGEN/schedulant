@@ -6,7 +6,7 @@ import {useResourceLabelMount} from "@schedulant/hooks/mounts/use-resource-label
 import {Dropdown} from "antd";
 import {If} from "@schedulant/utils/if.tsx";
 
-export const SchedulantResourceLabelCell = (props: {
+export const HeadCell = (props: {
     schedulantApi: SchedulantApi,
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean

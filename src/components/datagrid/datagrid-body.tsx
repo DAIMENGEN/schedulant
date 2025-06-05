@@ -1,7 +1,7 @@
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 
-export const SchedulantDatagridBody = (props: {
+export const DatagridBody = (props: {
     schedulantView: SchedulantView
 }) => {
     const {schedulantView} = props;
