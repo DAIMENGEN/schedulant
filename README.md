@@ -1,7 +1,10 @@
 # Schedulant
 Author: Mengen.dai
+
 WeChart: DME_000000
+
 Email: mengen.dai@outlook.com
+
 Note: Schedulant is a project based on Typescript React, it is designed specifically for React projects, so it cannot work properly in non-React projects.
 
 ## What is Schedulant
