@@ -62,17 +62,17 @@ export const SchedulantResourceLaneCell = (props: {
                       }}>
                 <div className={"schedulant-datagrid-cell-frame"} style={{height: numberToPixels(laneHeight)}}
                      ref={resourceLaneCellRef}>
-                    <div className={`schedulant-datagrid-cell-cushion schedulant-scrollgrid-sync-inner`}>
+                    <div className={"schedulant-datagrid-cell-cushion schedulant-scrollgrid-sync-inner"}>
                         <Space size={"small"}>
                             {
                                 props.showPlusSquare && (
                                     <span
-                                        className={`schedulant-datagrid-expander schedulant-datagrid-expander-placeholder`}>
+                                        className={"schedulant-datagrid-expander schedulant-datagrid-expander-placeholder"}>
                                     {
                                         props.showIndentation && Array.from({length: props.resourceApi.getDepth()}, (_, index) =>
-                                            <span key={index + 1} className={`schedulant-icon`}/>)
+                                            <span key={index + 1} className={"schedulant-icon"}/>)
                                     }
-                                        <span className={`schedulant-icon`}>
+                                        <span className={"schedulant-icon"}>
                                         {
                                             props.collapseIds.some((resourceId: string) => resourceId === props.resourceApi.getId()) ?
                                                 <PlusSquareOutlined
@@ -90,7 +90,7 @@ export const SchedulantResourceLaneCell = (props: {
                                 </span>
                                 )
                             }
-                            <div className={`schedulant-datagrid-cell-main`}>
+                            <div className={"schedulant-datagrid-cell-main"}>
                                 {getResourceColumnValue(props.resourceAreaColumn.field, props.resourceApi)}
                             </div>
                         </Space>

@@ -74,7 +74,7 @@ export const SchedulantTimelineEventHarness = (props: {
                         </If>}>
                         <If condition={!props.eventApi.getStart().isBefore(timelineApi.getStart())}
                             fallback={<TriangleLeftIcon width={10} height={eventHeight} color={`#FFFFFF`}/>}>
-                            <div className={`schedulant-event-resize-handle`}
+                            <div className={"schedulant-event-resize-handle"}
                                  onMouseDown={leftHandleMouseDown}
                                  style={{width: 10, height: eventHeight, cursor: "ew-resize"}}>
                                 <DragIcon width={10} height={eventHeight} color={`#FFFFFF`}/>

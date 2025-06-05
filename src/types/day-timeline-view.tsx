@@ -53,7 +53,7 @@ export class DayTimelineView extends TimelineView {
                                                            dataDate={date.year.year().toString()}
                                                            colSpan={date.days.length}
                                                            timeText={date.year.year().toString()}
-                                                           classNames={[`schedulant-year`]}/>
+                                                           classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>
@@ -66,7 +66,7 @@ export class DayTimelineView extends TimelineView {
                                                            dataDate={date.month.format("YYYY-MM")}
                                                            colSpan={date.days.length}
                                                            timeText={date.month.format("MMM")}
-                                                           classNames={[`schedulant-month`]}/>
+                                                           classNames={["schedulant-month"]}/>
                     ))
                 }
             </tr>

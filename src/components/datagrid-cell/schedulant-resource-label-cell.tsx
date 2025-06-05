@@ -75,7 +75,7 @@ export const SchedulantResourceLabelCell = (props: {
     }, [handleMouseMove]);
     useResourceLabelMount(resourceLabelCellRef, props.resourceAreaColumn, props.schedulantApi);
     return (
-        <th role={"columnheader"} className={`schedulant-datagrid-cell`}>
+        <th role={"columnheader"} className={"schedulant-datagrid-cell"}>
             <Dropdown disabled={!props.schedulantApi.isEnableResourceLabelContextMenu()}
                       destroyOnHidden={true}
                       trigger={["contextMenu"]}
@@ -91,13 +91,13 @@ export const SchedulantResourceLabelCell = (props: {
                               });
                           }
                       }}>
-                <div className={`schedulant-datagrid-cell-frame`} ref={resourceLabelCellRef}>
-                    <div className={`schedulant-datagrid-cell-cushion schedulant-scrollgrid-sync-inner`}>
+                <div className={"schedulant-datagrid-cell-frame"} ref={resourceLabelCellRef}>
+                    <div className={"schedulant-datagrid-cell-cushion schedulant-scrollgrid-sync-inner"}>
                         <span
-                            className={`schedulant-datagrid-cell-main`}>{props.resourceAreaColumn.headerContent}</span>
+                            className={"schedulant-datagrid-cell-main"}>{props.resourceAreaColumn.headerContent}</span>
                     </div>
                     <If condition={props.isResizable}>
-                        <div className={`schedulant-datagrid-cell-resizer`} onMouseUp={handleMouseUp}
+                        <div className={"schedulant-datagrid-cell-resizer"} onMouseUp={handleMouseUp}
                              onMouseDown={handleMouseDown}></div>
                     </If>
                 </div>

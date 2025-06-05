@@ -56,8 +56,8 @@ export const SchedulantTimelineMilestoneHarness = (props: {
                               })
                           }
                       }}>
-                <div className={`schedulant-timeline-milestone`} ref={timelineMilestoneRef}>
-                    <div className={`schedulant-milestone-main`}>
+                <div className={"schedulant-timeline-milestone"} ref={timelineMilestoneRef}>
+                    <div className={"schedulant-milestone-main"}>
                         <FlagIcon width={laneHeight * 0.5} height={laneHeight * 0.5} color={color}/>
                     </div>
                 </div>

@@ -50,7 +50,7 @@ export class QuarterTimelineView extends TimelineView {
                                                            dataDate={date.year.year().toString()}
                                                            colSpan={date.quarters.length}
                                                            timeText={date.year.year().toString()}
-                                                           classNames={[`schedulant-year`]}/>
+                                                           classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>

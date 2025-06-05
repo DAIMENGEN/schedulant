@@ -52,7 +52,7 @@ export class MonthTimelineView extends TimelineView {
                                                            dataDate={date.year.year().toString()}
                                                            colSpan={date.months.length}
                                                            timeText={date.year.year().toString()}
-                                                           classNames={[`schedulant-year`]}/>
+                                                           classNames={["schedulant-year"]}/>
                     ))
                 }
             </tr>

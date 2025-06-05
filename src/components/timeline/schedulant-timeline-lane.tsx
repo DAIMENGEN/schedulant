@@ -1,6 +1,6 @@
 import type {ResourceApi} from "@schedulant/types/resource.ts";
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
-import {useCallback, useMemo, useRef} from "react";
+import {type MouseEventHandler, useCallback, useMemo, useRef} from "react";
 import {message} from "antd";
 import {numberToPixels, pixelsToNumber} from "@schedulant/utils/dom.ts";
 import {If} from "@schedulant/utils/if.tsx";
@@ -107,7 +107,7 @@ export const SchedulantTimelineLane = (props: {
         });
     }, [props.schedulantApi, props.timelineWidth, timelineLaneSelectedArea]);
 
-    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const timelineLane = timelineLaneRef.current;
         if (timelineLane) {
@@ -118,7 +118,7 @@ export const SchedulantTimelineLane = (props: {
         }
     }, [createSelectedArea]);
 
-    const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseMove: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const isMoveable = isMoveableRef.current;
         const timelineLane = timelineLaneRef.current;
@@ -127,7 +127,7 @@ export const SchedulantTimelineLane = (props: {
         }
     }, [updateSelectedArea]);
 
-    const handleMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseUp: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const isMoveable = isMoveableRef.current;
         const timelineLane = timelineLaneRef.current;
@@ -147,7 +147,7 @@ export const SchedulantTimelineLane = (props: {
         }
     }, [props, warning, callSelectAllow, removeSelectedArea]);
 
-    const handleMouseOut: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseOut: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const isMoveable = isMoveableRef.current;
         const target = event.relatedTarget as Node;
@@ -166,8 +166,8 @@ export const SchedulantTimelineLane = (props: {
     }, [props, warning, callSelectAllow, removeSelectedArea]);
 
     return (
-        <If condition={props.schedulantApi.isSelectable()} fallback={<div className={`schedulant-timeline-lane`}/>}>
-            <div className={`schedulant-timeline-lane`} onMouseUp={handleMouseUp} onMouseOut={handleMouseOut}
+        <If condition={props.schedulantApi.isSelectable()} fallback={<div className={"schedulant-timeline-lane"}/>}>
+            <div className={"schedulant-timeline-lane"} onMouseUp={handleMouseUp} onMouseOut={handleMouseOut}
                  onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} ref={timelineLaneRef}>
                 {contextHolder}
             </div>
