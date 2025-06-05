@@ -42,6 +42,10 @@ createRoot(document.getElementById("root")!).render(
                                 field: "order",
                                 headerContent: "Order",
                             },
+                            {
+                                field: "parentId",
+                                headerContent: "Parent",
+                            }
                         ]}
             />
         </div>

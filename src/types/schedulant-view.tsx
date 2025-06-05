@@ -12,6 +12,7 @@ import {MonthTimelineView} from "@schedulant/types/month-timeline-view.tsx";
 import {QuarterTimelineView} from "@schedulant/types/quarter-timeline-view.tsx";
 import {WeekTimelineView} from "@schedulant/types/week-timeline-view.tsx";
 import {YearTimelineView} from "@schedulant/types/year-timeline-view.tsx";
+import type {DatagridBodyCellResizerMouseDown} from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
@@ -97,7 +98,7 @@ export class SchedulantView {
         return <DatagridColgroup resourceAreaColumns={resourceAreaColumns}/>;
     }
 
-    renderResourceLabel(): ReactNode {
+    renderResourceLabel(handleMouseDown: DatagridBodyCellResizerMouseDown): ReactNode {
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         return (
             <thead>
@@ -106,6 +107,7 @@ export class SchedulantView {
                     resourceAreaColumns.map((resourceAreaColumn, index) => <HeadCell
                         key={resourceAreaColumn.field}
                         schedulantApi={this.schedulantApi}
+                        handleMouseDown={handleMouseDown}
                         resourceAreaColumn={resourceAreaColumn}
                         isResizable={index != resourceAreaColumns.length - 1}/>)
                 }
@@ -114,7 +116,7 @@ export class SchedulantView {
         )
     }
 
-    renderResourceLane(collapseIds: Array<string>): ReactNode {
+    renderResourceLane(collapseIds: Array<string>, handleMouseDown: DatagridBodyCellResizerMouseDown): ReactNode {
         const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {
@@ -125,7 +127,9 @@ export class SchedulantView {
                 collapseIds={collapseIds}
                 showPlusSquare={index === 0}
                 showIndentation={true}
-                resourceAreaColumn={resourceAreaColumn}/>)
+                handleMouseDown={handleMouseDown}
+                resourceAreaColumn={resourceAreaColumn}
+                isResizable={index != resourceAreaColumns.length - 1}/>)
         }
 
         const renderTableRows = (resourceApi: ResourceApi): Array<ReactNode> => {
