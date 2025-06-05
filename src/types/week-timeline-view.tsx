@@ -42,7 +42,7 @@ export class WeekTimelineView extends TimelineView {
         const weeks = timelineApi.getWeeks();
         return (
             <tbody>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     weeks.map(date => (
                         <TimelineHeaderSlot key={`${date.format("YYYY-MM-DD")}`}

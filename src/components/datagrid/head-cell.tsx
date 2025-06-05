@@ -16,7 +16,7 @@ export const HeadCell = (props: {
     const handleMouseMove = useCallback((event: MouseEvent) => {
         event.preventDefault();
         const index = indexRef.current;
-        const datagridHeader = document.querySelector(".schedulant-datagrid-header");
+        const datagridHeader = document.querySelector(".schedulant-datagrid-head");
         const datagridBody = document.querySelector(".schedulant-datagrid-body");
         const headerColgroup = datagridHeader?.firstElementChild;
         const bodyColgroup = datagridBody?.firstElementChild;

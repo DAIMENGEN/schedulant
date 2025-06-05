@@ -42,7 +42,7 @@ export class YearTimelineView extends TimelineView {
         const years = timelineApi.getYears();
         return (
             <tbody>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     years.map(date => (
                         <TimelineHeaderSlot key={date.year()}

@@ -70,19 +70,19 @@
 
         }
 
-        .schedulant-scrollgrid-section-header > td {
+        .schedulant-scrollgrid-section-head > td {
           border-bottom-style: hidden;
         }
 
-        .schedulant-scrollgrid-section-header {
+        .schedulant-scrollgrid-section-head {
 
           .schedulant-scroller-harness {
 
-            .schedulant-scroller-header-left {
+            .schedulant-scroller-head-left {
               height: 100%;
               overflow: hidden;
 
-              .schedulant-datagrid-header {
+              .schedulant-datagrid-head {
                 height: 100%;
 
                 td, th {
@@ -101,10 +101,10 @@
               }
             }
 
-            .schedulant-scroller-header-right {
+            .schedulant-scroller-head-right {
               overflow: hidden scroll;
 
-              .schedulant-timeline-header {
+              .schedulant-timeline-head {
                 table tr:last-child {
                   td, th {
                     border-bottom-style: hidden;

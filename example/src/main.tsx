@@ -32,7 +32,18 @@ createRoot(document.getElementById("root")!).render(
                         resources={mockResources}
                         events={mockEvents}
                         checkpoints={mockCheckpoints}
-                        milestones={mockMilestones}/>
+                        milestones={mockMilestones}
+                        resourceAreaColumns={[
+                            {
+                                field: "title",
+                                headerContent: "Title",
+                            },
+                            {
+                                field: "order",
+                                headerContent: "Order",
+                            },
+                        ]}
+            />
         </div>
     </StrictMode>,
 )

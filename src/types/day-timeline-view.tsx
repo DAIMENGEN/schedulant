@@ -44,7 +44,7 @@ export class DayTimelineView extends TimelineView {
         const years = timelineApi.populateYearsWithDays();
         return (
             <tbody>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     years.map(date => (
                         <TimelineHeaderSlot key={date.year.year()}
@@ -57,7 +57,7 @@ export class DayTimelineView extends TimelineView {
                     ))
                 }
             </tr>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     months.map(date => (
                         <TimelineHeaderSlot key={`${date.month.format("YYYY-MM")}`}
@@ -70,7 +70,7 @@ export class DayTimelineView extends TimelineView {
                     ))
                 }
             </tr>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     days.map(date => (
                         <TimelineHeaderSlot key={date.format("YYYY-MM-DD")}
@@ -83,7 +83,7 @@ export class DayTimelineView extends TimelineView {
                     ))
                 }
             </tr>
-            <tr role={"row"} className={"schedulant-timeline-header-row"}>
+            <tr role={"row"} className={"schedulant-timeline-head-row"}>
                 {
                     days.map(date => (
                         <TimelineHeaderSlot key={date.format("YYYY-MM-DD")}

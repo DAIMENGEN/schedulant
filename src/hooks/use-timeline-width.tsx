@@ -3,7 +3,7 @@ import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts"
 
 export const useTimelineWidth = () => {
     const getTimelineWidth = useCallback(() => {
-        const elements = document.getElementsByClassName("schedulant-timeline-header");
+        const elements = document.getElementsByClassName("schedulant-timeline-head");
         const element = elements.item(0) as HTMLElement;
         const table = element.getElementsByTagName("table").item(0);
         const timelineWidth = table?.offsetWidth;

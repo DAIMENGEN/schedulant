@@ -87,10 +87,10 @@ const Main = (props: SchedulantProps) => {
                         </colgroup>
                         <thead>
                         <tr role={"presentation"}
-                            className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-header"}>
+                            className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-head"}>
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-header-left"} ref={headerLeftScrollerRef}>
+                                    <div className={"schedulant-scroller-head-left"} ref={headerLeftScrollerRef}>
                                         <DatagridHead schedulantView={scheduleView}/>
                                     </div>
                                 </div>
@@ -99,9 +99,9 @@ const Main = (props: SchedulantProps) => {
                                 onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}></th>
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-header-right"} ref={headerRightScrollerRef}>
-                                        <div id={"schedulant-timeline-header"}
-                                             className={"schedulant-timeline-header"}>
+                                    <div className={"schedulant-scroller-head-right"} ref={headerRightScrollerRef}>
+                                        <div id={"schedulant-timeline-head"}
+                                             className={"schedulant-timeline-head"}>
                                             <TimelineHeader schedulantView={scheduleView}/>
                                         </div>
                                     </div>

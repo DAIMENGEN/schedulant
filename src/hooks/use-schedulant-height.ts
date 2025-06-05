@@ -5,7 +5,7 @@ export const useSchedulantHeight = (schedulantMaxHeight: number) => {
     useEffect(() => {
         const schedulantViewHarness = document.getElementById("schedulant-view-harness");
         const schedulantDataGridBody = document.getElementById("schedulant-datagrid-body");
-        const schedulantTimelineHeader = document.getElementById("schedulant-timeline-header");
+        const schedulantTimelineHeader = document.getElementById("schedulant-timeline-head");
         const bodyHeight = schedulantDataGridBody ? schedulantDataGridBody.getBoundingClientRect().height : 0;
         const headerHeight = schedulantTimelineHeader ? schedulantTimelineHeader.getBoundingClientRect().height : 0;
         const height = bodyHeight + headerHeight + 13;
