@@ -15,6 +15,7 @@ import {
     TimelineDrawingBoard
 } from "@schedulant/components/timeline/timeline-drawing-board.tsx";
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
+import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
 
 export const Schedulant = (props: SchedulantProps) => {
     return (
@@ -67,6 +68,7 @@ const Main = (props: SchedulantProps) => {
     }, [handleMouseMove]);
 
     useSchedulantHeight(props.schedulantMaxHeight);
+    useSchedulantMount(scheduleElRef, scheduleView);
     useResourceAreaWidth(resourceAreaColRef, props.resourceAreaWidth);
     useSyncScroll(bodyRightScrollerRef, Array.of(headerRightScrollerRef), "left");
     useSyncScroll(bodyRightScrollerRef, Array.of(bodyLeftScrollerRef), "top");
