@@ -44,3 +44,76 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * Schedulant supports **day**, **month**, **quarter**, and **year** views. This means that users can choose the view that best suits their needs and preferences to view and manage their schedule.
 * Schedulant supports **exporting images**. This means that users can export their schedule or project timeline in the form of images, which is convenient for sharing and archiving.
 * Schedulant supports **customizing row height and column width**. This means that users can adjust the row height and column width of the schedule according to their needs and preferences, making the display of the schedule more in line with their visual habits.
+
+## Previews
+
+* Day view
+  ![Day view](https://github.com/DAIMENGEN/schedulant/blob/master/example/previews/day.png?raw=true)
+
+* Week view
+  ![Week view](https://github.com/DAIMENGEN/schedulant/blob/master/example/previews/week.png?raw=true)
+
+* Month view
+  ![Month view](https://github.com/DAIMENGEN/schedulant/blob/master/example/previews/month.png?raw=true)
+
+* Quarter view
+  ![Month view](https://github.com/DAIMENGEN/schedulant/blob/master/example/previews/quarter.png?raw=true)
+
+* Year view
+  ![Month view](https://github.com/DAIMENGEN/schedulant/blob/master/example/previews/year.png?raw=true)
+
+## Props
+
+* **start:** Start date of the schedule view.
+* **end:** End date of the schedule view.
+* **editable:** Whether editing the schedule is allowed; if the current value is `false`, properties such as `eventMove`, `eventResizeStart`, `eventResizeEnd`, `milestonesMove`, and `checkpointMove` will become ineffective.
+* **lineHeight:** Sets the line height of the schedule.
+* **slotMinWidth:** Determines how wide each of the time-axis slots will be. Specified as a number of pixels. When not specified, a reasonable value will be automatically computed.
+* **schedulantMaxHeight:** Sets the max height of the entire schedule.
+* **schedulantViewType:** Sets the view type of the schedule. Currently, support day, week, month quarter and year view.
+* **events:** An array of event objects that will be displayed on the schedule.
+* **resources:** Tells the schedule to display resources from an array input. The resource's id property is the most important because is allows associating events with resources.
+* **milestones:** An array of milestones objects that will be displayed on the schedule. (**Note:** This property is optional)
+* **checkpoints:** An array of milestones objects that will be displayed on the schedule. (**Note:** This property is optional)
+* **companyHolidays:** An array of company holidays that will be used to mark company holidays on the schedule. (**Note:** This property is optional)
+* **specialWorkdays:** An array of special workdays that will be used to mark special workdays on the schedule. (**Note:** This property is optional)
+* **nationalHolidays:** An array of national holidays that will be used to mark national holidays on the schedule. (**Note:** This property is optional)
+* **resourceAreaWidth:** Determines the width of the area that contains the list of resources. Can be specified as a number of pixels, or a CSS string value, like "25%". default: "30%" (**Note:** This property is optional)
+* **resourceAreaColumns:** Turns the resource area from a plain list of titles into a grid of data. An array of objects can be provided, each with information about a column. (**Note:** This property is optional)
+* **selectAllow:** Exact programmatic control over where the user can select. This callback will be called for every new potential selection as the user is dragging. (**Note:** This property is optional)
+* **enableEventContextMenu:** Whether to enable the right-click menu functionality for event. (**Note:** This property is optional)
+* **eventContextMenuClick:** The event triggered when an option in the event's right-click menu is clicked. (**Note:** This property is optional)
+* **eventContextMenuItems:** Configure options in the event's right-click menu. (**Note:** This property is optional)
+* **eventDidMount:** Called right after the element has been added to the DOM. If the event data changes, this is NOT called again. (**Note:** This property is optional)
+* **eventWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **eventMove:** Triggered when event move begins. (**Note:** This property is optional)
+* **eventResizeStart:** Triggered when resizing stops and the event start date has changed in duration. (**Note:** This property is optional)
+* **eventResizeEnd:** Triggered when resizing stops and the event end date has changed in duration. (**Note:** This property is optional)
+* **enableMilestoneContextMenu:** Whether to enable the right-click menu functionality for milestone. (**Note:** This property is optional)
+* **milestoneContextMenuClick:** The milestone triggered when an option in the milestone's right-click menu is clicked. (**Note:** This property is optional)
+* **milestoneContextMenuItems:** Configure options in the milestone's right-click menu. (**Note:** This property is optional)
+* **milestoneDidMount:** Called right after the element has been added to the DOM. If the milestone data changes, this is NOT called again. (**Note:** This property is optional)
+* **milestoneWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **milestoneMove:** Triggered when milestone move begins. (**Note:** This property is optional)
+* **enableCheckpointContextMenu:** Whether to enable the right-click menu functionality for checkpoint. (**Note:** This property is optional)
+* **checkpointContextMenuClick:** The checkpoint triggered when an option in checkpoint's right-click menu is clicked. (**Note:** This property is optional)
+* **checkpointContextMenuItems:** Configure options in the checkpoint's right-click menu. (**Note:** This property is optional)
+* **checkpointDidMount:** Called right after the element has been added to the DOM. If the checkpoint data changes, this is NOT called again. (**Note:** This property is optional)
+* **checkpointWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **checkpointMove:** Triggered when event move begins. (**Note:** This property is optional)
+* **enableResourceLaneContextMenu:** Whether to enable the right-click menu functionality for resource lane. (**Note:** This property is optional)
+* **resourceLaneContextMenuClick:** The resource lane triggered when an option in resource lane's right-click menu is clicked. (**Note:** This property is optional)
+* **resourceLaneContextMenuItems:** Configure options in the resource lane's right-click menu. (**Note:** This property is optional)
+* **resourceLaneDidMount:** Called right after the element has been added to the DOM. If the resource data changes, this is NOT called again. (**Note:** This property is optional)
+* **resourceLaneWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **enableResourceLabelContextMenu:** Whether to enable the right-click menu functionality for resource label. (**Note:** This property is optional)
+* **resourceLabelContextMenuClick:** The resource label triggered when an option in resource lane's right-click menu is clicked. (**Note:** This property is optional)
+* **resourceLabelContextMenuItems:** Configure options in the resource lane's right-click menu. (**Note:** This property is optional)
+* **resourceLabelDidMount:** Called right after the element has been added to the DOM. If the resource label data changes, this is NOT called again. (**Note:** This property is optional)
+* **resourceLabelWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **timelineSlotLabelDidMount:** Called right after the element has been added to the DOM. (**Note:** This property is optional)
+* **timelineSlotLabelWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **timelineSlotLaneDidMount:** Called right after the element has been added to the DOM. (**Note:** This property is optional)
+* **timelineSlotLaneWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **schedulantDidMount:** Called right after the element has been added to the DOM. (**Note:** This property is optional)
+* **schedulantWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
