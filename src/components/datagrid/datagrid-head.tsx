@@ -1,13 +1,13 @@
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {
-    type DatagridCellResizerMouseDownFunc,
-    type DatagridCellResizerMouseUp
+    type ResizerMouseDownFunc,
+    type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export const DatagridHead = (props: {
     schedulantView: SchedulantView,
-    cellResizerMouseUp: DatagridCellResizerMouseUp,
-    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
+    cellResizerMouseUp: ResizerMouseUp,
+    cellResizerMouseDownFunc: ResizerMouseDownFunc
 }) => {
     const {schedulantView, cellResizerMouseUp, cellResizerMouseDownFunc} = props;
     return (

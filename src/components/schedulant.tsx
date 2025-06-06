@@ -1,8 +1,7 @@
 import "@schedulant/styles/schedulant.scss";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
-import {type MouseEventHandler, useCallback, useMemo, useRef} from "react";
+import {useMemo, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
-import {numberToPixels} from "@schedulant/utils/dom.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
 import {useSyncScroll} from "@schedulant/hooks/use-sync-scroll.ts";
@@ -27,62 +26,32 @@ export const Schedulant = (props: SchedulantProps) => {
 const Main = (props: SchedulantProps) => {
     const {state, dispatch} = useSchedulantContext();
     const scheduleElRef = useRef<HTMLDivElement>(null);
-    const headerLeftScrollerRef = useRef<HTMLDivElement>(null);
-    const headerRightScrollerRef = useRef<HTMLDivElement>(null);
-    const bodyRightScrollerRef = useRef<HTMLDivElement>(null);
-    const bodyLeftScrollerRef = useRef<HTMLDivElement>(null);
-    const resourceAreaColRef = useRef<HTMLTableColElement>(null);
-
+    const headerLeftScrollerElRef = useRef<HTMLDivElement>(null);
+    const headerRightScrollerElRef = useRef<HTMLDivElement>(null);
+    const bodyRightScrollerElRef = useRef<HTMLDivElement>(null);
+    const bodyLeftScrollerElRef = useRef<HTMLDivElement>(null);
+    const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
     const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
-
-    const handleMouseMove = useCallback((event: MouseEvent) => {
-        event.preventDefault();
-        const resourceAreaCol = resourceAreaColRef.current;
-        if (resourceAreaCol) {
-            const rect = resourceAreaCol.getBoundingClientRect();
-            const offset = event.clientX - rect.left;
-            resourceAreaCol.style.width = numberToPixels(offset);
-            dispatch({type: "SET_RESOURCE_AREA_WIDTH", width: resourceAreaCol.style.width});
-        }
-    }, [dispatch]);
-
-    const handleMouseUp: MouseEventHandler<HTMLDivElement> = useCallback(event => {
-        event.preventDefault();
-        const scheduleEl = scheduleElRef.current;
-        if (scheduleEl) {
-            scheduleEl.removeEventListener("mousemove", handleMouseMove);
-        } else {
-            console.error("scheduleEl", scheduleEl);
-        }
-    }, [handleMouseMove]);
-
-    const handleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(event => {
-        event.preventDefault();
-        const scheduleEl = scheduleElRef.current;
-        if (scheduleEl) {
-            scheduleEl.addEventListener("mousemove", handleMouseMove);
-        } else {
-            console.error("scheduleEl", scheduleEl);
-        }
-    }, [handleMouseMove]);
-
-    const {datagridCellResizerMouseUp, datagridCellResizerMouseDownFunc} = useResourceAreaResizer();
-
+    const {
+        datagridResizerMouseUp,
+        datagridResizerMouseDown,
+        datagridCellResizerMouseUp,
+        datagridCellResizerMouseDownFunc
+    } = useResourceAreaResizer(dispatch, scheduleElRef, resourceAreaColElRef);
     useSchedulantHeight(props.schedulantMaxHeight);
     useSchedulantMount(scheduleElRef, scheduleView);
-    useResourceAreaWidth(resourceAreaColRef, props.resourceAreaWidth);
-    useSyncScroll(bodyRightScrollerRef, Array.of(headerRightScrollerRef), "left");
-    useSyncScroll(bodyRightScrollerRef, Array.of(bodyLeftScrollerRef), "top");
-    useSyncScroll(bodyLeftScrollerRef, Array.of(bodyRightScrollerRef), "top");
-    useSyncScroll(bodyLeftScrollerRef, Array.of(headerLeftScrollerRef), "left");
-
+    useResourceAreaWidth(resourceAreaColElRef, props.resourceAreaWidth);
+    useSyncScroll(bodyRightScrollerElRef, Array.of(bodyLeftScrollerElRef), "top");
+    useSyncScroll(bodyLeftScrollerElRef, Array.of(bodyRightScrollerElRef), "top");
+    useSyncScroll(bodyLeftScrollerElRef, Array.of(headerLeftScrollerElRef), "left");
+    useSyncScroll(bodyRightScrollerElRef, Array.of(headerRightScrollerElRef), "left");
     return (
-        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={handleMouseUp}>
+        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp}>
             <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
                 <div className={"schedulant-view"}>
                     <table role={"grid"} className={"schedulant-scrollgrid"}>
                         <colgroup>
-                            <col style={{width: state.resourceAreaWidth}} ref={resourceAreaColRef}/>
+                            <col style={{width: state.resourceAreaWidth}} ref={resourceAreaColElRef}/>
                             <col/>
                             <col/>
                         </colgroup>
@@ -91,7 +60,7 @@ const Main = (props: SchedulantProps) => {
                             className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-head"}>
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-head-left"} ref={headerLeftScrollerRef}>
+                                    <div className={"schedulant-scroller-head-left"} ref={headerLeftScrollerElRef}>
                                         <DatagridHead schedulantView={scheduleView}
                                                       cellResizerMouseUp={datagridCellResizerMouseUp}
                                                       cellResizerMouseDownFunc={datagridCellResizerMouseDownFunc}/>
@@ -99,10 +68,10 @@ const Main = (props: SchedulantProps) => {
                                 </div>
                             </th>
                             <th role={"presentation"} className={"schedulant-resource-timeline-divider"}
-                                onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}></th>
+                                onMouseUp={datagridResizerMouseUp} onMouseDown={datagridResizerMouseDown}></th>
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-head-right"} ref={headerRightScrollerRef}>
+                                    <div className={"schedulant-scroller-head-right"} ref={headerRightScrollerElRef}>
                                         <div id={"schedulant-timeline-head"}
                                              className={"schedulant-timeline-head"}>
                                             <TimelineHeader schedulantView={scheduleView}/>
@@ -117,7 +86,7 @@ const Main = (props: SchedulantProps) => {
                             className={"schedulant-scrollgrid-section schedulant-scrollgrid-section-body"}>
                             <td role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerRef}>
+                                    <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerElRef}>
                                         <DatagridBody schedulantView={scheduleView}
                                                       cellResizerMouseUp={datagridCellResizerMouseUp}
                                                       cellResizerMouseDownFunc={datagridCellResizerMouseDownFunc}/>
@@ -125,10 +94,10 @@ const Main = (props: SchedulantProps) => {
                                 </div>
                             </td>
                             <td role={"presentation"} className={"schedulant-resource-timeline-divider"}
-                                onMouseUp={handleMouseUp} onMouseDown={handleMouseDown}></td>
+                                onMouseUp={datagridResizerMouseUp} onMouseDown={datagridResizerMouseDown}></td>
                             <td role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
-                                    <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerRef}>
+                                    <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerElRef}>
                                         <div className={"schedulant-timeline-body"}>
                                             <TimelineBody schedulantView={scheduleView}/>
                                             <TimelineDrawingBoard schedulantView={scheduleView}/>

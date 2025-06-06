@@ -1,14 +1,52 @@
-import {type MouseEventHandler, type MutableRefObject, useCallback, useRef} from "react";
+import {type Dispatch, type MouseEventHandler, type MutableRefObject, type RefObject, useCallback, useRef} from "react";
 import {getHTMLTableElementByClassName, numberToPixels} from "@schedulant/utils/dom.ts";
+import type {Action} from "@schedulant/context/schedulant-state";
 
-export type DatagridCellResizerMouseUp = MouseEventHandler<HTMLDivElement>;
+export type ResizerMouseUp = MouseEventHandler<HTMLDivElement>;
 
-export type DatagridCellResizerMouseDownFunc = (cellRef: MutableRefObject<HTMLDivElement | null>) => MouseEventHandler<HTMLDivElement>;
+export type ResizerMouseDown = MouseEventHandler<HTMLDivElement>;
 
-export const useResourceAreaResizer = () => {
+export type ResizerMouseDownFunc = (cellRef: MutableRefObject<HTMLDivElement | null>) => ResizerMouseDown;
+
+export const useResourceAreaResizer = (
+    dispatch: Dispatch<Action>,
+    scheduleElRef: RefObject<HTMLDivElement>,
+    resourceAreaColElRef: RefObject<HTMLTableColElement>
+) => {
     const indexRef = useRef<number>(-1);
     const head = useCallback(() => getHTMLTableElementByClassName("schedulant-datagrid-head"), []);
     const body = useCallback(() => getHTMLTableElementByClassName("schedulant-datagrid-body"), []);
+    const handleDatagridResize = useCallback((event: MouseEvent) => {
+        event.preventDefault();
+        const resourceAreaCol = resourceAreaColElRef.current;
+        if (resourceAreaCol) {
+            const rect = resourceAreaCol.getBoundingClientRect();
+            const offset = event.clientX - rect.left;
+            resourceAreaCol.style.width = numberToPixels(offset);
+            dispatch({type: "SET_RESOURCE_AREA_WIDTH", width: resourceAreaCol.style.width});
+        }
+    }, [dispatch, resourceAreaColElRef]);
+
+    const datagridResizerMouseUp: ResizerMouseUp = useCallback(event => {
+        event.preventDefault();
+        const scheduleEl = scheduleElRef.current;
+        if (scheduleEl) {
+            scheduleEl.removeEventListener("mousemove", handleDatagridResize);
+        } else {
+            console.error("scheduleEl", scheduleEl);
+        }
+    }, [handleDatagridResize, scheduleElRef]);
+
+    const datagridResizerMouseDown: ResizerMouseDown = useCallback(event => {
+        event.preventDefault();
+        const scheduleEl = scheduleElRef.current;
+        if (scheduleEl) {
+            scheduleEl.addEventListener("mousemove", handleDatagridResize);
+        } else {
+            console.error("scheduleEl", scheduleEl);
+        }
+    }, [handleDatagridResize, scheduleElRef]);
+
     const handleDatagridCellResize = useCallback((event: MouseEvent) => {
         event.preventDefault();
         const index = indexRef.current;
@@ -27,7 +65,8 @@ export const useResourceAreaResizer = () => {
             targetBodyColElement.style.width = numberToPixels(bodyColElementOffset);
         }
     }, [body, head, indexRef]);
-    const datagridCellResizerMouseUp: DatagridCellResizerMouseUp = useCallback(event => {
+
+    const datagridCellResizerMouseUp: ResizerMouseUp = useCallback(event => {
         event.preventDefault();
         indexRef.current = -1;
         const datagridHead = head();
@@ -35,7 +74,8 @@ export const useResourceAreaResizer = () => {
         datagridHead.removeEventListener("mousemove", handleDatagridCellResize);
         datagridBody.removeEventListener("mousemove", handleDatagridCellResize);
     }, [indexRef, head, body, handleDatagridCellResize]);
-    const datagridCellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc = useCallback((cellRef: MutableRefObject<HTMLDivElement | null>) => event => {
+
+    const datagridCellResizerMouseDownFunc: ResizerMouseDownFunc = useCallback((cellRef: MutableRefObject<HTMLDivElement | null>) => event => {
         event.preventDefault();
         const targetCellElement = cellRef.current?.parentElement;
         const trElement = cellRef.current?.parentElement?.parentElement;
@@ -57,7 +97,10 @@ export const useResourceAreaResizer = () => {
             console.error("trElement", trElement);
         }
     }, [head, body, handleDatagridCellResize, indexRef]);
+
     return {
+        datagridResizerMouseUp,
+        datagridResizerMouseDown,
         datagridCellResizerMouseUp,
         datagridCellResizerMouseDownFunc
     }

@@ -11,8 +11,8 @@ import {QuarterTimelineView} from "@schedulant/types/quarter-timeline-view.tsx";
 import {WeekTimelineView} from "@schedulant/types/week-timeline-view.tsx";
 import {YearTimelineView} from "@schedulant/types/year-timeline-view.tsx";
 import type {
-    DatagridCellResizerMouseDownFunc,
-    DatagridCellResizerMouseUp
+    ResizerMouseDownFunc,
+    ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
@@ -99,7 +99,7 @@ export class SchedulantView {
         return <DatagridColgroup resourceAreaColumns={resourceAreaColumns}/>;
     }
 
-    renderResourceLabel(cellResizerMouseUp: DatagridCellResizerMouseUp, cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc): ReactNode {
+    renderResourceLabel(cellResizerMouseUp: ResizerMouseUp, cellResizerMouseDownFunc: ResizerMouseDownFunc): ReactNode {
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         return (
             <thead>
@@ -118,7 +118,7 @@ export class SchedulantView {
         )
     }
 
-    renderResourceLane(collapseIds: Array<string>, cellResizerMouseUp: DatagridCellResizerMouseUp, cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc): ReactNode {
+    renderResourceLane(collapseIds: Array<string>, cellResizerMouseUp: ResizerMouseUp, cellResizerMouseDownFunc: ResizerMouseDownFunc): ReactNode {
         const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {

@@ -5,16 +5,16 @@ import {useResourceLabelMount} from "@schedulant/hooks/mounts/use-resource-label
 import {Dropdown} from "antd";
 import {If} from "@schedulant/utils/if.tsx";
 import {
-    type DatagridCellResizerMouseDownFunc,
-    type DatagridCellResizerMouseUp
+    type ResizerMouseDownFunc,
+    type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export const HeadCell = (props: {
     schedulantApi: SchedulantApi,
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean,
-    cellResizerMouseUp: DatagridCellResizerMouseUp,
-    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
+    cellResizerMouseUp: ResizerMouseUp,
+    cellResizerMouseDownFunc: ResizerMouseDownFunc
 }) => {
     const resourceLabelCellRef = useRef<HTMLDivElement>(null);
     useResourceLabelMount(resourceLabelCellRef, props.resourceAreaColumn, props.schedulantApi);

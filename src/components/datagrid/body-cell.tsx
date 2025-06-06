@@ -7,8 +7,8 @@ import {Dropdown, Space} from "antd";
 import {MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import {
-    type DatagridCellResizerMouseDownFunc,
-    type DatagridCellResizerMouseUp
+    type ResizerMouseDownFunc,
+    type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {If} from "@schedulant/utils/if.tsx";
 
@@ -20,8 +20,8 @@ export const BodyCell = (props: {
     showIndentation: boolean,
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean,
-    cellResizerMouseUp: DatagridCellResizerMouseUp,
-    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
+    cellResizerMouseUp: ResizerMouseUp,
+    cellResizerMouseDownFunc: ResizerMouseDownFunc
 }) => {
     const {dispatch} = useSchedulantContext();
     const resourceLaneCellRef = useRef<HTMLDivElement>(null);
