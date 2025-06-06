@@ -118,6 +118,12 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * **schedulantDidMount:** Called right after the element has been added to the DOM. (**Note:** This property is optional)
 * **schedulantWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
 
+## 📦 Installation
+
+```bash
+npm install schedulant
+```
+
 ## Basic Example
 ```typescript
 import "schedulant/dist/schedulant.css";
