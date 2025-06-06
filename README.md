@@ -117,3 +117,186 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * **timelineSlotLaneWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
 * **schedulantDidMount:** Called right after the element has been added to the DOM. (**Note:** This property is optional)
 * **schedulantWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+
+## Basic Example
+```typescript
+import "schedulant/dist/schedulant.css";
+const App = () => {
+    const mockResources = [
+        {
+            id: "8968845952632643583",
+            title: "Transfer to ATJ for learning and working",
+            parentId: "4575511461886459807",
+            extendedProps: {
+                order: 1
+            }
+        },
+        {
+            id: "8638818878966724025",
+            title: "Memory Test Software",
+            type: 1,
+            extendedProps: {
+                order: 2
+            }
+        },
+        {
+            id: "8858562325095899135",
+            title: "WFB 3D Viewer (Prototype)",
+            parentId: "8638818878966724025",
+            extendedProps: {
+                order: 1
+            }
+        }
+    ];
+    const mockEvents: Array<Event> = [
+        {
+            id: "1",
+            title: "Transfer to ATJ for learning and working",
+            color: "#000000",
+            start: dayjs("2024-04-01"),
+            end: dayjs("2024-06-30"),
+            resourceId: "8968845952632643583"
+        },
+        {
+            id: "2",
+            title: "Memory Test Software",
+            color: "rgba(0,0,0,0.57)",
+            start: dayjs("2021-01-01"),
+            end: dayjs("2024-12-31"),
+            resourceId: "8638818878966724025",
+        },
+        {
+            id: "3",
+            title: "WFB 3D Viewer (Prototype)",
+            color: "#000000",
+            start: dayjs("2024-04-01"),
+            end: dayjs("2024-06-15"),
+            resourceId: "8858562325095899135"
+        },
+    ];
+    const mockCheckpoints: Array<Checkpoint> = [
+        {
+            id: "1",
+            title: "Test Condition Monitor",
+            color: "green",
+            timestamp: dayjs("2024-04-15"),
+            resourceId: "8968845952632643583",
+        },
+    ];
+    const mockMilestones: Array<Milestone> = [
+        {
+            id: "1",
+            title: "milestone1",
+            timestamp: dayjs("2024-04-31"),
+            status: "Success",
+            resourceId: "8858562325095899135",
+        }
+    ]
+    return (
+        <div>
+            <Schedulant start={dayjs("2024-01-01")}
+                          end={dayjs("2024-10-01")}
+                          editable={true}
+                          lineHeight={40}
+                          slotMinWidth={50}
+                          schedulantMaxHeight={600}
+                          schedulantViewType={"Day"}
+                          resources={mockResources}
+                          events={mockEvents}
+                          checkpoints={mockCheckpoints}
+                          milestones={mockMilestones}
+                          enableEventContextMenu={true}
+                          resourceAreaColumns={[
+                              {
+                                  field: "title",
+                                  headerContent: "Title"
+                              },
+                              {
+                                  field: "order",
+                                  headerContent: "Order"
+                              },
+                              {
+                                  field: "parentId",
+                                  headerContent: "ParentId"
+                              }
+                          ]}
+                          eventContextMenuItems={[
+                              {
+                                  title: "123",
+                                  label: "event lane",
+                              }
+                          ]}
+                          eventContextMenuClick={(arg: EventContextMenuArg) => {
+                              // alert(arg.eventApi.getTitle());
+                          }}
+                          eventDidMount={(arg: EventMountArg) => {
+                              // console.log(arg);
+                          }}
+                          eventMove={(arg: EventMoveMountArg) => {
+                              console.log("el", arg.el);
+                              console.log("title", arg.eventApi.getTitle());
+                              console.log("startDate", arg.startDate.format("YYYY-MM-DD"));
+                              console.log("endDate", arg.endDate.format("YYYY-MM-DD"));
+                              console.log("scheduleApi", arg.scheduleApi);
+                          }}
+                          eventResizeEnd={(arg: EventResizeMountArg) => {
+                              console.log("el", arg.el);
+                              console.log("title", arg.eventApi.getTitle());
+                              console.log("date", arg.date.format("YYYY-MM-DD"));
+                              console.log("scheduleApi", arg.scheduleApi);
+                          }}
+                          eventResizeStart={(arg: EventResizeMountArg) => {
+                              console.log("el", arg.el);
+                              console.log("title", arg.eventApi.getTitle());
+                              console.log("date", arg.date.format("YYYY-MM-DD"));
+                              console.log("scheduleApi", arg.scheduleApi);
+                          }}
+                          enableResourceLabelContextMenu={true}
+                          resourceLabelContextMenuItems={[
+                              {
+                                  title: "123",
+                                  label: "resource label",
+                              }
+                          ]}
+                          resourceLabelContextMenuClick={(arg: ResourceLabelContextMenuArg) => {
+                              alert(arg.label.headerContent);
+                          }}
+                          resourceLabelDidMount={(arg: ResourceLabelMountArg) => {
+                              // console.log(arg);
+                          }}
+                          enableResourceLaneContextMenu={true}
+                          resourceLaneContextMenuItems={[
+                              {
+                                  title: "123",
+                                  label: "resource lane",
+                              }
+                          ]}
+                          resourceLaneContextMenuClick={(arg: ResourceLaneContextMenuArg) => {
+                              // alert(arg.resourceApi.getTitle());
+                          }}
+                          resourceLaneDidMount={(arg: ResourceLaneMountArg) => {
+                              // console.log(arg)
+                          }}
+                          milestoneDidMount={(arg: MilestoneMountArg) => {
+                              const {el, milestoneApi} = arg;
+                              el.title = milestoneApi.getTitle();
+                          }}
+                          milestoneMove={(arg: MilestoneMoveMountArg) => {
+                              console.log("el", arg.el);
+                              console.log("title", arg.milestoneApi.getTitle());
+                              console.log("date", arg.date.format("YYYY-MM-DD"));
+                              console.log("scheduleApi", arg.scheduleApi);
+                              console.log("milestoneApi", arg.milestoneApi);
+                          }}
+                          checkpointMove={(arg: CheckpointMoveMountArg) => {
+                              console.log("el", arg.el);
+                              console.log("title", arg.checkpointApi.getTitle());
+                              console.log("date", arg.date.format("YYYY-MM-DD"));
+                              console.log("scheduleApi", arg.scheduleApi);
+                              console.log("checkpointApi", arg.checkpointApi);
+                          }}
+            />
+    	</div>
+    )
+}
+```
