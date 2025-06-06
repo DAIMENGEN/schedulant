@@ -6,7 +6,10 @@ import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown, Space} from "antd";
 import {MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
-import {type DatagridBodyCellResizerMouseDown} from "@schedulant/hooks/use-resource-area-resizer.ts";
+import {
+    type DatagridCellResizerMouseDownFunc,
+    type DatagridCellResizerMouseUp
+} from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {If} from "@schedulant/utils/if.tsx";
 
 export const BodyCell = (props: {
@@ -17,7 +20,8 @@ export const BodyCell = (props: {
     showIndentation: boolean,
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean,
-    handleMouseDown: DatagridBodyCellResizerMouseDown
+    cellResizerMouseUp: DatagridCellResizerMouseUp,
+    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
 }) => {
     const {dispatch} = useSchedulantContext();
     const resourceLaneCellRef = useRef<HTMLDivElement>(null);
@@ -98,7 +102,7 @@ export const BodyCell = (props: {
                         </Space>
                     </div>
                     <If condition={props.isResizable}>
-                        <div className={"schedulant-datagrid-cell-resizer"} onMouseDown={props.handleMouseDown(resourceLaneCellRef)}/>
+                        <div className={"schedulant-datagrid-cell-resizer"} onMouseUp={props.cellResizerMouseUp} onMouseDown={props.cellResizerMouseDownFunc(resourceLaneCellRef)}/>
                     </If>
                 </div>
             </Dropdown>

@@ -11,11 +11,10 @@ import {DatagridHead} from "@schedulant/components/datagrid/datagrid-head.tsx";
 import {TimelineHeader} from "@schedulant/components/timeline/timeline-header.tsx";
 import {DatagridBody} from "@schedulant/components/datagrid/datagrid-body.tsx";
 import {TimelineBody} from "@schedulant/components/timeline/timeline-body.tsx";
-import {
-    TimelineDrawingBoard
-} from "@schedulant/components/timeline/timeline-drawing-board.tsx";
+import {TimelineDrawingBoard} from "@schedulant/components/timeline/timeline-drawing-board.tsx";
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
+import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export const Schedulant = (props: SchedulantProps) => {
     return (
@@ -67,6 +66,8 @@ const Main = (props: SchedulantProps) => {
         }
     }, [handleMouseMove]);
 
+    const {datagridCellResizerMouseUp, datagridCellResizerMouseDownFunc} = useResourceAreaResizer();
+
     useSchedulantHeight(props.schedulantMaxHeight);
     useSchedulantMount(scheduleElRef, scheduleView);
     useResourceAreaWidth(resourceAreaColRef, props.resourceAreaWidth);
@@ -91,7 +92,9 @@ const Main = (props: SchedulantProps) => {
                             <th role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-head-left"} ref={headerLeftScrollerRef}>
-                                        <DatagridHead schedulantView={scheduleView}/>
+                                        <DatagridHead schedulantView={scheduleView}
+                                                      cellResizerMouseUp={datagridCellResizerMouseUp}
+                                                      cellResizerMouseDownFunc={datagridCellResizerMouseDownFunc}/>
                                     </div>
                                 </div>
                             </th>
@@ -115,7 +118,9 @@ const Main = (props: SchedulantProps) => {
                             <td role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerRef}>
-                                        <DatagridBody schedulantView={scheduleView}/>
+                                        <DatagridBody schedulantView={scheduleView}
+                                                      cellResizerMouseUp={datagridCellResizerMouseUp}
+                                                      cellResizerMouseDownFunc={datagridCellResizerMouseDownFunc}/>
                                     </div>
                                 </div>
                             </td>

@@ -1,28 +1,19 @@
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
-import {useEffect, useRef} from "react";
-import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
-import {getHTMLTableElementByClassName} from "@schedulant/utils/dom.ts";
+import {
+    type DatagridCellResizerMouseDownFunc,
+    type DatagridCellResizerMouseUp
+} from "@schedulant/hooks/use-resource-area-resizer.ts";
 
-export const DatagridHead = (props: { schedulantView: SchedulantView }) => {
-    const {schedulantView} = props;
-    const {handleMouseUp, handleMouseDown} = useResourceAreaResizer();
-    const datagridHeadRef = useRef<HTMLTableElement>(null);
-    useEffect(() => {
-        const datagridHead = datagridHeadRef.current;
-        const datagridBody = getHTMLTableElementByClassName("schedulant-datagrid-body");
-        if (datagridHead) {
-            datagridHead.addEventListener("mouseup", handleMouseUp);
-            datagridBody.addEventListener("mouseup", handleMouseUp);
-            return () => {
-                datagridHead.removeEventListener("mouseup", handleMouseUp);
-                datagridBody.removeEventListener("mouseup", handleMouseUp);
-            }
-        }
-    }, [handleMouseUp]);
+export const DatagridHead = (props: {
+    schedulantView: SchedulantView,
+    cellResizerMouseUp: DatagridCellResizerMouseUp,
+    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
+}) => {
+    const {schedulantView, cellResizerMouseUp, cellResizerMouseDownFunc} = props;
     return (
-        <table role={"presentation"} className={"schedulant-datagrid-head schedulant-scrollgrid-sync-table"} ref={datagridHeadRef}>
+        <table role={"presentation"} className={"schedulant-datagrid-head schedulant-scrollgrid-sync-table"}>
             {schedulantView.renderResourceTableColgroup()}
-            {schedulantView.renderResourceLabel(handleMouseDown)}
+            {schedulantView.renderResourceLabel(cellResizerMouseUp, cellResizerMouseDownFunc)}
         </table>
     )
 }

@@ -4,15 +4,16 @@ import type {MutableRefObject, ReactNode} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
 import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
 import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
-import {
-    DatagridColgroup
-} from "@schedulant/components/datagrid/datagrid-colgroup.tsx";
+import {DatagridColgroup} from "@schedulant/components/datagrid/datagrid-colgroup.tsx";
 import {DayTimelineView} from "@schedulant/types/day-timeline-view.tsx";
 import {MonthTimelineView} from "@schedulant/types/month-timeline-view.tsx";
 import {QuarterTimelineView} from "@schedulant/types/quarter-timeline-view.tsx";
 import {WeekTimelineView} from "@schedulant/types/week-timeline-view.tsx";
 import {YearTimelineView} from "@schedulant/types/year-timeline-view.tsx";
-import type {DatagridBodyCellResizerMouseDown} from "@schedulant/hooks/use-resource-area-resizer.ts";
+import type {
+    DatagridCellResizerMouseDownFunc,
+    DatagridCellResizerMouseUp
+} from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
@@ -98,7 +99,7 @@ export class SchedulantView {
         return <DatagridColgroup resourceAreaColumns={resourceAreaColumns}/>;
     }
 
-    renderResourceLabel(handleMouseDown: DatagridBodyCellResizerMouseDown): ReactNode {
+    renderResourceLabel(cellResizerMouseUp: DatagridCellResizerMouseUp, cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc): ReactNode {
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         return (
             <thead>
@@ -107,8 +108,9 @@ export class SchedulantView {
                     resourceAreaColumns.map((resourceAreaColumn, index) => <HeadCell
                         key={resourceAreaColumn.field}
                         schedulantApi={this.schedulantApi}
-                        handleMouseDown={handleMouseDown}
+                        cellResizerMouseUp={cellResizerMouseUp}
                         resourceAreaColumn={resourceAreaColumn}
+                        cellResizerMouseDownFunc={cellResizerMouseDownFunc}
                         isResizable={index != resourceAreaColumns.length - 1}/>)
                 }
             </tr>
@@ -116,7 +118,7 @@ export class SchedulantView {
         )
     }
 
-    renderResourceLane(collapseIds: Array<string>, handleMouseDown: DatagridBodyCellResizerMouseDown): ReactNode {
+    renderResourceLane(collapseIds: Array<string>, cellResizerMouseUp: DatagridCellResizerMouseUp, cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc): ReactNode {
         const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {
@@ -127,8 +129,9 @@ export class SchedulantView {
                 collapseIds={collapseIds}
                 showPlusSquare={index === 0}
                 showIndentation={true}
-                handleMouseDown={handleMouseDown}
+                cellResizerMouseUp={cellResizerMouseUp}
                 resourceAreaColumn={resourceAreaColumn}
+                cellResizerMouseDownFunc={cellResizerMouseDownFunc}
                 isResizable={index != resourceAreaColumns.length - 1}/>)
         }
 

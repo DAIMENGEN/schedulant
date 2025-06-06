@@ -4,13 +4,17 @@ import {useRef} from "react";
 import {useResourceLabelMount} from "@schedulant/hooks/mounts/use-resource-label-mount.tsx";
 import {Dropdown} from "antd";
 import {If} from "@schedulant/utils/if.tsx";
-import {type DatagridBodyCellResizerMouseDown} from "@schedulant/hooks/use-resource-area-resizer.ts";
+import {
+    type DatagridCellResizerMouseDownFunc,
+    type DatagridCellResizerMouseUp
+} from "@schedulant/hooks/use-resource-area-resizer.ts";
 
 export const HeadCell = (props: {
     schedulantApi: SchedulantApi,
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean,
-    handleMouseDown: DatagridBodyCellResizerMouseDown
+    cellResizerMouseUp: DatagridCellResizerMouseUp,
+    cellResizerMouseDownFunc: DatagridCellResizerMouseDownFunc
 }) => {
     const resourceLabelCellRef = useRef<HTMLDivElement>(null);
     useResourceLabelMount(resourceLabelCellRef, props.resourceAreaColumn, props.schedulantApi);
@@ -38,7 +42,8 @@ export const HeadCell = (props: {
                     </div>
                     <If condition={props.isResizable}>
                         <div className={"schedulant-datagrid-cell-resizer"}
-                             onMouseDown={props.handleMouseDown(resourceLabelCellRef)}/>
+                             onMouseUp={props.cellResizerMouseUp}
+                             onMouseDown={props.cellResizerMouseDownFunc(resourceLabelCellRef)}/>
                     </If>
                 </div>
             </Dropdown>
