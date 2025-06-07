@@ -94,8 +94,9 @@ export const useMoveTimelineEvent = (props: {
     }, [props, eventPositionGuide]);
 
     const updateEventPosition = useCallback((element: HTMLDivElement, clientX: number) => {
-        const scheduleApi = props.schedulantApi;
-        const scheduleView = scheduleApi.getScheduleView();
+        const eventApi = props.eventApi
+        const schedulantApi = props.schedulantApi;
+        const scheduleView = schedulantApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
         const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
         const pressPosition = pressEventPositionRef.current;
@@ -126,14 +127,16 @@ export const useMoveTimelineEvent = (props: {
                 }
                 const left = pixelsToNumber(element.style.left);
                 const right = pixelsToNumber(element.style.right);
-                const startDate_1 = timelineView.calculateDate(props.timelineWidth, left + slotWidth);
-                const endDate_1 = timelineView.calculateDate(props.timelineWidth, right * -1);
-                scheduleApi.eventMove({
+                const startDate = timelineView.calculateDate(props.timelineWidth, left + slotWidth);
+                const endDate = timelineView.calculateDate(props.timelineWidth, right * -1);
+                eventApi.setStart(startDate);
+                eventApi.setEnd(endDate);
+                schedulantApi.eventMove({
                     el: element,
-                    startDate: startDate_1,
-                    endDate: endDate_1,
-                    eventApi: props.eventApi,
-                    schedulantApi: scheduleApi
+                    startDate: startDate,
+                    endDate: endDate,
+                    eventApi: eventApi,
+                    schedulantApi: schedulantApi
                 });
                 break;
             }
@@ -142,12 +145,12 @@ export const useMoveTimelineEvent = (props: {
                 const newLeft = Math.max(startLeftRef.current + distance_1, 0);
                 element.style.left = numberToPixels(newLeft);
                 const startDate = timelineView.calculateDate(props.timelineWidth, newLeft + slotWidth);
-                props.eventApi.setStart(startDate);
-                scheduleApi.eventResizeStart({
+                eventApi.setStart(startDate);
+                schedulantApi.eventResizeStart({
                     el: element,
                     date: startDate,
-                    eventApi: props.eventApi,
-                    schedulantApi: props.schedulantApi,
+                    eventApi: eventApi,
+                    schedulantApi: schedulantApi,
                 });
                 break;
             }
@@ -156,12 +159,12 @@ export const useMoveTimelineEvent = (props: {
                 const newRight = startRightRef.current - distance_2;
                 element.style.right = numberToPixels(newRight);
                 const endDate = timelineView.calculateDate(props.timelineWidth, newRight * -1);
-                props.eventApi.setEnd(endDate);
-                scheduleApi.eventResizeStart({
+                eventApi.setEnd(endDate);
+                schedulantApi.eventResizeStart({
                     el: element,
                     date: endDate,
-                    eventApi: props.eventApi,
-                    schedulantApi: props.schedulantApi,
+                    eventApi: eventApi,
+                    schedulantApi: schedulantApi,
                 });
                 break;
             }

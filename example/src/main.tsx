@@ -26,7 +26,6 @@ createRoot(document.getElementById("root")!).render(
                         selectable={true}
                         lineHeight={40}
                         slotMinWidth={50}
-                        defaultEmptyLanes={100}
                         schedulantViewType={"Day"}
                         schedulantMaxHeight={1000}
                         resources={mockResources}
