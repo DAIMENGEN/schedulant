@@ -110,11 +110,11 @@ export class EventApi {
         return Option.fromNullable(this.event.url);
     }
 
-    setTooltip(tooltip: React.ReactNode): void {
+    setTooltip(tooltip: ReactNode): void {
         this.event.tooltip = tooltip;
     }
 
-    getTooltip(): React.ReactNode {
+    getTooltip(): ReactNode {
         return this.event.tooltip;
     }
 
