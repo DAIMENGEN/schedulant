@@ -46,6 +46,10 @@ createRoot(document.getElementById("root")!).render(
                                 headerContent: "Parent",
                             }
                         ]}
+                        eventMove={(eventMoveMountArg) => {
+                            console.log(eventMoveMountArg.startDate.format("YYYY-MM-DD"));
+                            console.log(eventMoveMountArg.endDate.format("YYYY-MM-DD"));
+                        }}
             />
         </div>
     </StrictMode>,
