@@ -22,11 +22,11 @@ export type EventMoveMountArg = MountArg<EventArg & { startDate: Dayjs, endDate:
 
 export type Event = {
     id: string;
-    start: Dayjs;
     title: string;
+    start: Dayjs;
+    end: Dayjs;
     color: string;
     resourceId: string;
-    end?: Dayjs;
     url?: string;
     tooltip?: ReactNode;
     textColor?: string;
@@ -79,8 +79,8 @@ export class EventApi {
         this.event.end = end;
     }
 
-    getEnd(): Option<Dayjs> {
-        return Option.fromNullable(this.event.end);
+    getEnd(): Dayjs {
+        return this.event.end;
     }
 
     setResourceId(resourceId: string): void {

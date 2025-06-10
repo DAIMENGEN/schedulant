@@ -42,8 +42,8 @@ export abstract class TimelineView {
         return (
             <div className={"schedulant-timeline-events schedulant-scrollgrid-sync-inner"}>
                 {
-                    eventApis.filter(eventApi => !eventApi.getStart().isAfter(timelineApi.getEnd()) && !eventApi.getEnd().getOrElse(timelineApi.getEnd()).isBefore(timelineApi.getStart())).map(eventApi => {
-                        const position = this.calculatePosition(timelineWidth, eventApi.getStart(), eventApi.getEnd().getOrElse(timelineApi.getEnd()));
+                    eventApis.filter(eventApi => !eventApi.getStart().isAfter(timelineApi.getEnd()) && !eventApi.getEnd().isBefore(timelineApi.getStart())).map(eventApi => {
+                        const position = this.calculatePosition(timelineWidth, eventApi.getStart(), eventApi.getEnd());
                         return (
                             <TimelineEventHarness key={eventApi.getId()}
                                                   eventApi={eventApi}

@@ -8,9 +8,8 @@ export const useEventMount = (
     schedulantApi: SchedulantApi,
     eventApi: EventApi,
 ) => {
-    const timelineApi = schedulantApi.getTimelineApi();
     const startDate = eventApi.getStart();
-    const endDate = eventApi.getEnd().getOrElse(timelineApi.getEnd());
+    const endDate = eventApi.getEnd();
     const isPast = endDate.isBefore(dayjs(), "day");
     const isFuture = startDate.isAfter(dayjs(), "day");
     const isProcess = startDate.isSameOrBefore(dayjs(), "day") && (endDate.isAfter(dayjs(), "day") || endDate.isSame(dayjs(), "day"));

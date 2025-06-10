@@ -82,7 +82,7 @@ export const TimelineEventHarness = (props: {
                         </If>
                     </If>
 
-                    <If condition={props.schedulantApi.isEditable() && !props.eventApi.getStart().isBefore(timelineApi.getStart()) && props.eventApi.getEnd().getOrElse(timelineApi.getEnd()).isSameOrBefore(timelineApi.getEnd())}
+                    <If condition={props.schedulantApi.isEditable() && !props.eventApi.getStart().isBefore(timelineApi.getStart()) && props.eventApi.getEnd().isSameOrBefore(timelineApi.getEnd())}
                         fallback={
                             <div className={"schedulant-event-main"}
                                  style={{color: textColor, width: "calc(100% - 20px)"}}>
@@ -105,11 +105,11 @@ export const TimelineEventHarness = (props: {
 
                     <If condition={props.schedulantApi.isEditable()}
                         fallback={<If
-                            condition={props.eventApi.getEnd().getOrElse(timelineApi.getEnd()).isAfter(timelineApi.getEnd())}
+                            condition={props.eventApi.getEnd().isAfter(timelineApi.getEnd())}
                             fallback={<div style={{width: 10, height: eventHeight}}></div>}>
                             <TriangleRightIcon width={10} height={eventHeight} color={"#FFFFFF"}/>
                         </If>}>
-                        <If condition={props.eventApi.getEnd().getOrElse(timelineApi.getEnd()).isSameOrBefore(timelineApi.getEnd())}
+                        <If condition={props.eventApi.getEnd().isSameOrBefore(timelineApi.getEnd())}
                             fallback={<TriangleRightIcon width={10} height={eventHeight} color={"#FFFFFF"}/>}>
                             <div className={"schedulant-event-resize-handle"}
                                  onMouseDown={rightHandleMouseDown}
