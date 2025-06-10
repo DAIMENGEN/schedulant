@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {StrictMode} from "react"
-import {Schedulant} from "schedulant";
+import {Schedulant, type SelectInfoArg} from "schedulant";
 import {createRoot} from "react-dom/client"
 import {mockResources} from "../mock-data/mock-resources.ts";
 import {mockEvents} from "../mock-data/mock-events.tsx";
@@ -26,6 +26,7 @@ createRoot(document.getElementById("root")!).render(
                         selectable={true}
                         lineHeight={40}
                         slotMinWidth={50}
+                        defaultEmptyLanes={10}
                         schedulantViewType={"Day"}
                         schedulantMaxHeight={1000}
                         resources={mockResources}
@@ -55,6 +56,11 @@ createRoot(document.getElementById("root")!).render(
                         }}
                         eventResizeEnd={(eventResizeMountArg) => {
                             console.log(eventResizeMountArg.date.format("YYYY-MM-DD"));
+                        }}
+                        selectAllow={(arg: SelectInfoArg) => {
+                            console.log("resourceTitle: ", arg.resourceApi.getTitle());
+                            console.log("startDate: ", arg.startDate.format("YYYY-MM-DD"));
+                            console.log("endDate: ", arg.endDate.format("YYYY-MM-DD"));
                         }}
             />
         </div>
