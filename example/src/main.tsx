@@ -50,6 +50,12 @@ createRoot(document.getElementById("root")!).render(
                             console.log(eventMoveMountArg.startDate.format("YYYY-MM-DD"));
                             console.log(eventMoveMountArg.endDate.format("YYYY-MM-DD"));
                         }}
+                        eventResizeStart={(eventResizeMountArg) => {
+                            console.log(eventResizeMountArg.date.format("YYYY-MM-DD"));
+                        }}
+                        eventResizeEnd={(eventResizeMountArg) => {
+                            console.log(eventResizeMountArg.date.format("YYYY-MM-DD"));
+                        }}
             />
         </div>
     </StrictMode>,

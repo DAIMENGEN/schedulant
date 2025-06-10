@@ -101,11 +101,10 @@ export const useMoveTimelineEvent = (props: {
         const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
         const pressPosition = pressEventPositionRef.current;
         const deltaX = clientX - startXRef.current;
-        const offsetRatio = deltaX / slotWidth;
+        const moveSlots = Math.round(deltaX / slotWidth);
         switch (pressPosition) {
             case "press_event": {
-                const multiple = Math.round(offsetRatio);
-                const distance = multiple * slotWidth;
+                const distance = moveSlots * slotWidth;
                 const eventWidth = pixelsToNumber(element.style.right) * -1 - pixelsToNumber(element.style.left);
                 switch (Math.sign(deltaX)) {
                     case 1: {
@@ -125,10 +124,8 @@ export const useMoveTimelineEvent = (props: {
                     default:
                         break;
                 }
-                const left = pixelsToNumber(element.style.left);
-                const right = pixelsToNumber(element.style.right);
-                const startDate = timelineView.calculateDate(props.timelineWidth, left + slotWidth);
-                const endDate = timelineView.calculateDate(props.timelineWidth, right * -1);
+                const startDate = eventApi.getStart().add(moveSlots, "day");
+                const endDate = eventApi.getEnd().add(moveSlots, "day");
                 eventApi.setStart(startDate);
                 eventApi.setEnd(endDate);
                 schedulantApi.eventMove({
@@ -141,10 +138,9 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_left": {
-                const distance_1 = Math.round(offsetRatio) * slotWidth;
-                const newLeft = Math.max(startLeftRef.current + distance_1, 0);
+                const newLeft = Math.max(startLeftRef.current + moveSlots * slotWidth, 0);
                 element.style.left = numberToPixels(newLeft);
-                const startDate = timelineView.calculateDate(props.timelineWidth, newLeft + slotWidth);
+                const startDate = eventApi.getStart().add(moveSlots, "day");
                 eventApi.setStart(startDate);
                 schedulantApi.eventResizeStart({
                     el: element,
@@ -155,10 +151,9 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_right": {
-                const distance_2 = Math.round(offsetRatio) * slotWidth;
-                const newRight = startRightRef.current - distance_2;
+                const newRight = startRightRef.current - moveSlots * slotWidth;
                 element.style.right = numberToPixels(newRight);
-                const endDate = timelineView.calculateDate(props.timelineWidth, newRight * -1);
+                const endDate = eventApi.getEnd().add(moveSlots, "day");
                 eventApi.setEnd(endDate);
                 schedulantApi.eventResizeStart({
                     el: element,
