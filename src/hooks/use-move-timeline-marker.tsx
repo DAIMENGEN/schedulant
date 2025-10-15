@@ -41,23 +41,7 @@ export const useMoveTimelineMarker = (props: {
         }
     }, [markerPositionGuide]);
 
-    const updatePositionGuide = useCallback((element: HTMLDivElement, clientX: number) => {
-        const positionGuide = element.previousElementSibling as HTMLDivElement;
-        if (positionGuide && positionGuide.className === markerPositionGuide) {
-            const scheduleApi = props.schedulantApi;
-            const scheduleView = scheduleApi.getScheduleView();
-            const timelineView = scheduleView.getTimelineView();
-            const deltaX = clientX - startXRef.current;
-            const totalWidth = props.timelineWidth;
-            const totalSlots = timelineView.getTotalSlots();
-            const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
-            const distance = (moveSlots / totalSlots) * props.timelineWidth;
-            positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
-            positionGuide.style.right = numberToPixels(startRightRef.current - distance);
-        }
-    }, [props, markerPositionGuide]);
-
-    const updateMarkerPosition = useCallback((element: HTMLDivElement, clientX: number) => {
+    const calculateMoveData = useCallback((clientX: number) => {
         const scheduleApi = props.schedulantApi;
         const scheduleView = scheduleApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
@@ -66,6 +50,26 @@ export const useMoveTimelineMarker = (props: {
         const totalSlots = timelineView.getTotalSlots();
         const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
         const distance = (moveSlots / totalSlots) * props.timelineWidth;
+        return {
+            moveSlots,
+            distance,
+            deltaX,
+            totalWidth,
+            totalSlots
+        };
+    }, [props]);
+
+    const updatePositionGuide = useCallback((element: HTMLDivElement, clientX: number) => {
+        const positionGuide = element.previousElementSibling as HTMLDivElement;
+        if (positionGuide && positionGuide.className === markerPositionGuide) {
+            const { distance } = calculateMoveData(clientX);
+            positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+            positionGuide.style.right = numberToPixels(startRightRef.current - distance);
+        }
+    }, [markerPositionGuide, calculateMoveData]);
+
+    const updateMarkerPosition = useCallback((element: HTMLDivElement, clientX: number) => {
+        const { moveSlots, distance } = calculateMoveData(clientX);
         element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
         element.style.right = numberToPixels(startRightRef.current - distance);
         if (props.milestoneApi) {
@@ -74,7 +78,7 @@ export const useMoveTimelineMarker = (props: {
             props.schedulantApi.milestoneMove({
                 el: element,
                 date: date,
-                schedulantApi: scheduleApi,
+                schedulantApi: props.schedulantApi,
                 milestoneApi: props.milestoneApi
             });
         } else if (props.checkpointApi) {
@@ -83,12 +87,12 @@ export const useMoveTimelineMarker = (props: {
             props.schedulantApi.checkpointMove({
                 el: element,
                 date: date,
-                schedulantApi: scheduleApi,
+                schedulantApi: props.schedulantApi,
                 checkpointApi: props.checkpointApi
             });
         }
         startXRef.current = 0;
-    }, [props]);
+    }, [props, calculateMoveData]);
 
     const handleMouseMove = useCallback((event: MouseEvent) => {
         event.preventDefault();
