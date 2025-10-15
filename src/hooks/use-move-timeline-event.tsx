@@ -18,6 +18,18 @@ export const useMoveTimelineEvent = (props: {
     const isDraggableRef = useRef<boolean>(false);
     const pressEventPositionRef = useRef<"press_event" | "press_event_left" | "press_event_right" | "none">("none");
 
+    const calculateMoveParams = useCallback((clientX: number) => {
+        const scheduleApi = props.schedulantApi;
+        const scheduleView = scheduleApi.getScheduleView();
+        const timelineView = scheduleView.getTimelineView();
+        const deltaX = clientX - startXRef.current;
+        const totalWidth = props.timelineWidth;
+        const totalSlots = timelineView.getTotalSlots();
+        const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+        const distance = (moveSlots / totalSlots) * totalWidth;
+        return { moveSlots, distance, deltaX };
+    }, [props]);
+
     const createPositionGuide = useCallback((element: HTMLDivElement) => {
         const milestoneApis = props.resourceApi.getMilestoneApis();
         const left = element.style.left;
@@ -46,15 +58,9 @@ export const useMoveTimelineEvent = (props: {
     const updatePositionGuide = useCallback((element: HTMLDivElement, clientX: number) => {
         const positionGuide = element.previousElementSibling as HTMLDivElement;
         if (positionGuide && positionGuide.className === eventPositionGuide) {
-            const scheduleApi = props.schedulantApi;
-            const scheduleView = scheduleApi.getScheduleView();
-            const timelineView = scheduleView.getTimelineView();
             const pressPosition = pressEventPositionRef.current;
-            const deltaX = clientX - startXRef.current;
-            const totalWidth = props.timelineWidth;
-            const totalSlots = timelineView.getTotalSlots();
-            const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
-            const distance = (moveSlots / totalSlots) * totalWidth;
+            const { distance } = calculateMoveParams(clientX);
+
             switch (pressPosition) {
                 case "press_event": {
                     positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
@@ -73,19 +79,13 @@ export const useMoveTimelineEvent = (props: {
                 }
             }
         }
-    }, [props, eventPositionGuide]);
+    }, [calculateMoveParams, eventPositionGuide]);
 
     const updateEventPosition = useCallback((element: HTMLDivElement, clientX: number) => {
         const eventApi = props.eventApi
         const schedulantApi = props.schedulantApi;
-        const scheduleView = schedulantApi.getScheduleView();
-        const timelineView = scheduleView.getTimelineView();
         const pressPosition = pressEventPositionRef.current;
-        const deltaX = clientX - startXRef.current;
-        const totalWidth = props.timelineWidth;
-        const totalSlots = timelineView.getTotalSlots();
-        const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
-        const distance = (moveSlots / totalSlots) * totalWidth;
+        const { moveSlots, distance } = calculateMoveParams(clientX);
         switch (pressPosition) {
             case "press_event": {
                 element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
@@ -132,53 +132,39 @@ export const useMoveTimelineEvent = (props: {
             case "none":
                 break;
         }
-    }, [props]);
+    }, [props, calculateMoveParams]);
 
     const handleMouseMove = useCallback((event: MouseEvent) => {
         event.preventDefault();
         const isDraggable = isDraggableRef.current;
         const timelineEventHarness = props.timelineEventHarnessRef.current;
         if (isDraggable && timelineEventHarness) {
-            const deltaX = event.clientX - startXRef.current;
+            const { deltaX } = calculateMoveParams(event.clientX);
             const newLeft = startLeftRef.current + deltaX;
             const newRight = startRightRef.current - deltaX;
-            timelineEventHarness.style.left = numberToPixels(newLeft);
-            timelineEventHarness.style.right = numberToPixels(newRight);
+            switch (pressEventPositionRef.current) {
+                case "press_event":
+                    timelineEventHarness.style.left = numberToPixels(newLeft);
+                    timelineEventHarness.style.right = numberToPixels(newRight);
+                    break;
+                case "press_event_left":
+                    timelineEventHarness.style.left = numberToPixels(newLeft);
+                    break;
+                case "press_event_right":
+                    timelineEventHarness.style.right = numberToPixels(newRight);
+                    break;
+            }
             updatePositionGuide(timelineEventHarness, event.clientX);
         }
-    }, [props.timelineEventHarnessRef, updatePositionGuide]);
+    }, [props.timelineEventHarnessRef, updatePositionGuide, calculateMoveParams]);
 
-    const leftHandleMouseMove = useCallback((event: MouseEvent) => {
-        event.preventDefault();
-        const isDraggable = isDraggableRef.current;
-        const timelineEventHarness = props.timelineEventHarnessRef.current;
-        if (isDraggable && timelineEventHarness) {
-            const deltaX = event.clientX - startXRef.current;
-            const newLeft = startLeftRef.current + deltaX;
-            timelineEventHarness.style.left = numberToPixels(newLeft);
-            updatePositionGuide(timelineEventHarness, event.clientX);
-        }
-    }, [props.timelineEventHarnessRef, updatePositionGuide]);
-
-    const rightHandleMouseMove = useCallback((event: MouseEvent) => {
-        event.preventDefault();
-        const isDraggable = isDraggableRef.current;
-        const timelineEventHarness = props.timelineEventHarnessRef.current;
-        if (isDraggable && timelineEventHarness) {
-            const deltaX = event.clientX - startXRef.current;
-            const newRight = startRightRef.current - deltaX;
-            timelineEventHarness.style.right = numberToPixels(newRight);
-            updatePositionGuide(timelineEventHarness, event.clientX);
-        }
-    }, [props.timelineEventHarnessRef, updatePositionGuide]);
-
-    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseDownGeneric = useCallback((event: React.MouseEvent<HTMLDivElement>, positionType: "press_event" | "press_event_left" | "press_event_right") => {
         event.preventDefault();
         const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
         const timelineEventHarness = props.timelineEventHarnessRef.current;
         if (timelineEventHarness && scheduleEl) {
             isDraggableRef.current = true;
-            pressEventPositionRef.current = "press_event";
+            pressEventPositionRef.current = positionType;
             startXRef.current = event.clientX;
             startLeftRef.current = pixelsToNumber(timelineEventHarness.style.left);
             startRightRef.current = pixelsToNumber(timelineEventHarness.style.right);
@@ -190,41 +176,17 @@ export const useMoveTimelineEvent = (props: {
         }
     }, [props.schedulantApi, props.timelineEventHarnessRef, createPositionGuide, handleMouseMove]);
 
-    const leftHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
-        event.preventDefault();
-        const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
-        const timelineEventHarness = props.timelineEventHarnessRef.current;
-        if (timelineEventHarness && scheduleEl) {
-            isDraggableRef.current = true;
-            pressEventPositionRef.current = "press_event_left";
-            startXRef.current = event.clientX;
-            startLeftRef.current = pixelsToNumber(timelineEventHarness.style.left);
-            startRightRef.current = pixelsToNumber(timelineEventHarness.style.right);
-            createPositionGuide(timelineEventHarness);
-            scheduleEl.addEventListener("mousemove", leftHandleMouseMove);
-        } else {
-            console.error("scheduleEl", scheduleEl);
-            console.error("timelineEventHarness", timelineEventHarness);
-        }
-    }, [createPositionGuide, leftHandleMouseMove, props.schedulantApi, props.timelineEventHarnessRef]);
+    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+        handleMouseDownGeneric(event, "press_event");
+    }, [handleMouseDownGeneric]);
 
-    const rightHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
-        event.preventDefault();
-        const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
-        const timelineEventHarness = props.timelineEventHarnessRef.current;
-        if (timelineEventHarness && scheduleEl) {
-            isDraggableRef.current = true;
-            pressEventPositionRef.current = "press_event_right";
-            startXRef.current = event.clientX;
-            startLeftRef.current = pixelsToNumber(timelineEventHarness.style.left);
-            startRightRef.current = pixelsToNumber(timelineEventHarness.style.right);
-            createPositionGuide(timelineEventHarness);
-            scheduleEl.addEventListener("mousemove", rightHandleMouseMove);
-        } else {
-            console.error("scheduleEl", scheduleEl);
-            console.error("timelineEventHarness", timelineEventHarness);
-        }
-    }, [createPositionGuide, props.schedulantApi, props.timelineEventHarnessRef, rightHandleMouseMove]);
+    const leftHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+        handleMouseDownGeneric(event, "press_event_left");
+    }, [handleMouseDownGeneric]);
+
+    const rightHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+        handleMouseDownGeneric(event, "press_event_right");
+    }, [handleMouseDownGeneric]);
 
     useEffect(() => {
         const timelineEventHarness = props.timelineEventHarnessRef.current;
@@ -239,8 +201,6 @@ export const useMoveTimelineEvent = (props: {
                         removePositionGuide(timelineEventHarness);
                         updateEventPosition(timelineEventHarness, event.clientX);
                         scheduleEl.removeEventListener("mousemove", handleMouseMove);
-                        scheduleEl.removeEventListener("mousemove", leftHandleMouseMove);
-                        scheduleEl.removeEventListener("mousemove", rightHandleMouseMove);
                         isDraggableRef.current = false;
                         pressEventPositionRef.current = "none";
                     }
@@ -255,7 +215,7 @@ export const useMoveTimelineEvent = (props: {
         }
         return () => {
         }
-    }, [handleMouseMove, leftHandleMouseMove, props, removePositionGuide, rightHandleMouseMove, updateEventPosition]);
+    }, [handleMouseMove, props, removePositionGuide, updateEventPosition]);
 
     return {handleMouseDown, leftHandleMouseDown, rightHandleMouseDown}
 }
