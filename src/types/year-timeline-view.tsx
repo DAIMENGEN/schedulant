@@ -10,6 +10,10 @@ import type {Position} from "@schedulant/types/base.ts";
 
 export class YearTimelineView extends TimelineView {
 
+    getTotalSlots(): number {
+        return this.getTimelineApi().getYears().length;
+    }
+
     renderColgroup(): ReactNode {
         const schedulantApi = this.getSchedulantApi();
         const timelineApi = this.getTimelineApi();
@@ -57,23 +61,6 @@ export class YearTimelineView extends TimelineView {
             </tr>
             </tbody>
         );
-    }
-
-    calculateDate(timelineWidth: number, point: number): Dayjs {
-        const timelineApi = this.getTimelineApi();
-        const slotWidth = this.calculateSlotWidth(timelineWidth);
-        const index = (point / slotWidth) - 1;
-        const date = timelineApi.getYears().at(index);
-        if (!date) {
-            throw new RangeError("Calculated index is out of bounds.")
-        }
-        return date;
-    }
-
-    calculateSlotWidth(timelineWidth: number): number {
-        const timelineApi = this.getTimelineApi();
-        const years = timelineApi.getYears();
-        return timelineWidth / years.length;
     }
 
     calculatePosition(timelineWidth: number, start: Dayjs, end: Dayjs): Position {

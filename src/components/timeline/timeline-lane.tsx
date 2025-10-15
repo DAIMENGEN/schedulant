@@ -29,12 +29,15 @@ export const TimelineLane = (props: {
         const schedulantApi = props.schedulantApi;
         const scheduleView = schedulantApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
-        const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
         const selectedArea = element.firstElementChild as HTMLDivElement;
         const left = pixelsToNumber(selectedArea.style.left);
         const right = pixelsToNumber(selectedArea.style.right);
-        const startDate = timelineView.calculateDate(props.timelineWidth, left + slotWidth);
-        const endDate = timelineView.calculateDate(props.timelineWidth, props.timelineWidth - right);
+        const totalSlots = timelineView.getTotalSlots();
+        const totalWidth = props.timelineWidth;
+        const startDateIndex = Math.ceil(left / totalWidth * totalSlots);
+        const endDateIndex = Math.ceil((totalWidth - right) / totalWidth * totalSlots) - 1;
+        const startDate = timelineView.getTimelineApi().getDays()[startDateIndex];
+        const endDate = timelineView.getTimelineApi().getDays()[endDateIndex];
         schedulantApi.selectAllow({
             el: element,
             resourceApi: props.resourceApi,
@@ -48,24 +51,29 @@ export const TimelineLane = (props: {
         const scheduleView = schedulantApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
         const laneHeight = timelineView.calculateLaneHeight(props.resourceApi);
-        const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
-        const multiple = Math.floor(offsetX / slotWidth);
-        const distance = multiple * slotWidth;
-        const left = numberToPixels(distance);
-        const right = numberToPixels(props.timelineWidth - distance - slotWidth);
-        const height = numberToPixels(laneHeight);
-        const selectedArea = document.createElement("div");
-        selectedArea.className = timelineLaneSelectedArea;
-        Object.assign(selectedArea.style, {
-            position: "absolute",
-            left: left,
-            right: right,
-            height: height,
-            backgroundColor: "rgb(188, 232, 241, 0.7)"
-        });
-        element.appendChild(selectedArea);
-        startLeftRef.current = pixelsToNumber(left);
-        startRightRef.current = pixelsToNumber(right);
+        const scheduleEl = schedulantApi.getSchedulantElRef().current;
+        if (scheduleEl) {
+            const scrollLeft = scheduleEl.scrollLeft;
+            const position = scrollLeft + offsetX;
+            const totalWidth = props.timelineWidth;
+            const totalSlots = timelineView.getTotalSlots();
+            const proportion = position / totalWidth;
+            const slotIndex = Math.ceil(proportion * totalSlots);
+            const left = numberToPixels((slotIndex - 1) / totalSlots * totalWidth);
+            const right = numberToPixels(totalWidth - slotIndex / totalSlots * totalWidth);
+            const selectedArea = document.createElement("div");
+            selectedArea.className = timelineLaneSelectedArea;
+            Object.assign(selectedArea.style, {
+                position: "absolute",
+                left: left,
+                right: right,
+                height: numberToPixels(laneHeight),
+                backgroundColor: "rgb(188, 232, 241, 0.7)"
+            });
+            element.appendChild(selectedArea);
+            startLeftRef.current = pixelsToNumber(left);
+            startRightRef.current = pixelsToNumber(right);
+        }
     }, [props.resourceApi, props.schedulantApi, props.timelineWidth, timelineLaneSelectedArea]);
 
     const removeSelectedArea = useCallback((element: HTMLDivElement) => {
@@ -85,21 +93,17 @@ export const TimelineLane = (props: {
                 const schedulantApi = props.schedulantApi;
                 const scheduleView = schedulantApi.getScheduleView();
                 const timelineView = scheduleView.getTimelineView();
-                const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
-                const rect = selectedArea.getBoundingClientRect();
                 const deltaX = clientX - startXRef.current;
+                const totalWidth = props.timelineWidth;
+                const totalSlots = timelineView.getTotalSlots();
+                const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+                const distance = (moveSlots / totalSlots) * totalWidth;
                 if (Math.sign(deltaX) === 1) {
                     // update right.
-                    const offsetRatio = (clientX - rect.left) / slotWidth;
-                    const multiple = Math.floor(offsetRatio);
-                    const distance = multiple * slotWidth;
                     const newRight = Math.max(startRightRef.current - distance, 0);
                     selectedArea.style.right = numberToPixels(newRight);
                 } else if (Math.sign(deltaX) === -1) {
                     // update left.
-                    const offsetRatio = (clientX - rect.right) / slotWidth;
-                    const multiple = Math.ceil(offsetRatio);
-                    const distance = multiple * slotWidth;
                     const newLeft = Math.max(startLeftRef.current + distance, 0)
                     selectedArea.style.left = numberToPixels(newLeft);
                 }

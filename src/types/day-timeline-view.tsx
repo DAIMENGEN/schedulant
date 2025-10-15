@@ -100,21 +100,8 @@ export class DayTimelineView extends TimelineView {
         );
     }
 
-    calculateDate(timelineWidth: number, point: number): Dayjs {
-        const timelineApi = this.getTimelineApi();
-        const slotWidth = this.calculateSlotWidth(timelineWidth);
-        const index = Math.ceil((point / slotWidth) - 1);
-        const date = timelineApi.getDays().at(index);
-        if (!date) {
-            throw new RangeError("Calculated index is out of bounds.")
-        }
-        return date;
-    }
-
-    calculateSlotWidth(timelineWidth: number): number {
-        const timelineApi = this.getTimelineApi();
-        const days = timelineApi.getDays();
-        return timelineWidth / days.length;
+    getTotalSlots(): number {
+        return this.getTimelineApi().getDays().length;
     }
 
     calculatePosition(timelineWidth: number, start: Dayjs, end: Dayjs): Position {

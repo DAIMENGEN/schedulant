@@ -47,6 +47,12 @@ createRoot(document.getElementById("root")!).render(
                                 headerContent: "Parent",
                             }
                         ]}
+                        milestoneMove={(milestoneMoveMountArg) => {
+                            console.log(milestoneMoveMountArg.date.format("YYYY-MM-DD"));
+                        }}
+                        checkpointMove={(checkpointMoveMountArg) => {
+                            console.log(checkpointMoveMountArg.date.format("YYYY-MM-DD"));
+                        }}
                         eventMove={(eventMoveMountArg) => {
                             console.log(eventMoveMountArg.startDate.format("YYYY-MM-DD"));
                             console.log(eventMoveMountArg.endDate.format("YYYY-MM-DD"));

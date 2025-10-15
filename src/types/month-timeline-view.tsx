@@ -10,6 +10,10 @@ import type {ReactNode} from "react";
 
 export class MonthTimelineView extends TimelineView {
 
+    getTotalSlots(): number {
+        return this.getTimelineApi().getMonths().length;
+    }
+
     renderColgroup(): ReactNode {
         const schedulantApi = this.getSchedulantApi();
         const timelineApi = this.getTimelineApi();
@@ -71,23 +75,6 @@ export class MonthTimelineView extends TimelineView {
             </tr>
             </tbody>
         )
-    }
-
-    calculateDate(timelineWidth: number, point: number): Dayjs {
-        const timelineApi = this.getTimelineApi();
-        const slotWidth = this.calculateSlotWidth(timelineWidth);
-        const index = (point / slotWidth) - 1;
-        const date = timelineApi.getMonths().at(index);
-        if (!date) {
-            throw new RangeError("Calculated index is out of bounds.")
-        }
-        return date;
-    }
-
-    calculateSlotWidth(timelineWidth: number): number {
-        const timelineApi = this.getTimelineApi();
-        const months = timelineApi.getMonths();
-        return timelineWidth / months.length;
     }
 
     calculatePosition(timelineWidth: number, start: Dayjs, end: Dayjs): Position {

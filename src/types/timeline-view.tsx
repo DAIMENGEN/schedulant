@@ -109,15 +109,13 @@ export abstract class TimelineView {
         return this.schedulantApi.getLineHeight() * 0.7;
     }
 
+    abstract getTotalSlots(): number;
+
     abstract renderColgroup(): ReactNode;
 
     abstract renderBodySlots(): ReactNode;
 
     abstract renderHeaderSlots(): ReactNode;
-
-    abstract calculateDate(timelineWidth: number, point: number): Dayjs;
-
-    abstract calculateSlotWidth(timelineWidth: number): number;
 
     abstract calculatePosition(timelineWidth: number, start: Dayjs, end: Dayjs): Position;
 

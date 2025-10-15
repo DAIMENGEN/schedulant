@@ -49,43 +49,25 @@ export const useMoveTimelineEvent = (props: {
             const scheduleApi = props.schedulantApi;
             const scheduleView = scheduleApi.getScheduleView();
             const timelineView = scheduleView.getTimelineView();
-            const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
             const pressPosition = pressEventPositionRef.current;
             const deltaX = clientX - startXRef.current;
-            const offsetRatio = deltaX / slotWidth;
+            const totalWidth = props.timelineWidth;
+            const totalSlots = timelineView.getTotalSlots();
+            const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+            const distance = (moveSlots / totalSlots) * totalWidth;
             switch (pressPosition) {
                 case "press_event": {
-                    const multiple = Math.round(offsetRatio);
-                    const distance = multiple * slotWidth;
-                    switch (Math.sign(deltaX)) {
-                        case 1: {
-                            const newLeft_1 = Math.min(startLeftRef.current + distance, props.timelineWidth - slotWidth);
-                            const newRight_1 = Math.max(startRightRef.current - distance, props.timelineWidth * -1);
-                            positionGuide.style.left = numberToPixels(newLeft_1);
-                            positionGuide.style.right = numberToPixels(newRight_1);
-                            break;
-                        }
-                        case -1: {
-                            const newLeft_2 = Math.max(startLeftRef.current + distance, 0);
-                            const newRight_2 = Math.min(startRightRef.current - distance, slotWidth * -1);
-                            positionGuide.style.left = numberToPixels(newLeft_2);
-                            positionGuide.style.right = numberToPixels(newRight_2);
-                            break;
-                        }
-                        default:
-                            break;
-                    }
+                    positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+                    positionGuide.style.right = numberToPixels(startRightRef.current - distance);
                     break;
                 }
                 case "press_event_left": {
-                    const distance_1 = Math.round(offsetRatio) * slotWidth;
-                    const newLeft = Math.max(startLeftRef.current + distance_1, 0);
+                    const newLeft = Math.max(startLeftRef.current + distance, 0);
                     positionGuide.style.left = numberToPixels(newLeft);
                     break;
                 }
                 case "press_event_right": {
-                    const distance_2 = Math.round(offsetRatio) * slotWidth;
-                    const newRight = startRightRef.current - distance_2;
+                    const newRight = startRightRef.current - distance;
                     positionGuide.style.right = numberToPixels(newRight);
                     break;
                 }
@@ -98,32 +80,16 @@ export const useMoveTimelineEvent = (props: {
         const schedulantApi = props.schedulantApi;
         const scheduleView = schedulantApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
-        const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
         const pressPosition = pressEventPositionRef.current;
         const deltaX = clientX - startXRef.current;
-        const moveSlots = Math.round(deltaX / slotWidth);
+        const totalWidth = props.timelineWidth;
+        const totalSlots = timelineView.getTotalSlots();
+        const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+        const distance = (moveSlots / totalSlots) * totalWidth;
         switch (pressPosition) {
             case "press_event": {
-                const distance = moveSlots * slotWidth;
-                const eventWidth = pixelsToNumber(element.style.right) * -1 - pixelsToNumber(element.style.left);
-                switch (Math.sign(deltaX)) {
-                    case 1: {
-                        const newLeft_1 = Math.min(startLeftRef.current + distance, props.timelineWidth - eventWidth);
-                        const newRight_1 = Math.max(startRightRef.current - distance, props.timelineWidth * -1);
-                        element.style.left = numberToPixels(newLeft_1);
-                        element.style.right = numberToPixels(newRight_1);
-                        break;
-                    }
-                    case -1: {
-                        const newLeft_2 = Math.max(startLeftRef.current + distance, 0);
-                        const newRight_2 = Math.min(startRightRef.current - distance, eventWidth * -1);
-                        element.style.left = numberToPixels(newLeft_2);
-                        element.style.right = numberToPixels(newRight_2);
-                        break;
-                    }
-                    default:
-                        break;
-                }
+                element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+                element.style.right = numberToPixels(startRightRef.current - distance);
                 const startDate = eventApi.getStart().add(moveSlots, "day");
                 const endDate = eventApi.getEnd().add(moveSlots, "day");
                 eventApi.setStart(startDate);
@@ -138,7 +104,7 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_left": {
-                const newLeft = Math.max(startLeftRef.current + moveSlots * slotWidth, 0);
+                const newLeft = Math.max(startLeftRef.current + distance, 0);
                 element.style.left = numberToPixels(newLeft);
                 const startDate = eventApi.getStart().add(moveSlots, "day");
                 eventApi.setStart(startDate);
@@ -151,7 +117,7 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_right": {
-                const newRight = startRightRef.current - moveSlots * slotWidth;
+                const newRight = startRightRef.current - distance;
                 element.style.right = numberToPixels(newRight);
                 const endDate = eventApi.getEnd().add(moveSlots, "day");
                 eventApi.setEnd(endDate);

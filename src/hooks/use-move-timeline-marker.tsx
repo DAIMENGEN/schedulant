@@ -47,22 +47,13 @@ export const useMoveTimelineMarker = (props: {
             const scheduleApi = props.schedulantApi;
             const scheduleView = scheduleApi.getScheduleView();
             const timelineView = scheduleView.getTimelineView();
-            const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
             const deltaX = clientX - startXRef.current;
-            const offsetRatio = deltaX / slotWidth;
-            const multiple = Math.round(offsetRatio);
-            const distance = multiple * slotWidth;
-            if (Math.sign(deltaX) === 1) {
-                const newLeft = Math.min(startLeftRef.current + distance, props.timelineWidth - slotWidth);
-                const newRight = Math.max(startRightRef.current - distance, props.timelineWidth * -1);
-                positionGuide.style.left = numberToPixels(newLeft);
-                positionGuide.style.right = numberToPixels(newRight);
-            } else if (Math.sign(deltaX) === -1) {
-                const newLeft = Math.max(startLeftRef.current + distance, 0);
-                const newRight = Math.min(startRightRef.current - distance, slotWidth * -1);
-                positionGuide.style.left = numberToPixels(newLeft);
-                positionGuide.style.right = numberToPixels(newRight);
-            }
+            const totalWidth = props.timelineWidth;
+            const totalSlots = timelineView.getTotalSlots();
+            const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+            const distance = (moveSlots / totalSlots) * props.timelineWidth;
+            positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+            positionGuide.style.right = numberToPixels(startRightRef.current - distance);
         }
     }, [props, markerPositionGuide]);
 
@@ -70,25 +61,15 @@ export const useMoveTimelineMarker = (props: {
         const scheduleApi = props.schedulantApi;
         const scheduleView = scheduleApi.getScheduleView();
         const timelineView = scheduleView.getTimelineView();
-        const slotWidth = timelineView.calculateSlotWidth(props.timelineWidth);
         const deltaX = clientX - startXRef.current;
-        const offsetRatio = deltaX / slotWidth;
-        const multiple = Math.round(offsetRatio);
-        const distance = multiple * slotWidth;
-        if (Math.sign(deltaX) === 1) {
-            const newLeft = Math.min(startLeftRef.current + distance, props.timelineWidth - slotWidth);
-            const newRight = Math.max(startRightRef.current - distance, props.timelineWidth * -1);
-            element.style.left = numberToPixels(newLeft);
-            element.style.right = numberToPixels(newRight);
-        } else if (Math.sign(deltaX) === -1) {
-            const newLeft = Math.max(startLeftRef.current + distance, 0);
-            const newRight = Math.min(startRightRef.current - distance, slotWidth * -1);
-            element.style.left = numberToPixels(newLeft);
-            element.style.right = numberToPixels(newRight);
-        }
-        const right = pixelsToNumber(element.style.right);
-        const date = timelineView.calculateDate(props.timelineWidth, right * -1);
+        const totalWidth = props.timelineWidth;
+        const totalSlots = timelineView.getTotalSlots();
+        const moveSlots = Math.round((deltaX / totalWidth) * totalSlots);
+        const distance = (moveSlots / totalSlots) * props.timelineWidth;
+        element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+        element.style.right = numberToPixels(startRightRef.current - distance);
         if (props.milestoneApi) {
+            const date = props.milestoneApi.getTime().add(moveSlots, "day");
             props.milestoneApi.setTime(date);
             props.schedulantApi.milestoneMove({
                 el: element,
@@ -97,6 +78,7 @@ export const useMoveTimelineMarker = (props: {
                 milestoneApi: props.milestoneApi
             });
         } else if (props.checkpointApi) {
+            const date = props.checkpointApi.getTime().add(moveSlots, "day");
             props.checkpointApi.setTime(date);
             props.schedulantApi.checkpointMove({
                 el: element,
