@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "yarn add schedulant@file:../lib && vite",
     "lint": "eslint .",
+    "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "schedulant": "file:../lib"
+  },
+  "devDependencies": {
+    "vite-plugin-singlefile": "^2.3.0"
   }
 }
