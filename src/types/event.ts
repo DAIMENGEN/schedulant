@@ -43,56 +43,32 @@ export class EventApi {
         this.event = event;
     }
 
-    setId(id: string): void {
-        this.event.id = id;
+    setResourceApi(resourceApi: ResourceApi): void {
+        this.resourceApi = resourceApi;
     }
 
     getId(): string {
         return this.event.id;
     }
 
-    setTitle(title: string): void {
-        this.event.title = title;
-    }
-
     getTitle(): string {
         return this.event.title;
-    }
-
-    setColor(color: string): void {
-        this.event.color = color;
     }
 
     getColor(): string {
         return this.event.color;
     }
 
-    setStart(start: Dayjs): void {
-        this.event.start = start;
-    }
-
     getStart(): Dayjs {
         return this.event.start;
-    }
-
-    setEnd(end: Dayjs): void {
-        this.event.end = end;
     }
 
     getEnd(): Dayjs {
         return this.event.end;
     }
 
-    setResourceId(resourceId: string): void {
-        this.event.resourceId = resourceId;
-    }
-
     getResourceId(): string {
         return this.event.resourceId;
-    }
-
-    setResourceApi(resourceApi: ResourceApi): void {
-        this.resourceApi = resourceApi;
     }
 
     getResourceApi(): ResourceApi {
@@ -102,49 +78,26 @@ export class EventApi {
         return this.resourceApi;
     }
 
-    setUrl(url: string): void {
-        this.event.url = url;
-    }
-
     getUrl(): Option<string> {
         return Option.fromNullable(this.event.url);
-    }
-
-    setTooltip(tooltip: ReactNode): void {
-        this.event.tooltip = tooltip;
     }
 
     getTooltip(): ReactNode {
         return this.event.tooltip;
     }
 
-    setTextColor(textColor: string): void {
-        this.event.textColor = textColor;
-    }
-
     getTextColor(): Option<string> {
         return Option.fromNullable(this.event.textColor);
-    }
-
-    setBorderColor(borderColor: string): void {
-        this.event.borderColor = borderColor;
     }
 
     getBorderColor(): Option<string> {
         return Option.fromNullable(this.event.borderColor);
     }
 
-    setBackgroundColor(backgroundColor: string): void {
-        this.event.backgroundColor = backgroundColor;
-    }
-
     getBackgroundColor(): Option<string> {
         return Option.fromNullable(this.event.backgroundColor);
     }
 
-    setExtendedProps(extendedProps: Dictionary): void {
-        this.event.extendedProps = extendedProps;
-    }
 
     getExtendProps(): Option<Dictionary> {
         return Option.fromNullable(this.event.extendedProps);

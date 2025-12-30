@@ -16,6 +16,8 @@ export const SchedulantReducer = (state: SchedulantState, action: Action): Sched
             return {
                 ...state,
                 resourceAreaWidth: action.width,
-            }
+            };
+        default:
+            return state;
     }
 };

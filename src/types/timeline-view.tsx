@@ -6,12 +6,8 @@ import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 import {TimelineLane} from "@schedulant/components/timeline/timeline-lane.tsx";
 import {TimelineEventHarness} from "@schedulant/components/timeline/timeline-event-harness.tsx";
-import {
-    TimelineMilestoneHarness
-} from "@schedulant/components/timeline/timeline-milestone-harness.tsx";
-import {
-    TimelineCheckpointHarness
-} from "@schedulant/components/timeline/timeline-checkpoint-harness.tsx";
+import {TimelineMilestoneHarness} from "@schedulant/components/timeline/timeline-milestone-harness.tsx";
+import {TimelineCheckpointHarness} from "@schedulant/components/timeline/timeline-checkpoint-harness.tsx";
 
 export abstract class TimelineView {
 
@@ -29,10 +25,9 @@ export abstract class TimelineView {
         return this.schedulantApi.getTimelineApi();
     }
 
-    renderLane(resourceApi: ResourceApi, timelineWidth: number): ReactNode {
+    renderLane(): ReactNode {
         return (
-            <TimelineLane schedulantApi={this.schedulantApi} resourceApi={resourceApi}
-                          timelineWidth={timelineWidth}/>
+            <TimelineLane/>
         )
     }
 

@@ -44,9 +44,10 @@ export type {
     ResourceAreaColumn,
     ResourceLaneMountArg,
     ResourceLabelMountArg,
+    ResourceLaneMoveMountArg,
     ResourceContextMenuItems,
     ResourceLaneContextMenuArg,
-    ResourceLabelContextMenuArg
+    ResourceLabelContextMenuArg,
 } from "@schedulant/types/resource.ts"
 
 export type {
@@ -54,8 +55,4 @@ export type {
     TimelineSlotLaneMountArg,
     TimelineSlotLabelMountArg
 } from "@schedulant/types/timeline.ts";
-
-export type {
-    SelectInfoArg
-} from "@schedulant/types/misc.ts";
 

@@ -29,6 +29,8 @@ export type ResourceLaneContextMenuArg = MenuArg<ResourceLaneArg>;
 
 export type ResourceLabelContextMenuArg = MenuArg<ResourceLabelArg>;
 
+export type ResourceLaneMoveMountArg = MountArg<{schedulantApi: PublicSchedulantApi, draggedResourceApi: PublicResourceApi, targetResourceApi: PublicResourceApi, position: 'before' | 'after' | 'child', oldParentResourceApi?: PublicResourceApi}>;
+
 export type Resource = {
     id: string;
     title: string;
@@ -56,32 +58,20 @@ export class ResourceApi {
         this.resource = resource;
     }
 
-    setId(id: string): void {
-        this.resource.id = id;
+    setDepth(depth: number): void {
+        this.depth = depth;
     }
 
     getId(): string {
         return this.resource.id;
     }
 
-    setTitle(title: string): void {
-        this.resource.title = title;
-    }
-
     getTitle(): string {
         return this.resource.title;
     }
 
-    setDepth(depth: number): void {
-        this.depth = depth;
-    }
-
     getDepth(): number {
         return this.depth;
-    }
-
-    setTooltip(tooltip: ReactNode): void {
-        this.resource.tooltip = tooltip;
     }
 
     getTooltip(): ReactNode {
@@ -96,10 +86,6 @@ export class ResourceApi {
         return Option.fromNullable(this.parent);
     }
 
-    setParentId(parentId: string): void {
-        this.resource.parentId = parentId;
-    }
-
     getParentId(): Option<string> {
         return Option.fromNullable(this.resource.parentId);
     }
@@ -112,32 +98,16 @@ export class ResourceApi {
         return this.children;
     }
 
-    setEventColor(color: string): void {
-        this.resource.eventColor = color;
-    }
-
     getEventColor(): Option<string> {
         return Option.fromNullable(this.resource.eventColor);
-    }
-
-    setEventTextColor(color: string): void {
-        this.resource.eventTextColor = color;
     }
 
     getEventTextColor(): Option<string> {
         return Option.fromNullable(this.resource.eventTextColor);
     }
 
-    setEventBorderColor(color: string): void {
-        this.resource.eventBorderColor = color;
-    }
-
     getEventBorderColor(): Option<string> {
         return Option.fromNullable(this.resource.eventBorderColor);
-    }
-
-    setEventBackgroundColor(color: string): void {
-        this.resource.eventBackgroundColor = color;
     }
 
     getEventBackgroundColor(): Option<string> {
@@ -179,10 +149,6 @@ export class ResourceApi {
             throw new Error("checkpointApis is not available. Please make sure to initialize it before accessing.");
         }
         return this.checkpointApis;
-    }
-
-    setExtendedProps(extendedProps: Dictionary): void {
-        this.resource.extendedProps = extendedProps;
     }
 
     getExtendProps(): Option<Dictionary> {

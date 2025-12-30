@@ -1,6 +1,6 @@
 import {SchedulantApi, type SchedulantProps} from "./schedulant";
 import type {TimelineView} from "@schedulant/types/timeline-view.tsx";
-import type {MutableRefObject, ReactNode} from "react";
+import React, {type MutableRefObject, type ReactNode} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
 import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
 import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
@@ -69,7 +69,7 @@ export class SchedulantView {
                     <td data-resource-id={resourceApi.getId()}
                         className={"schedulant-timeline-lane schedulant-resource"}>
                         <div className={"schedulant-timeline-lane-frame"} style={{height: lineHeight}}>
-                            {this.timelineView.renderLane(resourceApi, timelineWidth)}
+                            {this.timelineView.renderLane()}
                             <div className={"schedulant-timeline-lane-bg"}></div>
                             {this.timelineView.renderEvents(resourceApi, timelineWidth)}
                             {this.timelineView.renderMilestones(resourceApi, timelineWidth)}
@@ -118,21 +118,53 @@ export class SchedulantView {
         )
     }
 
-    renderResourceLane(collapseIds: Array<string>, cellResizerMouseUp: ResizerMouseUp, cellResizerMouseDownFunc: ResizerMouseDownFunc): ReactNode {
+    renderResourceLane(
+        collapseIds: Array<string>,
+        cellResizerMouseUp: ResizerMouseUp,
+        cellResizerMouseDownFunc: ResizerMouseDownFunc,
+        dragDropHandlers?: {
+            isDraggable: boolean;
+            dragState: {
+                draggedResource: ResourceApi | null;
+                dragOverResource: ResourceApi | null;
+                dropPosition: 'before' | 'after' | 'child' | null;
+            };
+            handleDragStart: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
+            handleDragOver: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
+            handleDragLeave: (e: React.DragEvent) => void;
+            handleDrop: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
+            handleDragEnd: () => void;
+        }
+    ): ReactNode {
         const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {
-            return resourceAreaColumns.map((resourceAreaColumn, index) => <BodyCell
-                key={resourceAreaColumn.field}
-                schedulantApi={this.schedulantApi}
-                resourceApi={resourceApi}
-                collapseIds={collapseIds}
-                showPlusSquare={index === 0}
-                showIndentation={true}
-                cellResizerMouseUp={cellResizerMouseUp}
-                resourceAreaColumn={resourceAreaColumn}
-                cellResizerMouseDownFunc={cellResizerMouseDownFunc}
-                isResizable={index != resourceAreaColumns.length - 1}/>)
+            return resourceAreaColumns.map((resourceAreaColumn, index) => {
+                const dragProps = dragDropHandlers ? {
+                    isDraggable: dragDropHandlers.isDraggable,
+                    isDragging: dragDropHandlers.dragState.draggedResource?.getId() === resourceApi.getId(),
+                    isDragOver: dragDropHandlers.dragState.dragOverResource?.getId() === resourceApi.getId(),
+                    dropPosition: dragDropHandlers.dragState.dropPosition,
+                    onDragStart: dragDropHandlers.handleDragStart(resourceApi),
+                    onDragOver: dragDropHandlers.handleDragOver(resourceApi),
+                    onDragLeave: dragDropHandlers.handleDragLeave,
+                    onDrop: dragDropHandlers.handleDrop(resourceApi),
+                    onDragEnd: dragDropHandlers.handleDragEnd,
+                } : {};
+                return <BodyCell
+                    key={resourceAreaColumn.field}
+                    schedulantApi={this.schedulantApi}
+                    resourceApi={resourceApi}
+                    collapseIds={collapseIds}
+                    showPlusSquare={index === 0}
+                    showIndentation={true}
+                    cellResizerMouseUp={cellResizerMouseUp}
+                    resourceAreaColumn={resourceAreaColumn}
+                    cellResizerMouseDownFunc={cellResizerMouseDownFunc}
+                    isResizable={index != resourceAreaColumns.length - 1}
+                    {...dragProps}
+                />
+            })
         }
 
         const renderTableRows = (resourceApi: ResourceApi): Array<ReactNode> => {

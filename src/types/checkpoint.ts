@@ -36,40 +36,24 @@ export class CheckpointApi {
         this.checkpoint = checkpoint;
     }
 
-    setId(id: string): void {
-        this.checkpoint.id = id;
+    setResourceApi(resourceApi: ResourceApi): void {
+        this.resourceApi = resourceApi;
     }
 
     getId(): string {
         return this.checkpoint.id;
     }
 
-    setTitle(title: string): void {
-        this.checkpoint.title = title;
-    }
-
     getTitle(): string {
         return this.checkpoint.title;
-    }
-
-    setTime(time: Dayjs): void {
-        this.checkpoint.time = time;
     }
 
     getTime(): Dayjs {
         return this.checkpoint.time;
     }
 
-    setResourceId(resourceId: string): void {
-        this.checkpoint.resourceId = resourceId;
-    }
-
     getResourceId(): string {
         return this.checkpoint.resourceId;
-    }
-
-    setResourceApi(resourceApi: ResourceApi): void {
-        this.resourceApi = resourceApi;
     }
 
     getResourceApi(): ResourceApi {
@@ -79,24 +63,12 @@ export class CheckpointApi {
         return this.resourceApi;
     }
 
-    setColor(color: string): void {
-        this.checkpoint.color = color;
-    }
-
     getColor(): Option<string> {
         return Option.fromNullable(this.checkpoint.color);
     }
 
-    setTooltip(tooltip: ReactNode): void {
-        this.checkpoint.tooltip = tooltip;
-    }
-
     getTooltip(): ReactNode {
         return this.checkpoint.tooltip;
-    }
-
-    setExtendedProps(extendedProps: Dictionary): void {
-        this.checkpoint.extendedProps = extendedProps;
     }
 
     getExtendProps(): Option<Dictionary> {
@@ -113,4 +85,3 @@ export type PublicCheckpointApi = Pick<CheckpointApi,
     "getColor" |
     "getTooltip" |
     "getExtendProps">;
-

@@ -67,6 +67,7 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * **start:** Start date of the schedule view.
 * **end:** End date of the schedule view.
 * **editable:** Whether editing the schedule is allowed; if the current value is `false`, properties such as `eventMove`, `eventResizeStart`, `eventResizeEnd`, `milestonesMove`, and `checkpointMove` will become ineffective.
+* **selectable:** Whether selecting on the timeline is allowed; if the current value is `true`, users can select time ranges on the timeline.
 * **lineHeight:** Sets the line height of the schedule.
 * **slotMinWidth:** Determines how wide each of the time-axis slots will be. Specified as a number of pixels. When not specified, a reasonable value will be automatically computed.
 * **schedulantMaxHeight:** Sets the max height of the entire schedule.
@@ -80,7 +81,6 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * **nationalHolidays:** An array of national holidays that will be used to mark national holidays on the schedule. (**Note:** This property is optional)
 * **resourceAreaWidth:** Determines the width of the area that contains the list of resources. Can be specified as a number of pixels, or a CSS string value, like "25%". default: "30%" (**Note:** This property is optional)
 * **resourceAreaColumns:** Turns the resource area from a plain list of titles into a grid of data. An array of objects can be provided, each with information about a column. (**Note:** This property is optional)
-* **selectAllow:** Exact programmatic control over where the user can select. This callback will be called for every new potential selection as the user is dragging. (**Note:** This property is optional)
 * **enableEventContextMenu:** Whether to enable the right-click menu functionality for event. (**Note:** This property is optional)
 * **eventContextMenuClick:** The event triggered when an option in the event's right-click menu is clicked. (**Note:** This property is optional)
 * **eventContextMenuItems:** Configure options in the event's right-click menu. (**Note:** This property is optional)
@@ -106,6 +106,7 @@ Note: Schedulant is a project based on Typescript React, it is designed specific
 * **resourceLaneContextMenuItems:** Configure options in the resource lane's right-click menu. (**Note:** This property is optional)
 * **resourceLaneDidMount:** Called right after the element has been added to the DOM. If the resource data changes, this is NOT called again. (**Note:** This property is optional)
 * **resourceLaneWillUnmount:** Called right before the element will be removed from the DOM. (**Note:** This property is optional)
+* **resourceLaneMove:** Triggered when resource lane move begins. (**Note:** This property is optional)
 * **enableResourceLabelContextMenu:** Whether to enable the right-click menu functionality for resource label. (**Note:** This property is optional)
 * **resourceLabelContextMenuClick:** The resource label triggered when an option in resource lane's right-click menu is clicked. (**Note:** This property is optional)
 * **resourceLabelContextMenuItems:** Configure options in the resource lane's right-click menu. (**Note:** This property is optional)

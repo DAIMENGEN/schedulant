@@ -14,11 +14,11 @@ import {
     ResourceApiHelper,
     type ResourceAreaColumn,
     type ResourceContextMenuItems,
+    type ResourceLaneMoveMountArg,
     type ResourceLabelContextMenuArg,
     type ResourceLabelMountArg,
     type ResourceLaneContextMenuArg,
-    type ResourceLaneMountArg,
-    ResourceUtils
+    type ResourceLaneMountArg
 } from "@schedulant/types/resource.ts";
 import {
     MilestoneApi,
@@ -42,11 +42,9 @@ import type {
     MountArg,
     MoveHandler,
     ResizeHandler,
-    SelectHandler,
     WillUnmountHandler
 } from "@schedulant/types/base.ts";
 import {Option} from "@schedulant/types/option.ts";
-import type {SelectInfoArg} from "@schedulant/types/misc";
 import type {SchedulantView, SchedulantViewType} from "@schedulant/types/schedulant-view.tsx";
 import {TimelineApi, type TimelineSlotLabelMountArg, type TimelineSlotLaneMountArg} from "@schedulant/types/timeline";
 import type {MutableRefObject} from "react";
@@ -67,10 +65,8 @@ export type SchedulantProps = {
     companyHolidays?: Dayjs[];
     specialWorkdays?: Dayjs[];
     nationalHolidays?: Dayjs[];
-    defaultEmptyLanes?: number;
     resourceAreaWidth?: string;
     resourceAreaColumns?: Array<ResourceAreaColumn>;
-    selectAllow?: SelectHandler<SelectInfoArg>;
     enableEventContextMenu?: boolean;
     eventContextMenuClick?: ContextMenuClickHandler<EventContextMenuArg>;
     eventContextMenuItems?: EventContextMenuItems;
@@ -96,6 +92,7 @@ export type SchedulantProps = {
     resourceLaneContextMenuItems?: ResourceContextMenuItems;
     resourceLaneDidMount?: DidMountHandler<ResourceLaneMountArg>;
     resourceLaneWillUnmount?: WillUnmountHandler<ResourceLaneMountArg>;
+    resourceLaneMove?: MoveHandler<ResourceLaneMoveMountArg>;
     enableResourceLabelContextMenu?: boolean;
     resourceLabelContextMenuClick?: ContextMenuClickHandler<ResourceLabelContextMenuArg>;
     resourceLabelContextMenuItems?: ResourceContextMenuItems;
@@ -164,7 +161,7 @@ export class SchedulantApi implements PublicSchedulantApi {
         this.schedulantProps = props;
         this.schedulantView = schedulantView;
         this.timelineApi = this.generateTimelineApi(props);
-        this.resourceApis = ResourceApiHelper.createTree([...props.resources, ...ResourceUtils.createEmptyResources(props.defaultEmptyLanes || 0)], this.eventApis, this.milestoneApis, this.checkpointApis);
+        this.resourceApis = ResourceApiHelper.createTree(props.resources, this.eventApis, this.milestoneApis, this.checkpointApis);
         this.flatMapResourceApis = ResourceApiHelper.flatMapTree(this.resourceApis);
     }
 
@@ -281,9 +278,6 @@ export class SchedulantApi implements PublicSchedulantApi {
         this.schedulantProps.eventResizeEnd?.(arg);
     }
 
-    selectAllow(arg: SelectInfoArg): void {
-        this.schedulantProps.selectAllow?.(arg);
-    }
 
     isEnableEventContextMenu() {
         const isEnable = this.schedulantProps.enableEventContextMenu;
@@ -296,6 +290,10 @@ export class SchedulantApi implements PublicSchedulantApi {
 
     onEventContextMenuClick(arg: EventContextMenuArg) {
         this.schedulantProps.eventContextMenuClick?.(arg);
+    }
+
+    resourceLaneMove(arg: ResourceLaneMoveMountArg): void {
+        this.schedulantProps.resourceLaneMove?.(arg);
     }
 
     resourceLaneDidMount(arg: ResourceLaneMountArg): void {

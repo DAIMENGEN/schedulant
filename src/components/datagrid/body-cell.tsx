@@ -1,6 +1,6 @@
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {Resource, ResourceApi, ResourceAreaColumn} from "@schedulant/types/resource.ts";
-import {useCallback, useRef} from "react";
+import React, {useCallback, useRef} from "react";
 import {useResourceLaneMount} from "@schedulant/hooks/mounts/use-resource-lane-mount.tsx";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown, Space} from "antd";
@@ -21,7 +21,16 @@ export const BodyCell = (props: {
     resourceAreaColumn: ResourceAreaColumn,
     isResizable: boolean,
     cellResizerMouseUp: ResizerMouseUp,
-    cellResizerMouseDownFunc: ResizerMouseDownFunc
+    cellResizerMouseDownFunc: ResizerMouseDownFunc,
+    isDraggable?: boolean,
+    isDragging?: boolean,
+    isDragOver?: boolean,
+    dropPosition?: 'before' | 'after' | 'child' | null,
+    onDragStart?: (e: React.DragEvent) => void,
+    onDragOver?: (e: React.DragEvent) => void,
+    onDragLeave?: (e: React.DragEvent) => void,
+    onDrop?: (e: React.DragEvent) => void,
+    onDragEnd?: (e: React.DragEvent) => void,
 }) => {
     const {dispatch} = useSchedulantContext();
     const resourceLaneCellRef = useRef<HTMLDivElement>(null);
@@ -46,9 +55,26 @@ export const BodyCell = (props: {
         return ""; // fallback
     }, []);
     useResourceLaneMount(resourceLaneCellRef, props.resourceAreaColumn, props.schedulantApi, props.resourceApi);
+    const getCellClassName = () => {
+        const classes = ["schedulant-datagrid-cell", "schedulant-resource"];
+        if (props.isDraggable && props.isDragging) {
+            classes.push("schedulant-resource-dragging");
+        }
+        if (props.isDraggable && props.isDragOver && props.dropPosition) {
+            classes.push(`schedulant-resource-drop-${props.dropPosition}`);
+        }
+        return classes.join(" ");
+    };
     return (
-        <td role={"gridcell"} data-resource-id={props.resourceApi.getId()}
-            className={"schedulant-datagrid-cell schedulant-resource"}>
+        <td role={"gridcell"}
+            data-resource-id={props.resourceApi.getId()}
+            className={getCellClassName()}
+            draggable={props.isDraggable && props.showPlusSquare}
+            onDragStart={props.isDraggable ? props.onDragStart : undefined}
+            onDragOver={props.isDraggable ? props.onDragOver : undefined}
+            onDragLeave={props.isDraggable ? props.onDragLeave : undefined}
+            onDrop={props.isDraggable ? props.onDrop : undefined}
+            onDragEnd={props.isDraggable ? props.onDragEnd : undefined}>
             <Dropdown disabled={!props.schedulantApi.isEnableResourceLaneContextMenu()}
                       destroyOnHidden={true}
                       trigger={["contextMenu"]}

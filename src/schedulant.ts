@@ -57,6 +57,3 @@ export type {
     TimelineSlotLabelMountArg
 } from "@schedulant/types";
 
-export type {
-    SelectInfoArg
-} from "@schedulant/types";

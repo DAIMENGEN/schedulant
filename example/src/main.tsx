@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import {StrictMode} from "react"
-import {Schedulant, type SelectInfoArg} from "schedulant";
+import {Schedulant} from "schedulant";
 import {createRoot} from "react-dom/client"
 import {mockResources} from "../mock-data/mock-resources.ts";
 import {mockEvents} from "../mock-data/mock-events.tsx";
@@ -26,7 +26,6 @@ createRoot(document.getElementById("root")!).render(
                         selectable={true}
                         lineHeight={40}
                         slotMinWidth={50}
-                        defaultEmptyLanes={10}
                         schedulantViewType={"Day"}
                         schedulantMaxHeight={1000}
                         resources={mockResources}
@@ -38,14 +37,14 @@ createRoot(document.getElementById("root")!).render(
                                 field: "title",
                                 headerContent: "Title",
                             },
-                            {
-                                field: "order",
-                                headerContent: "Order",
-                            },
-                            {
-                                field: "parentId",
-                                headerContent: "Parent",
-                            }
+                            // {
+                            //     field: "order",
+                            //     headerContent: "Order",
+                            // },
+                            // {
+                            //     field: "parentId",
+                            //     headerContent: "Parent",
+                            // }
                         ]}
                         milestoneMove={(milestoneMoveMountArg) => {
                             console.log(milestoneMoveMountArg.date.format("YYYY-MM-DD"));
@@ -63,10 +62,11 @@ createRoot(document.getElementById("root")!).render(
                         eventResizeEnd={(eventResizeMountArg) => {
                             console.log(eventResizeMountArg.date.format("YYYY-MM-DD"));
                         }}
-                        selectAllow={(arg: SelectInfoArg) => {
-                            console.log("resourceTitle: ", arg.resourceApi.getTitle());
-                            console.log("startDate: ", arg.startDate.format("YYYY-MM-DD"));
-                            console.log("endDate: ", arg.endDate.format("YYYY-MM-DD"));
+                        resourceLaneMove={(resourceLaneMoveArg) => {
+                            console.log("Dragged resource title: ", resourceLaneMoveArg.draggedResourceApi?.getTitle());
+                            console.log("Target resource title: ", resourceLaneMoveArg.targetResourceApi?.getTitle());
+                            console.log("Old parent title: ", resourceLaneMoveArg.oldParentResourceApi?.getTitle());
+                            console.log("Position: ", resourceLaneMoveArg.position);
                         }}
             />
         </div>
