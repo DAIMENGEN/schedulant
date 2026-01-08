@@ -1,9 +1,9 @@
-import React, {useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 import type {ResourceAreaColumn} from "@schedulant/types/resource.ts";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 
 export const useResourceLabelMount = (
-    resourceLabelCellRef: React.MutableRefObject<HTMLDivElement | null>,
+    resourceLabelCellRef: RefObject<HTMLDivElement | null>,
     resourceAreaColumn: ResourceAreaColumn,
     schedulantApi: SchedulantApi,
 ) => {
@@ -19,9 +19,6 @@ export const useResourceLabelMount = (
                     el: resourceLabelCell,
                     label: resourceAreaColumn,
                 });
-            }
-        } else {
-            return () => {
             }
         }
     }, [resourceLabelCellRef, resourceAreaColumn, schedulantApi]);

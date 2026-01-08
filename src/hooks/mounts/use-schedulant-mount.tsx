@@ -1,7 +1,7 @@
-import {type MutableRefObject, useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 
-export const useSchedulantMount = (schedulantElRef: MutableRefObject<HTMLDivElement | null>, scheduleView: SchedulantView) => {
+export const useSchedulantMount = (schedulantElRef: RefObject<HTMLDivElement | null>, scheduleView: SchedulantView) => {
     useEffect(() => {
         const schedulantEl = schedulantElRef.current;
         const schedulantApi = scheduleView.getScheduleApi();
@@ -16,8 +16,6 @@ export const useSchedulantMount = (schedulantElRef: MutableRefObject<HTMLDivElem
                     schedulantApi: schedulantApi,
                 });
             }
-        }
-        return () => {
         }
     }, [schedulantElRef, scheduleView]);
 }

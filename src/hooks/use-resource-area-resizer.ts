@@ -1,4 +1,4 @@
-import {type Dispatch, type MouseEventHandler, type MutableRefObject, type RefObject, useCallback, useRef} from "react";
+import {type Dispatch, type MouseEventHandler, type RefObject, useCallback, useRef} from "react";
 import {getHTMLTableElementByClassName, numberToPixels} from "@schedulant/utils/dom.ts";
 import type {Action} from "@schedulant/context/schedulant-state";
 
@@ -6,12 +6,12 @@ export type ResizerMouseUp = MouseEventHandler<HTMLDivElement>;
 
 export type ResizerMouseDown = MouseEventHandler<HTMLDivElement>;
 
-export type ResizerMouseDownFunc = (cellRef: MutableRefObject<HTMLDivElement | null>) => ResizerMouseDown;
+export type ResizerMouseDownFunc = (cellRef: RefObject<HTMLDivElement | null>) => ResizerMouseDown;
 
 export const useResourceAreaResizer = (
     dispatch: Dispatch<Action>,
-    scheduleElRef: RefObject<HTMLDivElement>,
-    resourceAreaColElRef: RefObject<HTMLTableColElement>
+    scheduleElRef: RefObject<HTMLDivElement | null>,
+    resourceAreaColElRef: RefObject<HTMLTableColElement | null>
 ) => {
     const indexRef = useRef<number>(-1);
     const head = useCallback(() => getHTMLTableElementByClassName("schedulant-datagrid-head"), []);
@@ -75,7 +75,7 @@ export const useResourceAreaResizer = (
         datagridBody.removeEventListener("mousemove", handleDatagridCellResize);
     }, [indexRef, head, body, handleDatagridCellResize]);
 
-    const datagridCellResizerMouseDownFunc: ResizerMouseDownFunc = useCallback((cellRef: MutableRefObject<HTMLDivElement | null>) => event => {
+    const datagridCellResizerMouseDownFunc: ResizerMouseDownFunc = useCallback((cellRef: RefObject<HTMLDivElement | null>) => event => {
         event.preventDefault();
         const targetCellElement = cellRef.current?.parentElement;
         const trElement = cellRef.current?.parentElement?.parentElement;

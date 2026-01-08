@@ -1,6 +1,6 @@
 import {SchedulantApi, type SchedulantProps} from "./schedulant";
 import type {TimelineView} from "@schedulant/types/timeline-view.tsx";
-import React, {type MutableRefObject, type ReactNode} from "react";
+import React, {type RefObject, type ReactNode} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
 import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
 import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
@@ -23,9 +23,9 @@ export class SchedulantView {
 
     private readonly timelineView: TimelineView;
 
-    private readonly schedulantElRef: MutableRefObject<HTMLDivElement | null>;
+    private readonly schedulantElRef: RefObject<HTMLDivElement | null>;
 
-    constructor(props: SchedulantProps, schedulantElRef: MutableRefObject<HTMLDivElement | null>) {
+    constructor(props: SchedulantProps, schedulantElRef: RefObject<HTMLDivElement | null>) {
         this.schedulantElRef = schedulantElRef;
         this.schedulantApi = new SchedulantApi(this, props);
         const schedulantViewType = this.schedulantApi.getSchedulantViewType();
@@ -64,10 +64,22 @@ export class SchedulantView {
         const drawElements = (resourceApi: ResourceApi) => {
             const milestoneApis = resourceApi.getMilestoneApis();
             const lineHeight = milestoneApis.length > 0 ? this.schedulantApi.getLineHeight() * 1.5 : this.schedulantApi.getLineHeight();
+
+            const handleLaneClick = () => {
+                if (this.schedulantApi.isSelectable()) {
+                    const resourceId = resourceApi.getId();
+                    const allResources = document.querySelectorAll('.schedulant-resource-selected');
+                    allResources.forEach(el => el.classList.remove('schedulant-resource-selected'));
+                    const resourceElements = document.querySelectorAll(`[data-resource-id="${resourceId}"].schedulant-resource`);
+                    resourceElements.forEach(el => el.classList.add('schedulant-resource-selected'));
+                }
+            };
+
             return (
                 <tr key={resourceApi.getId()}>
                     <td data-resource-id={resourceApi.getId()}
-                        className={"schedulant-timeline-lane schedulant-resource"}>
+                        className={"schedulant-timeline-lane schedulant-resource"}
+                        onClick={handleLaneClick}>
                         <div className={"schedulant-timeline-lane-frame"} style={{height: lineHeight}}>
                             {this.timelineView.renderLane()}
                             <div className={"schedulant-timeline-lane-bg"}></div>
@@ -196,7 +208,7 @@ export class SchedulantView {
         return this.schedulantApi;
     }
 
-    getScheduleElRef(): MutableRefObject<HTMLDivElement | null> {
+    getScheduleElRef(): RefObject<HTMLDivElement | null> {
         return this.schedulantElRef;
     }
 }

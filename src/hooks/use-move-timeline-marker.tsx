@@ -1,11 +1,13 @@
-import React, {useCallback, useEffect, useMemo, useRef} from "react";
+import {type MouseEventHandler, type RefObject, useCallback, useEffect, useMemo, useRef} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {MilestoneApi} from "@schedulant/types/milestone.ts";
 import {CheckpointApi} from "@schedulant/types/checkpoint.ts";
 import {numberToPixels, pixelsToNumber} from "@schedulant/utils/dom.ts";
+import throttle from "lodash/throttle";
+
 
 export const useMoveTimelineMarker = (props: {
-    markerRef: React.MutableRefObject<HTMLDivElement | null>,
+    markerRef: RefObject<HTMLDivElement | null>,
     timelineWidth: number,
     schedulantApi: SchedulantApi,
     milestoneApi?: MilestoneApi,
@@ -29,7 +31,7 @@ export const useMoveTimelineMarker = (props: {
             left: left,
             right: right,
             height: numberToPixels(height),
-            backgroundColor: "rgb(188, 232, 241, 0.7)"
+            backgroundColor: props.schedulantApi.getDragHintColor()
         });
         element.parentNode?.insertBefore(positionGuide, element);
     }, [props, markerPositionGuide]);
@@ -62,14 +64,14 @@ export const useMoveTimelineMarker = (props: {
     const updatePositionGuide = useCallback((element: HTMLDivElement, clientX: number) => {
         const positionGuide = element.previousElementSibling as HTMLDivElement;
         if (positionGuide && positionGuide.className === markerPositionGuide) {
-            const { distance } = calculateMoveData(clientX);
+            const {distance} = calculateMoveData(clientX);
             positionGuide.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
             positionGuide.style.right = numberToPixels(startRightRef.current - distance);
         }
     }, [markerPositionGuide, calculateMoveData]);
 
     const updateMarkerPosition = useCallback((element: HTMLDivElement, clientX: number) => {
-        const { moveSlots } = calculateMoveData(clientX);
+        const {moveSlots} = calculateMoveData(clientX);
         if (props.milestoneApi) {
             const date = props.milestoneApi.getTime().add(moveSlots, "day");
             props.schedulantApi.milestoneMove({
@@ -90,7 +92,7 @@ export const useMoveTimelineMarker = (props: {
         startXRef.current = 0;
     }, [props, calculateMoveData]);
 
-    const handleMouseMove = useCallback((event: MouseEvent) => {
+    const handleMouseMove = useCallback((event: globalThis.MouseEvent) => {
         event.preventDefault();
         const marker = props.markerRef.current;
         const isDraggable = isDraggableRef.current;
@@ -104,7 +106,13 @@ export const useMoveTimelineMarker = (props: {
         }
     }, [props.markerRef, updatePositionGuide]);
 
-    const handleMouseUp: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    // Throttled version for better performance
+    const throttledHandleMouseMove = useMemo(
+        () => throttle(handleMouseMove, 16), // ~60fps
+        [handleMouseMove]
+    );
+
+    const handleMouseUp: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const marker = props.markerRef.current;
         const isDraggable = isDraggableRef.current;
@@ -112,12 +120,12 @@ export const useMoveTimelineMarker = (props: {
         if (isDraggable && scheduleEl && marker) {
             removePositionGuide(marker);
             updateMarkerPosition(marker, event.clientX);
-            scheduleEl.removeEventListener("mousemove", handleMouseMove);
+            scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
             isDraggableRef.current = false;
         }
-    }, [handleMouseMove, props.markerRef, props.schedulantApi, removePositionGuide, updateMarkerPosition]);
+    }, [throttledHandleMouseMove, props.markerRef, props.schedulantApi, removePositionGuide, updateMarkerPosition]);
 
-    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback(event => {
+    const handleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(event => {
         event.preventDefault();
         const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
         const marker = props.markerRef.current;
@@ -127,9 +135,9 @@ export const useMoveTimelineMarker = (props: {
             startLeftRef.current = pixelsToNumber(marker.style.left);
             startRightRef.current = pixelsToNumber(marker.style.right);
             createPositionGuide(marker);
-            scheduleEl.addEventListener("mousemove", handleMouseMove);
+            scheduleEl.addEventListener("mousemove", throttledHandleMouseMove);
         }
-    }, [createPositionGuide, handleMouseMove, props.markerRef, props.schedulantApi]);
+    }, [createPositionGuide, throttledHandleMouseMove, props.markerRef, props.schedulantApi]);
 
     useEffect(() => {
         const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
@@ -137,7 +145,7 @@ export const useMoveTimelineMarker = (props: {
         if (scheduleEl && marker) {
             const timelineLaneFrame = marker.parentElement?.parentElement;
             if (timelineLaneFrame) {
-                const handleMouseOutOrUp = (event: MouseEvent) => {
+                const handleMouseOutOrUp = (event: globalThis.MouseEvent) => {
                     event.preventDefault();
                     const isDraggable = isDraggableRef.current;
                     if (isDraggable && !timelineLaneFrame.contains(event.relatedTarget as Node)) {
@@ -146,7 +154,7 @@ export const useMoveTimelineMarker = (props: {
                         // 重置样式到初始位置，等待数据驱动的重新渲染
                         marker.style.left = numberToPixels(startLeftRef.current);
                         marker.style.right = numberToPixels(startRightRef.current);
-                        scheduleEl.removeEventListener("mousemove", handleMouseMove);
+                        scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
                         isDraggableRef.current = false;
                     }
                 }
@@ -158,9 +166,7 @@ export const useMoveTimelineMarker = (props: {
                 }
             }
         }
-        return () => {
-        }
-    }, [handleMouseMove, props, removePositionGuide, updateMarkerPosition]);
+    }, [throttledHandleMouseMove, props, removePositionGuide, updateMarkerPosition]);
 
     return {handleMouseUp, handleMouseDown}
 }

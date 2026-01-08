@@ -1,4 +1,4 @@
-import React from "react";
+import {type KeyboardEvent, type MouseEvent} from "react";
 import type {MenuProps} from "antd";
 
 export type MenuItems = MenuProps["items"];
@@ -19,7 +19,7 @@ export type TimeStage = {
 export type MenuArg<ContentArg> = ContentArg & {
     key: string,
     keyPath: string[],
-    domEvent: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+    domEvent: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>
 };
 
 export type MountArg<ContentArg> = ContentArg & { el: HTMLElement };
@@ -37,6 +37,6 @@ export type WillUnmountHandler<TheMountArg extends { el: HTMLElement }> = (mount
 export type ContextMenuClickHandler<TheMenuArg extends {
     key: string,
     keyPath: string[],
-    domEvent: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+    domEvent: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>
 }> = (menuArg: TheMenuArg) => void;
 

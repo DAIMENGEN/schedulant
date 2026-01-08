@@ -1,8 +1,8 @@
 import {type RefObject, useEffect} from "react";
 
 export const useSyncScroll = (
-    mainContainer: RefObject<HTMLDivElement>,
-    otherContainers: Array<RefObject<HTMLDivElement>>,
+    mainContainer: RefObject<HTMLDivElement | null>,
+    otherContainers: Array<RefObject<HTMLDivElement | null>>,
     type: string) => {
     useEffect(() => {
         const current = mainContainer.current;

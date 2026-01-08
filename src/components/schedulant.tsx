@@ -1,6 +1,6 @@
 import "@schedulant/styles/schedulant.scss";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
-import {useMemo, useRef} from "react";
+import React, {useMemo, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
@@ -34,6 +34,7 @@ const Main = (props: SchedulantProps) => {
     const bodyLeftScrollerElRef = useRef<HTMLDivElement>(null);
     const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
     const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
+    const schedulantApi = useMemo(() => scheduleView.getScheduleApi(), [scheduleView]);
     const {
         datagridResizerMouseUp,
         datagridResizerMouseDown,
@@ -48,8 +49,15 @@ const Main = (props: SchedulantProps) => {
     useSyncScroll(bodyLeftScrollerElRef, Array.of(bodyRightScrollerElRef), "top");
     useSyncScroll(bodyLeftScrollerElRef, Array.of(headerLeftScrollerElRef), "left");
     useSyncScroll(bodyRightScrollerElRef, Array.of(headerRightScrollerElRef), "left");
+
+    const cssVariables = {
+        '--schedulant-drag-hint-color': schedulantApi.getDragHintColor(),
+        '--schedulant-selection-color': schedulantApi.getSelectionColor(),
+        '--schedulant-selection-border-color': schedulantApi.getSelectionBorderColor(),
+    } as React.CSSProperties;
+
     return (
-        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp}>
+        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} style={cssVariables}>
             <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
                 <div className={"schedulant-view"}>
                     <table role={"grid"} className={"schedulant-scrollgrid"}>

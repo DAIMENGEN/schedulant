@@ -1,11 +1,13 @@
-import React, {useCallback, useEffect, useMemo, useRef} from "react";
+import {type MouseEvent as ReactMouseEvent, type MouseEventHandler, type RefObject, useCallback, useEffect, useMemo, useRef} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {EventApi} from "@schedulant/types/event.ts";
 import {ResourceApi} from "@schedulant/types/resource.ts";
 import {numberToPixels, pixelsToNumber} from "@schedulant/utils/dom.ts";
+import throttle from "lodash/throttle";
+
 
 export const useMoveTimelineEvent = (props: {
-    timelineEventHarnessRef: React.MutableRefObject<HTMLDivElement | null>,
+    timelineEventHarnessRef: RefObject<HTMLDivElement | null>,
     timelineWidth: number,
     eventApi: EventApi,
     resourceApi: ResourceApi,
@@ -43,7 +45,7 @@ export const useMoveTimelineEvent = (props: {
             left: left,
             right: right,
             height: numberToPixels(height),
-            backgroundColor: "rgb(188, 232, 241, 0.7)"
+            backgroundColor: props.schedulantApi.getDragHintColor()
         });
         element.parentNode?.insertBefore(positionGuide, element);
     }, [props, eventPositionGuide]);
@@ -124,7 +126,7 @@ export const useMoveTimelineEvent = (props: {
         }
     }, [props, calculateMoveParams]);
 
-    const handleMouseMove = useCallback((event: MouseEvent) => {
+    const handleMouseMove = useCallback((event: globalThis.MouseEvent) => {
         event.preventDefault();
         const isDraggable = isDraggableRef.current;
         const timelineEventHarness = props.timelineEventHarnessRef.current;
@@ -148,7 +150,13 @@ export const useMoveTimelineEvent = (props: {
         }
     }, [props.timelineEventHarnessRef, updatePositionGuide, calculateMoveParams]);
 
-    const handleMouseDownGeneric = useCallback((event: React.MouseEvent<HTMLDivElement>, positionType: "press_event" | "press_event_left" | "press_event_right") => {
+    // Throttled version for better performance
+    const throttledHandleMouseMove = useMemo(
+        () => throttle(handleMouseMove, 16), // ~60fps
+        [handleMouseMove]
+    );
+
+    const handleMouseDownGeneric = useCallback((event: ReactMouseEvent<HTMLDivElement>, positionType: "press_event" | "press_event_left" | "press_event_right") => {
         event.preventDefault();
         const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
         const timelineEventHarness = props.timelineEventHarnessRef.current;
@@ -159,22 +167,22 @@ export const useMoveTimelineEvent = (props: {
             startLeftRef.current = pixelsToNumber(timelineEventHarness.style.left);
             startRightRef.current = pixelsToNumber(timelineEventHarness.style.right);
             createPositionGuide(timelineEventHarness);
-            scheduleEl.addEventListener("mousemove", handleMouseMove);
+            scheduleEl.addEventListener("mousemove", throttledHandleMouseMove);
         } else {
             console.error("scheduleEl", scheduleEl);
             console.error("timelineEventHarness", timelineEventHarness);
         }
-    }, [props.schedulantApi, props.timelineEventHarnessRef, createPositionGuide, handleMouseMove]);
+    }, [props.schedulantApi, props.timelineEventHarnessRef, createPositionGuide, throttledHandleMouseMove]);
 
-    const handleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+    const handleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
         handleMouseDownGeneric(event, "press_event");
     }, [handleMouseDownGeneric]);
 
-    const leftHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+    const leftHandleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
         handleMouseDownGeneric(event, "press_event_left");
     }, [handleMouseDownGeneric]);
 
-    const rightHandleMouseDown: React.MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+    const rightHandleMouseDown: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
         handleMouseDownGeneric(event, "press_event_right");
     }, [handleMouseDownGeneric]);
 
@@ -184,7 +192,7 @@ export const useMoveTimelineEvent = (props: {
         if (scheduleEl && timelineEventHarness) {
             const timelineLaneFrame = timelineEventHarness.parentElement?.parentElement;
             if (timelineLaneFrame) {
-                const handleMouseOutOrUp = (event: MouseEvent) => {
+                const handleMouseOutOrUp = (event: globalThis.MouseEvent) => {
                     event.preventDefault();
                     const isDraggable = isDraggableRef.current;
                     if (isDraggable && !timelineLaneFrame.contains(event.relatedTarget as Node)) {
@@ -193,7 +201,7 @@ export const useMoveTimelineEvent = (props: {
                         // 重置样式到初始位置，等待数据驱动的重新渲染
                         timelineEventHarness.style.left = numberToPixels(startLeftRef.current);
                         timelineEventHarness.style.right = numberToPixels(startRightRef.current);
-                        scheduleEl.removeEventListener("mousemove", handleMouseMove);
+                        scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
                         isDraggableRef.current = false;
                         pressEventPositionRef.current = "none";
                     }
@@ -206,9 +214,7 @@ export const useMoveTimelineEvent = (props: {
                 }
             }
         }
-        return () => {
-        }
-    }, [handleMouseMove, props, removePositionGuide, updateEventPosition]);
+    }, [throttledHandleMouseMove, props, removePositionGuide, updateEventPosition]);
 
     return {handleMouseDown, leftHandleMouseDown, rightHandleMouseDown}
 }

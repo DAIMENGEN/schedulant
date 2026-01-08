@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {EventApi} from "@schedulant/types/event.ts";
 import dayjs from "dayjs";
 
 export const useEventMount = (
-    timelineEventRef: React.MutableRefObject<HTMLDivElement | null>,
+    timelineEventRef: RefObject<HTMLDivElement | null>,
     schedulantApi: SchedulantApi,
     eventApi: EventApi,
 ) => {
@@ -34,8 +34,6 @@ export const useEventMount = (
                     schedulantApi: schedulantApi,
                 });
             }
-        } else {
-            return () => {}
         }
     }, [timelineEventRef, schedulantApi, eventApi, isPast, isFuture, isProcess]);
     return {isPast, isFuture, isProcess};

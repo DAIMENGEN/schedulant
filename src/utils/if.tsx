@@ -1,10 +1,10 @@
-import React, {type ReactNode, Suspense} from "react";
+import {type ReactNode, Suspense} from "react";
 
-export const If: React.FC<{
+export const If = ({condition, children, fallback}: {
     condition: boolean;
     children: ReactNode;
     fallback?: ReactNode;
-}> = ({condition, children, fallback}) => {
+}) => {
     return (
         <Suspense fallback={fallback}>
             {condition ? children : fallback}

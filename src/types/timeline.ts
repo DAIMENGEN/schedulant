@@ -40,6 +40,12 @@ export class TimelineApi {
     private specialWorkdays?: Dayjs[];
     private companyHolidays?: Dayjs[];
     private nationalHolidays?: Dayjs[];
+    // Performance optimization: cache position lookups
+    private dayPositionCache: Map<string, number> = new Map();
+    private weekPositionCache: Map<string, number> = new Map();
+    private monthPositionCache: Map<string, number> = new Map();
+    private quarterPositionCache: Map<string, number> = new Map();
+    private yearPositionCache: Map<string, number> = new Map();
 
     private generateTimelineData(start: Dayjs, end: Dayjs): TimelineData {
         let currentDate: Dayjs = start.clone();
@@ -50,28 +56,76 @@ export class TimelineApi {
             weeks: {},
             days: []
         };
+
+        // Clear caches
+        this.dayPositionCache.clear();
+        this.weekPositionCache.clear();
+        this.monthPositionCache.clear();
+        this.quarterPositionCache.clear();
+        this.yearPositionCache.clear();
+
+        let dayIndex = 0;
+        const weekIndexMap = new Map<string, number>();
+        const monthIndexMap = new Map<string, number>();
+        const quarterIndexMap = new Map<string, number>();
+        const yearIndexMap = new Map<string, number>();
+
         while (currentDate.isSameOrBefore(end, "day")) {
             // calculate year.
             const yearKey = currentDate.startOf("year").format("YYYY-MM-DD");
             timelineData.years[yearKey] = timelineData.years[yearKey] || [];
             timelineData.years[yearKey].push(currentDate.clone());
+            if (!yearIndexMap.has(yearKey)) {
+                yearIndexMap.set(yearKey, yearIndexMap.size);
+            }
+
             // calculate quarter.
             const quarterKey = currentDate.startOf("quarter").format("YYYY-MM-DD");
             timelineData.quarters[quarterKey] = timelineData.quarters[quarterKey] || [];
             timelineData.quarters[quarterKey].push(currentDate.clone());
+            if (!quarterIndexMap.has(quarterKey)) {
+                quarterIndexMap.set(quarterKey, quarterIndexMap.size);
+            }
+
             // calculate month.
             const monthKey = currentDate.startOf("month").format("YYYY-MM-DD");
             timelineData.months[monthKey] = timelineData.months[monthKey] || [];
             timelineData.months[monthKey].push(currentDate.clone());
+            if (!monthIndexMap.has(monthKey)) {
+                monthIndexMap.set(monthKey, monthIndexMap.size);
+            }
+
             // calculate week.
             const weekKey = currentDate.startOf("week").format("YYYY-MM-DD");
             timelineData.weeks[weekKey] = timelineData.weeks[weekKey] || [];
             timelineData.weeks[weekKey].push(currentDate.clone());
+            if (!weekIndexMap.has(weekKey)) {
+                weekIndexMap.set(weekKey, weekIndexMap.size);
+            }
+
             // calculate day.
             timelineData.days.push(currentDate.clone());
+            this.dayPositionCache.set(currentDate.format("YYYY-MM-DD"), dayIndex);
+            dayIndex++;
+
             // next loop.
             currentDate = currentDate.add(1, "day");
         }
+
+        // Build position caches for other granularities
+        weekIndexMap.forEach((index, key) => {
+            this.weekPositionCache.set(key, index);
+        });
+        monthIndexMap.forEach((index, key) => {
+            this.monthPositionCache.set(key, index);
+        });
+        quarterIndexMap.forEach((index, key) => {
+            this.quarterPositionCache.set(key, index);
+        });
+        yearIndexMap.forEach((index, key) => {
+            this.yearPositionCache.set(key, index);
+        });
+
         return timelineData;
     }
 
@@ -167,22 +221,48 @@ export class TimelineApi {
     }
 
     getDayPosition(target: Dayjs): number {
+        const key = target.format("YYYY-MM-DD");
+        const cachedPosition = this.dayPositionCache.get(key);
+        if (cachedPosition !== undefined) {
+            return cachedPosition;
+        }
+        // Fallback to findIndex if not in cache (should rarely happen)
         return this.getDays().findIndex(day => day.isSame(target, "day"));
     }
 
     getWeekPosition(target: Dayjs): number {
+        const key = target.startOf("week").format("YYYY-MM-DD");
+        const cachedPosition = this.weekPositionCache.get(key);
+        if (cachedPosition !== undefined) {
+            return cachedPosition;
+        }
         return this.getWeeks().findIndex(week => week.isSame(target, "week"));
     }
 
     getMonthPosition(target: Dayjs): number {
+        const key = target.startOf("month").format("YYYY-MM-DD");
+        const cachedPosition = this.monthPositionCache.get(key);
+        if (cachedPosition !== undefined) {
+            return cachedPosition;
+        }
         return this.getMonths().findIndex(month => month.isSame(target, "month"));
     }
 
     getQuarterPosition(target: Dayjs): number {
+        const key = target.startOf("quarter").format("YYYY-MM-DD");
+        const cachedPosition = this.quarterPositionCache.get(key);
+        if (cachedPosition !== undefined) {
+            return cachedPosition;
+        }
         return this.getQuarters().findIndex(quarter => quarter.isSame(target, "quarter"));
     }
 
     getYearPosition(target: Dayjs): number {
+        const key = target.startOf("year").format("YYYY-MM-DD");
+        const cachedPosition = this.yearPositionCache.get(key);
+        if (cachedPosition !== undefined) {
+            return cachedPosition;
+        }
         return this.getYears().findIndex(year => year.isSame(target, "year"));
     }
 

@@ -55,6 +55,17 @@ export const BodyCell = (props: {
         return ""; // fallback
     }, []);
     useResourceLaneMount(resourceLaneCellRef, props.resourceAreaColumn, props.schedulantApi, props.resourceApi);
+
+    const handleCellClick = useCallback(() => {
+        if (props.schedulantApi.isSelectable()) {
+            const resourceId = props.resourceApi.getId();
+            const allResources = document.querySelectorAll('.schedulant-resource-selected');
+            allResources.forEach(el => el.classList.remove('schedulant-resource-selected'));
+            const resourceElements = document.querySelectorAll(`[data-resource-id="${resourceId}"].schedulant-resource`);
+            resourceElements.forEach(el => el.classList.add('schedulant-resource-selected'));
+        }
+    }, [props.schedulantApi, props.resourceApi]);
+
     const getCellClassName = () => {
         const classes = ["schedulant-datagrid-cell", "schedulant-resource"];
         if (props.isDraggable && props.isDragging) {
@@ -69,6 +80,7 @@ export const BodyCell = (props: {
         <td role={"gridcell"}
             data-resource-id={props.resourceApi.getId()}
             className={getCellClassName()}
+            onClick={handleCellClick}
             draggable={props.isDraggable && props.showPlusSquare}
             onDragStart={props.isDraggable ? props.onDragStart : undefined}
             onDragOver={props.isDraggable ? props.onDragOver : undefined}

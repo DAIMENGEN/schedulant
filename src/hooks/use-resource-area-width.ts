@@ -1,12 +1,10 @@
-import {type MutableRefObject, useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 
-export const useResourceAreaWidth = (resourceAreaColRef: MutableRefObject<HTMLTableColElement | null>, resourceAreaWidth?: string) => {
+export const useResourceAreaWidth = (resourceAreaColRef: RefObject<HTMLTableColElement | null>, resourceAreaWidth?: string) => {
     useEffect(() => {
         const resourceAreaCol = resourceAreaColRef.current;
         if (resourceAreaCol && resourceAreaWidth) {
             resourceAreaCol.style.width = resourceAreaWidth;
-        }
-        return () => {
         }
     }, [resourceAreaColRef, resourceAreaWidth]);
 }

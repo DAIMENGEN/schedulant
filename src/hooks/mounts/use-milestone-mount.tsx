@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {MilestoneApi} from "@schedulant/types/milestone.ts";
 import dayjs from "dayjs";
 
 export const useMilestoneMount = (
-    timelineMilestoneRef: React.MutableRefObject<HTMLDivElement | null>,
+    timelineMilestoneRef: RefObject<HTMLDivElement | null>,
     schedulantApi: SchedulantApi,
     milestoneApi: MilestoneApi,
 ) => {
@@ -34,7 +34,6 @@ export const useMilestoneMount = (
                 });
             }
         }
-        return () => {}
     }, [schedulantApi, milestoneApi, timelineMilestoneRef, isPast, isFuture, isProcess]);
     return {isPast, isFuture, isProcess};
 }

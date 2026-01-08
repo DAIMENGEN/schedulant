@@ -1,10 +1,10 @@
-import React, {useEffect} from "react";
+import {type RefObject, useEffect} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {CheckpointApi} from "@schedulant/types/checkpoint.ts";
 import dayjs from "dayjs";
 
 export const useCheckpointMount = (
-    timelineCheckpointRef: React.MutableRefObject<HTMLDivElement | null>,
+    timelineCheckpointRef: RefObject<HTMLDivElement | null>,
     schedulantApi: SchedulantApi,
     checkpointApi: CheckpointApi,
     ) => {
@@ -33,8 +33,6 @@ export const useCheckpointMount = (
                     schedulantApi: schedulantApi,
                 });
             }
-        } else {
-            return () => {}
         }
     }, [schedulantApi, checkpointApi, timelineCheckpointRef, isPast, isFuture, isProcess]);
     return {isPast, isFuture, isProcess};

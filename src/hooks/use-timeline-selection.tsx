@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {type RefObject, useCallback, useEffect, useRef, useState} from "react";
 import type {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 
 export type SelectionBox = {
@@ -10,7 +10,7 @@ export type SelectionBox = {
 
 export const useTimelineSelection = (
     schedulantView: SchedulantView,
-    containerRef: React.RefObject<HTMLDivElement>
+    containerRef: RefObject<HTMLDivElement | null>
 ) => {
     const [isSelecting, setIsSelecting] = useState(false);
     const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
@@ -99,7 +99,7 @@ export const useTimelineSelection = (
 
             e.preventDefault();
         },
-        [isSelecting, selectionBox, containerRef, schedulantView]
+        [isSelecting]
     );
 
     useEffect(() => {

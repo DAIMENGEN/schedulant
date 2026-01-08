@@ -47,7 +47,7 @@ import type {
 import {Option} from "@schedulant/types/option.ts";
 import type {SchedulantView, SchedulantViewType} from "@schedulant/types/schedulant-view.tsx";
 import {TimelineApi, type TimelineSlotLabelMountArg, type TimelineSlotLaneMountArg} from "@schedulant/types/timeline";
-import type {MutableRefObject} from "react";
+import type {RefObject} from "react";
 
 export type SchedulantProps = {
     end: Dayjs,
@@ -62,6 +62,8 @@ export type SchedulantProps = {
     resources: Resource[];
     milestones?: Milestone[];
     checkpoints?: Checkpoint[];
+    dragHintColor?: string;
+    selectionColor?: string;
     companyHolidays?: Dayjs[];
     specialWorkdays?: Dayjs[];
     nationalHolidays?: Dayjs[];
@@ -254,7 +256,7 @@ export class SchedulantApi implements PublicSchedulantApi {
         return Option.fromNullable(this.checkpointApis.find(c => c.getId() === checkpointId));
     }
 
-    getSchedulantElRef(): MutableRefObject<HTMLDivElement | null> {
+    getSchedulantElRef(): RefObject<HTMLDivElement | null> {
         return this.schedulantView.getScheduleElRef();
     }
 
@@ -413,6 +415,24 @@ export class SchedulantApi implements PublicSchedulantApi {
 
     schedulantWillUnmount(arg: SchedulantMountArg): void {
         this.schedulantProps.schedulantWillUnmount?.(arg);
+    }
+
+    getDragHintColor(): string {
+        return this.schedulantProps.dragHintColor || "rgb(66, 133, 244, 0.08)";
+    }
+
+    getSelectionColor(): string {
+        return this.schedulantProps.selectionColor || "rgba(66, 133, 244, 0.08)";
+    }
+
+    getSelectionBorderColor(): string {
+        const selectionColor = this.getSelectionColor();
+        // Extract rgba values and increase opacity for border
+        const match = selectionColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
+        if (match) {
+            return `rgba(${match[1]}, ${match[2]}, ${match[3]}, 0.6)`;
+        }
+        return "rgba(66, 133, 244, 0.6)";
     }
 }
 
