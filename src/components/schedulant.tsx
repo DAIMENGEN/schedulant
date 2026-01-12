@@ -35,6 +35,7 @@ const Main = (props: SchedulantProps) => {
     const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
     const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
     const schedulantApi = useMemo(() => scheduleView.getScheduleApi(), [scheduleView]);
+    const viewKey = useMemo(() => `${props.start?.valueOf()}-${props.end?.valueOf()}`, [props.start, props.end]);
     const {
         datagridResizerMouseUp,
         datagridResizerMouseDown,
@@ -85,7 +86,7 @@ const Main = (props: SchedulantProps) => {
                                     <div className={"schedulant-scroller-head-right"} ref={headerRightScrollerElRef}>
                                         <div id={"schedulant-timeline-head"}
                                              className={"schedulant-timeline-head"}>
-                                            <TimelineHeader schedulantView={scheduleView}/>
+                                            <TimelineHeader key={`header-${viewKey}`} schedulantView={scheduleView}/>
                                         </div>
                                     </div>
                                 </div>
@@ -110,8 +111,8 @@ const Main = (props: SchedulantProps) => {
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerElRef}>
                                         <div className={`schedulant-timeline-body ${isSelecting ? 'selecting' : ''}`}>
-                                            <TimelineBody schedulantView={scheduleView}/>
-                                            <TimelineDrawingBoard schedulantView={scheduleView}/>
+                                            <TimelineBody key={`body-${viewKey}`} schedulantView={scheduleView}/>
+                                            <TimelineDrawingBoard key={`drawing-${viewKey}`} schedulantView={scheduleView}/>
                                             <TimelineSelectionOverlay isSelecting={isSelecting} selectionBox={selectionBox}/>
                                         </div>
                                     </div>
