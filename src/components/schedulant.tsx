@@ -1,6 +1,6 @@
 import "@schedulant/styles/schedulant.scss";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
-import React, {useMemo, useRef} from "react";
+import React, {useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
@@ -33,9 +33,11 @@ const Main = (props: SchedulantProps) => {
     const bodyRightScrollerElRef = useRef<HTMLDivElement>(null);
     const bodyLeftScrollerElRef = useRef<HTMLDivElement>(null);
     const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
-    const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
-    const schedulantApi = useMemo(() => scheduleView.getScheduleApi(), [scheduleView]);
-    const viewKey = useMemo(() => `${props.start?.valueOf()}-${props.end?.valueOf()}`, [props.start, props.end]);
+    const viewKeyRef = useRef(0);
+    viewKeyRef.current += 1;
+    const viewKey = viewKeyRef.current;
+    const scheduleView = new SchedulantView(props, scheduleElRef);
+    const schedulantApi = scheduleView.getScheduleApi();
     const {
         datagridResizerMouseUp,
         datagridResizerMouseDown,
