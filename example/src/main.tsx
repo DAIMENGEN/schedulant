@@ -1,28 +1,33 @@
-import dayjs from "dayjs";
+import dayjs from "./dayjs-config.ts";
 import {StrictMode, useState} from "react"
 import {type EventResizeMountArg, Schedulant} from "schedulant";
 import {createRoot} from "react-dom/client"
+import {DatePicker} from "antd";
 import {mockResources} from "../mock-data/mock-resources.ts";
 import {mockEvents} from "../mock-data/mock-events.tsx";
 import {mockCheckpoints} from "../mock-data/mock-checkpoints.ts";
 import {mockMilestones} from "../mock-data/mock-milestones.ts";
-import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
-import quarterOfYear from "dayjs/plugin/quarterOfYear";
-import weekOfYear from "dayjs/plugin/weekOfYear";
-import weekYear from "dayjs/plugin/weekYear";
 import "schedulant/dist/schedulant.css";
+import type {Dayjs} from "dayjs";
 
-dayjs.extend(isSameOrBefore);
-dayjs.extend(quarterOfYear);
-dayjs.extend(weekOfYear);
-dayjs.extend(weekYear);
 
 // eslint-disable-next-line react-refresh/only-export-components
 const App = () => {
+    const {RangePicker} = DatePicker;
     const [events, setEvents] = useState(mockEvents);
     const [resources, setResources] = useState(mockResources);
     const [milestones, setMilestones] = useState(mockMilestones);
     const [checkpoints, setCheckpoints] = useState(mockCheckpoints);
+    const [startDate, setStartDate] = useState<Dayjs>(dayjs("2024-05-10"));
+    const [endDate, setEndDate] = useState<Dayjs>(dayjs("2025-09-09"));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleRangeChange = (dates: any) => {
+        // dates 是 dayjs 对象数组 [start, end]，可能为空
+        if (dates) {
+            setStartDate(dates[0]);
+            setEndDate(dates[1]);
+        }
+    };
 
     const handleEventResize = (eventResizeMountArg: EventResizeMountArg, field: 'start' | 'end') => {
         const {date, eventApi} = eventResizeMountArg;
@@ -38,8 +43,14 @@ const App = () => {
 
     return (
         <div>
-            <Schedulant end={dayjs("2025-09-09")}
-                        start={dayjs("2024-05-10")}
+            <RangePicker
+                showTime
+                format="YYYY-MM-DD"
+                onChange={handleRangeChange}
+                value={startDate && endDate ? [startDate, endDate] : null}
+            />
+            <Schedulant end={endDate}
+                        start={startDate}
                         editable={true}
                         selectable={true}
                         lineHeight={40}
