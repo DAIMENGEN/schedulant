@@ -1,32 +1,87 @@
-import dayjs from "./dayjs-config.ts";
 import {StrictMode, useState} from "react"
 import {type EventResizeMountArg, Schedulant} from "schedulant";
 import {createRoot} from "react-dom/client"
-import {DatePicker} from "antd";
+import {Button, DatePicker, Select, Space, Tooltip} from "antd";
+import {LeftOutlined, RightOutlined} from "@ant-design/icons";
 import {mockResources} from "../mock-data/mock-resources.ts";
 import {mockEvents} from "../mock-data/mock-events.tsx";
 import {mockCheckpoints} from "../mock-data/mock-checkpoints.ts";
 import {mockMilestones} from "../mock-data/mock-milestones.ts";
 import "schedulant/dist/schedulant.css";
-import type {Dayjs} from "dayjs";
 
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import quarterOfYear from "dayjs/plugin/quarterOfYear";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
+import weekday from "dayjs/plugin/weekday";
+import localeData from "dayjs/plugin/localeData";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs, {type ManipulateType, type OpUnitType} from "dayjs";
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(quarterOfYear);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(customParseFormat);
+
+// 视图类型定义
+type ViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
+
+// 视图选项
+const viewOptions = [
+    { label: "日", value: "Day" as ViewType },
+    { label: "周", value: "Week" as ViewType },
+    { label: "月", value: "Month" as ViewType },
+    { label: "季", value: "Quarter" as ViewType },
+    { label: "年", value: "Year" as ViewType },
+];
+
+// 视图对应的时间单位
+const viewUnitMap: Record<ViewType, "day" | "week" | "month" | "quarter" | "year"> = {
+    Day: "day",
+    Week: "week",
+    Month: "month",
+    Quarter: "quarter",
+    Year: "year",
+};
+
+// 视图对应的 DatePicker picker 类型
+const viewPickerMap: Record<ViewType, "date" | "week" | "month" | "quarter" | "year"> = {
+    Day: "date",
+    Week: "week",
+    Month: "month",
+    Quarter: "quarter",
+    Year: "year",
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 const App = () => {
-    const {RangePicker} = DatePicker;
     const [events, setEvents] = useState(mockEvents);
     const [resources, setResources] = useState(mockResources);
     const [milestones, setMilestones] = useState(mockMilestones);
     const [checkpoints, setCheckpoints] = useState(mockCheckpoints);
-    const [startDate, setStartDate] = useState<Dayjs>(dayjs("2024-05-10"));
-    const [endDate, setEndDate] = useState<Dayjs>(dayjs("2025-09-09"));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleRangeChange = (dates: any) => {
-        // dates 是 dayjs 对象数组 [start, end]，可能为空
-        if (dates) {
-            setStartDate(dates[0]);
-            setEndDate(dates[1]);
-        }
+    const [ganttStartDate, setGanttStartDate] = useState<dayjs.Dayjs>(dayjs("2024-09-01"));
+    const [ganttEndDate, setGanttEndDate] = useState<dayjs.Dayjs>(dayjs("2024-12-31"));
+
+    // 视图类型状态
+    const [viewType, setViewType] = useState<ViewType>("Day");
+
+    // 向前移动时间范围（向左）
+    const handleShiftLeft = () => {
+        const unit = viewUnitMap[viewType] as ManipulateType;
+        const duration = ganttEndDate.diff(ganttStartDate, unit);
+        setGanttStartDate(ganttStartDate.subtract(duration, unit));
+        setGanttEndDate(ganttEndDate.subtract(duration, unit));
+    };
+
+    // 向后移动时间范围（向右）
+    const handleShiftRight = () => {
+        const unit = viewUnitMap[viewType] as ManipulateType;
+        const duration = ganttEndDate.diff(ganttStartDate, unit);
+        setGanttStartDate(ganttStartDate.add(duration, unit));
+        setGanttEndDate(ganttEndDate.add(duration, unit));
     };
 
     const handleEventResize = (eventResizeMountArg: EventResizeMountArg, field: 'start' | 'end') => {
@@ -42,20 +97,72 @@ const App = () => {
     };
 
     return (
-        <div>
-            <RangePicker
-                showTime
-                format="YYYY-MM-DD"
-                onChange={handleRangeChange}
-                value={startDate && endDate ? [startDate, endDate] : null}
-            />
-            <Schedulant end={endDate}
-                        start={startDate}
+        <div style={{ padding: '20px' }}>
+            <Space size="middle" style={{ marginBottom: '16px' }}>
+                <Tooltip title="视图切换">
+                    <Select
+                        value={viewType}
+                        onChange={(value) => setViewType(value)}
+                        options={viewOptions}
+                        style={{ width: 80 }}
+                    />
+                </Tooltip>
+                <Tooltip title="向前移动时间范围">
+                    <Button
+                        type="primary"
+                        icon={<LeftOutlined/>}
+                        onClick={handleShiftLeft}
+                    />
+                </Tooltip>
+                <Tooltip title="向后移动时间范围">
+                    <Button
+                        type="primary"
+                        icon={<RightOutlined/>}
+                        onClick={handleShiftRight}
+                    />
+                </Tooltip>
+                <DatePicker
+                    value={ganttStartDate}
+                    onChange={(date) => date && setGanttStartDate(date)}
+                    picker={viewPickerMap[viewType]}
+                    placeholder="开始时间"
+                    format={
+                        viewType === "Day" ? "YYYY-MM-DD" :
+                        viewType === "Week" ? "YYYY-wo" :
+                        viewType === "Month" ? "YYYY-MM" :
+                        viewType === "Quarter" ? "YYYY-Q" :
+                        "YYYY"
+                    }
+                    style={{width: 140}}
+                />
+                <span>-</span>
+                <DatePicker
+                    value={ganttEndDate}
+                    onChange={(date) => date && setGanttEndDate(date)}
+                    picker={viewPickerMap[viewType]}
+                    placeholder="结束时间"
+                    format={
+                        viewType === "Day" ? "YYYY-MM-DD" :
+                        viewType === "Week" ? "YYYY-wo" :
+                        viewType === "Month" ? "YYYY-MM" :
+                        viewType === "Quarter" ? "YYYY-Q" :
+                        "YYYY"
+                    }
+                    style={{width: 140}}
+                    disabledDate={(current) => {
+                        if (!ganttStartDate) return false;
+                        const unit = viewUnitMap[viewType] as OpUnitType;
+                        return current && current.isBefore(ganttStartDate, unit);
+                    }}
+                />
+            </Space>
+            <Schedulant end={ganttEndDate}
+                        start={ganttStartDate}
                         editable={true}
                         selectable={true}
                         lineHeight={40}
                         slotMinWidth={50}
-                        schedulantViewType={"Day"}
+                        schedulantViewType={viewType}
                         schedulantMaxHeight={1000}
                         resources={resources}
                         events={events}

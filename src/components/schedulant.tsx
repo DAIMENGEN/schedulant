@@ -1,6 +1,6 @@
 import "@schedulant/styles/schedulant.scss";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
-import React, {useRef} from "react";
+import React, {useMemo, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
@@ -31,11 +31,12 @@ const Main = (props: SchedulantProps) => {
     const bodyRightScrollerElRef = useRef<HTMLDivElement>(null);
     const bodyLeftScrollerElRef = useRef<HTMLDivElement>(null);
     const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
-    const viewKeyRef = useRef(0);
-    viewKeyRef.current += 1;
-    const viewKey = viewKeyRef.current;
-    const scheduleView = new SchedulantView(props, scheduleElRef);
-    const schedulantApi = scheduleView.getScheduleApi();
+    const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
+    const schedulantApi = useMemo(() => scheduleView.getScheduleApi(), [scheduleView]);
+    const cssVariables = useMemo(() => ({
+        '--schedulant-drag-hint-color': schedulantApi.getDragHintColor(),
+        '--schedulant-selection-color': schedulantApi.getSelectionColor(),
+    } as React.CSSProperties), [schedulantApi])
     const {
         datagridResizerMouseUp,
         datagridResizerMouseDown,
@@ -49,13 +50,6 @@ const Main = (props: SchedulantProps) => {
     useSyncScroll(bodyLeftScrollerElRef, Array.of(bodyRightScrollerElRef), "top");
     useSyncScroll(bodyLeftScrollerElRef, Array.of(headerLeftScrollerElRef), "left");
     useSyncScroll(bodyRightScrollerElRef, Array.of(headerRightScrollerElRef), "left");
-
-    const cssVariables = {
-        '--schedulant-drag-hint-color': schedulantApi.getDragHintColor(),
-        '--schedulant-selection-color': schedulantApi.getSelectionColor(),
-        '--schedulant-selection-border-color': schedulantApi.getSelectionBorderColor(),
-    } as React.CSSProperties;
-
     return (
         <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} style={cssVariables}>
             <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
@@ -85,7 +79,7 @@ const Main = (props: SchedulantProps) => {
                                     <div className={"schedulant-scroller-head-right"} ref={headerRightScrollerElRef}>
                                         <div id={"schedulant-timeline-head"}
                                              className={"schedulant-timeline-head"}>
-                                            <TimelineHeader key={`header-${viewKey}`} schedulantView={scheduleView}/>
+                                            <TimelineHeader schedulantView={scheduleView}/>
                                         </div>
                                     </div>
                                 </div>
@@ -110,8 +104,8 @@ const Main = (props: SchedulantProps) => {
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerElRef}>
                                         <div className={"schedulant-timeline-body"}>
-                                            <TimelineBody key={`body-${viewKey}`} schedulantView={scheduleView}/>
-                                            <TimelineDrawingBoard key={`drawing-${viewKey}`} schedulantView={scheduleView}/>
+                                            <TimelineBody schedulantView={scheduleView}/>
+                                            <TimelineDrawingBoard schedulantView={scheduleView}/>
                                         </div>
                                     </div>
                                 </div>
