@@ -339,17 +339,5 @@
   .schedulant-holiday {
     background-color: #E9ECEF;
   }
-
-  .schedulant-timeline-selection-overlay {
-    background-color: var(--schedulant-selection-color, rgba(66, 133, 244, 0.2));
-    border: 1px solid var(--schedulant-selection-border-color, rgba(66, 133, 244, 0.6));
-    border-radius: 2px;
-    pointer-events: none;
-  }
-
-  .schedulant-timeline-body.selecting {
-    cursor: crosshair;
-    user-select: none;
-  }
 }
 

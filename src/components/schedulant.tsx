@@ -14,8 +14,6 @@ import {TimelineDrawingBoard} from "@schedulant/components/timeline/timeline-dra
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
 import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
-import {useTimelineSelection} from "@schedulant/hooks/use-timeline-selection.tsx";
-import {TimelineSelectionOverlay} from "@schedulant/components/timeline/timeline-selection-overlay.tsx";
 
 export const Schedulant = (props: SchedulantProps) => {
     return (
@@ -44,7 +42,6 @@ const Main = (props: SchedulantProps) => {
         datagridCellResizerMouseUp,
         datagridCellResizerMouseDownFunc
     } = useResourceAreaResizer(dispatch, scheduleElRef, resourceAreaColElRef);
-    const {isSelecting, selectionBox} = useTimelineSelection(scheduleView, bodyRightScrollerElRef);
     useSchedulantHeight(props.schedulantMaxHeight);
     useSchedulantMount(scheduleElRef, scheduleView);
     useResourceAreaWidth(resourceAreaColElRef, props.resourceAreaWidth);
@@ -112,10 +109,9 @@ const Main = (props: SchedulantProps) => {
                             <td role={"presentation"}>
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerElRef}>
-                                        <div className={`schedulant-timeline-body ${isSelecting ? 'selecting' : ''}`}>
+                                        <div className={"schedulant-timeline-body"}>
                                             <TimelineBody key={`body-${viewKey}`} schedulantView={scheduleView}/>
                                             <TimelineDrawingBoard key={`drawing-${viewKey}`} schedulantView={scheduleView}/>
-                                            <TimelineSelectionOverlay isSelecting={isSelecting} selectionBox={selectionBox}/>
                                         </div>
                                     </div>
                                 </div>
