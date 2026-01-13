@@ -424,16 +424,6 @@ export class SchedulantApi implements PublicSchedulantApi {
     getSelectionColor(): string {
         return this.schedulantProps.selectionColor || "rgba(66, 133, 244, 0.08)";
     }
-
-    getSelectionBorderColor(): string {
-        const selectionColor = this.getSelectionColor();
-        // Extract rgba values and increase opacity for border
-        const match = selectionColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)/);
-        if (match) {
-            return `rgba(${match[1]}, ${match[2]}, ${match[3]}, 0.6)`;
-        }
-        return "rgba(66, 133, 244, 0.6)";
-    }
 }
 
 export type PublicSchedulantApi = Pick<SchedulantApi,

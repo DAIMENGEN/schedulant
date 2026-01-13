@@ -9,7 +9,7 @@ export const TimelineHeaderSlot = (props: {
     classNames: string[]
 }) => {
     return (
-        <th colSpan={props.colSpan} data-date={props.dataDate} className={"schedulant-timeline-slot schedulant-timeline-slot-label"}>
+        <th key={props.date.format("YYYY-MM-DD")} colSpan={props.colSpan} data-date={props.dataDate} className={"schedulant-timeline-slot schedulant-timeline-slot-label"}>
             <div className={`schedulant-timeline-slot-frame ${props.classNames.join(" ")}`} style={{border: "none", cursor: "pointer"}}>
                 <span title={props.dataDate} className={"schedulant-timeline-slot-cushion schedulant-scrollgrid-sync-inner"}>
                     {props.timeText}
