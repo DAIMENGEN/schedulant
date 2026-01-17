@@ -71,7 +71,9 @@ export const useMoveTimelineMarker = (props: {
     }, [markerPositionGuide, calculateMoveData]);
 
     const updateMarkerPosition = useCallback((element: HTMLDivElement, clientX: number) => {
-        const {moveSlots} = calculateMoveData(clientX);
+        const { moveSlots, distance } = calculateMoveData(clientX);
+        element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+        element.style.right = numberToPixels(startRightRef.current - distance);
         if (props.milestoneApi) {
             const date = props.milestoneApi.getTime().add(moveSlots, "day");
             props.schedulantApi.milestoneMove({
@@ -152,8 +154,8 @@ export const useMoveTimelineMarker = (props: {
                         removePositionGuide(marker);
                         updateMarkerPosition(marker, event.clientX);
                         // 重置样式到初始位置，等待数据驱动的重新渲染
-                        marker.style.left = numberToPixels(startLeftRef.current);
-                        marker.style.right = numberToPixels(startRightRef.current);
+                        // marker.style.left = numberToPixels(startLeftRef.current);
+                        // marker.style.right = numberToPixels(startRightRef.current);
                         scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
                         isDraggableRef.current = false;
                     }

@@ -87,9 +87,11 @@ export const useMoveTimelineEvent = (props: {
         const eventApi = props.eventApi
         const schedulantApi = props.schedulantApi;
         const pressPosition = pressEventPositionRef.current;
-        const { moveSlots } = calculateMoveParams(clientX);
+        const { moveSlots, distance } = calculateMoveParams(clientX);
         switch (pressPosition) {
             case "press_event": {
+                element.style.left = numberToPixels(Math.max(startLeftRef.current + distance, 0));
+                element.style.right = numberToPixels(startRightRef.current - distance);
                 const startDate = eventApi.getStart().add(moveSlots, "day");
                 const endDate = eventApi.getEnd().add(moveSlots, "day");
                 schedulantApi.eventMove({
@@ -102,6 +104,8 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_left": {
+                const newLeft = Math.max(startLeftRef.current + distance, 0);
+                element.style.left = numberToPixels(newLeft);
                 const startDate = eventApi.getStart().add(moveSlots, "day");
                 schedulantApi.eventResizeStart({
                     el: element,
@@ -112,6 +116,8 @@ export const useMoveTimelineEvent = (props: {
                 break;
             }
             case "press_event_right": {
+                const newRight = startRightRef.current - distance;
+                element.style.right = numberToPixels(newRight);
                 const endDate = eventApi.getEnd().add(moveSlots, "day");
                 schedulantApi.eventResizeEnd({
                     el: element,
@@ -199,8 +205,8 @@ export const useMoveTimelineEvent = (props: {
                         removePositionGuide(timelineEventHarness);
                         updateEventPosition(timelineEventHarness, event.clientX);
                         // 重置样式到初始位置，等待数据驱动的重新渲染
-                        timelineEventHarness.style.left = numberToPixels(startLeftRef.current);
-                        timelineEventHarness.style.right = numberToPixels(startRightRef.current);
+                        // timelineEventHarness.style.left = numberToPixels(startLeftRef.current);
+                        // timelineEventHarness.style.right = numberToPixels(startRightRef.current);
                         scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
                         isDraggableRef.current = false;
                         pressEventPositionRef.current = "none";
