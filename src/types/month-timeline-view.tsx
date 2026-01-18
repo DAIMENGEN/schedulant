@@ -33,7 +33,7 @@ export class MonthTimelineView extends TimelineView {
                         <TimelineBodySlot key={date.format("YYYY-MM")}
                                           date={date}
                                           dataDate={date.format("YYYY-MM")}
-                                          classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month" : '']}
+                                          classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month-body" : '']}
                                           schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
@@ -71,7 +71,7 @@ export class MonthTimelineView extends TimelineView {
                                             dataDate={date.format("YYYY-MM")}
                                             colSpan={1}
                                             timeText={date.format("MMM")}
-                                            classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month" : '']}
+                                            classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month-head" : '']}
                                             schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }

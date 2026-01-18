@@ -31,7 +31,7 @@ export class YearTimelineView extends TimelineView {
                         <TimelineBodySlot key={date.year()}
                                           date={date}
                                           dataDate={date.year().toString()}
-                                          classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year" : '']}
+                                          classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year-body" : '']}
                                           schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
@@ -54,7 +54,7 @@ export class YearTimelineView extends TimelineView {
                                             dataDate={date.year().toString()}
                                             colSpan={1}
                                             timeText={date.year().toString()}
-                                            classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year" : '']}
+                                            classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year-head" : '']}
                                             schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }

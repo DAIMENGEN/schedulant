@@ -31,7 +31,7 @@ export class QuarterTimelineView extends TimelineView {
                         <TimelineBodySlot key={`${date.year()}-Q${date.quarter()}`}
                                           date={date}
                                           dataDate={`${date.year()}-Q${date.quarter()}`}
-                                          classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter" : '']}
+                                          classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter-body" : '']}
                                           schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
@@ -69,7 +69,7 @@ export class QuarterTimelineView extends TimelineView {
                                             dataDate={`${date.year()}-Q${date.quarter()}`}
                                             colSpan={1}
                                             timeText={`Q${date.quarter()}`}
-                                            classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter" : '']}
+                                            classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter-head" : '']}
                                             schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }

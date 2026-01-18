@@ -33,7 +33,7 @@ export class WeekTimelineView extends TimelineView {
                         <TimelineBodySlot key={`${date.format("YYYY-MM-DD")}`}
                                           date={date}
                                           dataDate={`${date.format("YYYY-MM-DD")}`}
-                                          classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week" : '']}
+                                          classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week-body" : '']}
                                           schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
@@ -56,7 +56,7 @@ export class WeekTimelineView extends TimelineView {
                                             dataDate={`${date.format("YYYY-MM-DD")}`}
                                             colSpan={1}
                                             timeText={`W${date.week().toString().padStart(2, '0')}`}
-                                            classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week" : '']}
+                                            classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week-head" : '']}
                                             schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
