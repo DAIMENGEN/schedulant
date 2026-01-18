@@ -46,6 +46,7 @@ export type {
     ResourceAreaColumn,
     ResourceLaneMountArg,
     ResourceLabelMountArg,
+    ResourceLaneMoveMountArg,
     ResourceContextMenuItems,
     ResourceLaneContextMenuArg,
     ResourceLabelContextMenuArg
