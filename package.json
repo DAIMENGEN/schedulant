@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "author": "mengen.dai@outlook.com",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": "dist/schedulant.js",
   "typings": "dist/schedulant.d.ts",
   "keywords": [

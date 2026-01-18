@@ -62,7 +62,10 @@ export class SchedulantView {
 
     renderTimelineDrawingBoardTable(collapseIds: Array<string>, timelineWidth: number): ReactNode {
         const drawElements = (resourceApi: ResourceApi) => {
-            const milestoneApis = resourceApi.getMilestoneApis();
+            const startDate = this.schedulantApi.getTimelineApi().getStart();
+            const endDate = this.schedulantApi.getTimelineApi().getEnd();
+            // Calculate if there are milestones within the timeline range
+            const milestoneApis = resourceApi.getMilestoneApis().filter(milestone => !milestone.getTime().isBefore(startDate) && !milestone.getTime().isAfter(endDate));
             const lineHeight = milestoneApis.length > 0 ? this.schedulantApi.getLineHeight() * 1.5 : this.schedulantApi.getLineHeight();
 
             const handleLaneClick = () => {
