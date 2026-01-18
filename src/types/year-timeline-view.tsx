@@ -1,11 +1,9 @@
-import type { ReactNode } from "react";
-import { TimelineView } from "./timeline-view";
-import {
-    TimelineColgroup
-} from "@schedulant/components/timeline/timeline-colgroup.tsx";
-import { TimelineBodySlot } from "@schedulant/components/timeline/timeline-body-slot.tsx";
-import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
-import type {Dayjs} from "dayjs";
+import type {ReactNode} from "react";
+import {TimelineView} from "./timeline-view";
+import {TimelineColgroup} from "@schedulant/components/timeline/timeline-colgroup.tsx";
+import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
+import {TimelineHeaderSlot} from "@schedulant/components/timeline/timeline-header-slot.tsx";
+import dayjs, {type Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 
 export class YearTimelineView extends TimelineView {
@@ -33,7 +31,8 @@ export class YearTimelineView extends TimelineView {
                         <TimelineBodySlot key={date.year()}
                                           date={date}
                                           dataDate={date.year().toString()}
-                                          classNames={["schedulant-year"]}/>
+                                          classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year" : '']}
+                                          schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -55,7 +54,8 @@ export class YearTimelineView extends TimelineView {
                                             dataDate={date.year().toString()}
                                             colSpan={1}
                                             timeText={date.year().toString()}
-                                            classNames={["schedulant-year"]}/>
+                                            classNames={["schedulant-year", date.isSame(dayjs(), "year") ? "schedulant-this-year" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>

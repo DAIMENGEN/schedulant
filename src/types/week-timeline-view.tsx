@@ -5,7 +5,7 @@ import {
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import type { ReactNode } from "react";
 import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
-import type {Dayjs} from "dayjs";
+import dayjs, {type Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 
 export class WeekTimelineView extends TimelineView {
@@ -33,7 +33,8 @@ export class WeekTimelineView extends TimelineView {
                         <TimelineBodySlot key={`${date.format("YYYY-MM-DD")}`}
                                           date={date}
                                           dataDate={`${date.format("YYYY-MM-DD")}`}
-                                          classNames={["schedulant-week"]}/>
+                                          classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week" : '']}
+                                          schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -55,7 +56,8 @@ export class WeekTimelineView extends TimelineView {
                                             dataDate={`${date.format("YYYY-MM-DD")}`}
                                             colSpan={1}
                                             timeText={`W${date.week().toString().padStart(2, '0')}`}
-                                            classNames={["schedulant-week"]}/>
+                                            classNames={["schedulant-week", date.isSame(dayjs(), "week") ? "schedulant-this-week" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>

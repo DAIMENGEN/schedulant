@@ -1,3 +1,4 @@
+import "./main.css";
 import {StrictMode, useState} from "react"
 import {type EventResizeMountArg, Schedulant} from "schedulant";
 import {createRoot} from "react-dom/client"
@@ -62,8 +63,8 @@ const App = () => {
     const [resources, setResources] = useState(mockResources);
     const [milestones, setMilestones] = useState(mockMilestones);
     const [checkpoints, setCheckpoints] = useState(mockCheckpoints);
-    const [ganttStartDate, setGanttStartDate] = useState<dayjs.Dayjs>(dayjs("2024-09-01"));
-    const [ganttEndDate, setGanttEndDate] = useState<dayjs.Dayjs>(dayjs("2024-12-31"));
+    const [ganttStartDate, setGanttStartDate] = useState<dayjs.Dayjs>(dayjs("2026-01-01"));
+    const [ganttEndDate, setGanttEndDate] = useState<dayjs.Dayjs>(dayjs("2026-12-31"));
 
     // 视图类型状态
     const [viewType, setViewType] = useState<ViewType>("Day");
@@ -170,6 +171,14 @@ const App = () => {
                         milestones={milestones}
                         dragHintColor={"rgb(66, 133, 244, 0.08)"}
                         selectionColor={"rgba(66, 133, 244, 0.08)"}
+                        // timelineSlotLaneDidMount={(timelineSlotLaneMountArg) => {
+                        //     const {el} = timelineSlotLaneMountArg;
+                        //     console.log(el)
+                        // }}
+                        // timelineSlotLabelDidMount={(timelineSlotLabelDidMountArg) => {
+                        //     const {el} = timelineSlotLabelDidMountArg;
+                        //     console.log(el)
+                        // }}
                         resourceAreaColumns={[
                             {
                                 field: "title",

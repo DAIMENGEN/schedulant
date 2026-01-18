@@ -1,0 +1,39 @@
+.schedulant-today-body {
+    position: relative;
+}
+
+.schedulant-today-body:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid red;
+    border-top: none;
+    pointer-events: none;
+}
+
+.schedulant-today-head-DD {
+    position: relative;
+}
+
+.schedulant-today-head-ddd {
+    position: relative;
+}
+
+.schedulant-today-head-ddd:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid red;
+    border-bottom: none;
+    pointer-events: none;
+}
+
+.schedulant-today-head-DD::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid red;
+    border-bottom: none;
+    border-top: none;
+    pointer-events: none;
+}

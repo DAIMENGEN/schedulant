@@ -2,7 +2,7 @@ import { TimelineColgroup } from "@schedulant/components/timeline/timeline-colgr
 import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import type { ReactNode } from "react";
-import type {Dayjs} from "dayjs";
+import dayjs, {type Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
 import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
 
@@ -31,7 +31,8 @@ export class QuarterTimelineView extends TimelineView {
                         <TimelineBodySlot key={`${date.year()}-Q${date.quarter()}`}
                                           date={date}
                                           dataDate={`${date.year()}-Q${date.quarter()}`}
-                                          classNames={["schedulant-quarter"]}/>
+                                          classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter" : '']}
+                                          schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -54,7 +55,8 @@ export class QuarterTimelineView extends TimelineView {
                                             dataDate={date.year.year().toString()}
                                             colSpan={date.quarters.length}
                                             timeText={date.year.year().toString()}
-                                            classNames={["schedulant-year"]}/>
+                                            classNames={["schedulant-year"]}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -67,7 +69,8 @@ export class QuarterTimelineView extends TimelineView {
                                             dataDate={`${date.year()}-Q${date.quarter()}`}
                                             colSpan={1}
                                             timeText={`Q${date.quarter()}`}
-                                            classNames={["schedulant-quarter"]}/>
+                                            classNames={["schedulant-quarter", date.isSame(dayjs(), "quarter") ? "schedulant-this-quarter" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>

@@ -1,12 +1,10 @@
 import type {ReactNode} from "react";
 import {TimelineView} from "@schedulant/types/timeline-view.tsx";
-import {
-    TimelineColgroup
-} from "@schedulant/components/timeline/timeline-colgroup.tsx";
+import {TimelineColgroup} from "@schedulant/components/timeline/timeline-colgroup.tsx";
 import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
 import {TimelineHeaderSlot} from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Position} from "@schedulant/types/base";
-import type {Dayjs} from "dayjs";
+import dayjs, {type Dayjs} from "dayjs";
 
 export class DayTimelineView extends TimelineView {
 
@@ -29,7 +27,8 @@ export class DayTimelineView extends TimelineView {
                         <TimelineBodySlot key={date.format("YYYY-MM-DD")}
                                           date={date}
                                           dataDate={date.format("YYYY-MM-DD")}
-                                          classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                                          classNames={["schedulant-day", date.isSame(dayjs(), "day") ? "schedulant-today-body" : '', timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}
+                                          schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -53,7 +52,8 @@ export class DayTimelineView extends TimelineView {
                                             dataDate={date.year.year().toString()}
                                             colSpan={date.days.length}
                                             timeText={date.year.year().toString()}
-                                            classNames={["schedulant-year"]}/>
+                                            classNames={["schedulant-year"]}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -66,7 +66,8 @@ export class DayTimelineView extends TimelineView {
                                             dataDate={date.month.format("YYYY-MM")}
                                             colSpan={date.days.length}
                                             timeText={date.month.format("MMM")}
-                                            classNames={["schedulant-month"]}/>
+                                            classNames={["schedulant-month"]}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -79,7 +80,8 @@ export class DayTimelineView extends TimelineView {
                                             dataDate={date.format("YYYY-MM-DD")}
                                             colSpan={1}
                                             timeText={date.format("ddd")}
-                                            classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                                            classNames={["schedulant-day", date.isSame(dayjs(), "day") ? "schedulant-today-head-ddd" : '', timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -92,7 +94,8 @@ export class DayTimelineView extends TimelineView {
                                             dataDate={date.format("YYYY-MM-DD")}
                                             colSpan={1}
                                             timeText={date.format("DD")}
-                                            classNames={["schedulant-day", timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}/>
+                                            classNames={["schedulant-day", date.isSame(dayjs(), "day") ? "schedulant-today-head-DD" : '', timelineApi.isHoliday(date) ? "schedulant-holiday" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>

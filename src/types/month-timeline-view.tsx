@@ -2,7 +2,7 @@ import {TimelineView} from "@schedulant/types/timeline-view.tsx";
 import {TimelineBodySlot} from "@schedulant/components/timeline/timeline-body-slot.tsx";
 import { TimelineHeaderSlot } from "@schedulant/components/timeline/timeline-header-slot.tsx";
 import type {Position} from "@schedulant/types/base.ts";
-import type {Dayjs} from "dayjs";
+import dayjs, {type Dayjs} from "dayjs";
 import {
     TimelineColgroup
 } from "@schedulant/components/timeline/timeline-colgroup.tsx";
@@ -33,7 +33,8 @@ export class MonthTimelineView extends TimelineView {
                         <TimelineBodySlot key={date.format("YYYY-MM")}
                                           date={date}
                                           dataDate={date.format("YYYY-MM")}
-                                          classNames={["schedulant-month"]}/>
+                                          classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month" : '']}
+                                          schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -56,7 +57,8 @@ export class MonthTimelineView extends TimelineView {
                                             dataDate={date.year.year().toString()}
                                             colSpan={date.months.length}
                                             timeText={date.year.year().toString()}
-                                            classNames={["schedulant-year"]}/>
+                                            classNames={["schedulant-year"]}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
@@ -69,7 +71,8 @@ export class MonthTimelineView extends TimelineView {
                                             dataDate={date.format("YYYY-MM")}
                                             colSpan={1}
                                             timeText={date.format("MMM")}
-                                            classNames={["schedulant-month"]}/>
+                                            classNames={["schedulant-month", date.isSame(dayjs(), "month") ? "schedulant-this-month" : '']}
+                                            schedulantApi={this.getSchedulantApi()}/>
                     ))
                 }
             </tr>
