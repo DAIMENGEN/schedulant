@@ -11,6 +11,7 @@ import {
     type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {If} from "@schedulant/utils/if.tsx";
+import {selectResourceRow} from "@schedulant/utils/selection.ts";
 
 export const BodyCell = (props: {
     schedulantApi: SchedulantApi,
@@ -58,11 +59,7 @@ export const BodyCell = (props: {
 
     const handleCellClick = useCallback(() => {
         if (props.schedulantApi.isSelectable()) {
-            const resourceId = props.resourceApi.getId();
-            const allResources = document.querySelectorAll('.schedulant-resource-selected');
-            allResources.forEach(el => el.classList.remove('schedulant-resource-selected'));
-            const resourceElements = document.querySelectorAll(`[data-resource-id="${resourceId}"].schedulant-resource`);
-            resourceElements.forEach(el => el.classList.add('schedulant-resource-selected'));
+            selectResourceRow(props.resourceApi.getId());
         }
     }, [props.schedulantApi, props.resourceApi]);
 
@@ -81,6 +78,7 @@ export const BodyCell = (props: {
             data-resource-id={props.resourceApi.getId()}
             className={getCellClassName()}
             onClick={handleCellClick}
+            onContextMenu={handleCellClick}
             draggable={props.isDraggable && props.showPlusSquare}
             onDragStart={props.isDraggable ? props.onDragStart : undefined}
             onDragOver={props.isDraggable ? props.onDragOver : undefined}

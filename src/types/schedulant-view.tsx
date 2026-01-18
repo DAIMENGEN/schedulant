@@ -14,6 +14,7 @@ import type {
     ResizerMouseDownFunc,
     ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
+import {selectResourceRow} from "@schedulant/utils/selection.ts";
 
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
@@ -70,11 +71,7 @@ export class SchedulantView {
 
             const handleLaneClick = () => {
                 if (this.schedulantApi.isSelectable()) {
-                    const resourceId = resourceApi.getId();
-                    const allResources = document.querySelectorAll('.schedulant-resource-selected');
-                    allResources.forEach(el => el.classList.remove('schedulant-resource-selected'));
-                    const resourceElements = document.querySelectorAll(`[data-resource-id="${resourceId}"].schedulant-resource`);
-                    resourceElements.forEach(el => el.classList.add('schedulant-resource-selected'));
+                    selectResourceRow(resourceApi.getId());
                 }
             };
 
@@ -82,7 +79,8 @@ export class SchedulantView {
                 <tr key={resourceApi.getId()}>
                     <td data-resource-id={resourceApi.getId()}
                         className={"schedulant-timeline-lane schedulant-resource"}
-                        onClick={handleLaneClick}>
+                        onClick={handleLaneClick}
+                        onContextMenu={handleLaneClick}>
                         <div className={"schedulant-timeline-lane-frame"} style={{height: lineHeight}}>
                             {this.timelineView.renderLane()}
                             <div className={"schedulant-timeline-lane-bg"}></div>

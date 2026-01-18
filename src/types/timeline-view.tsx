@@ -92,7 +92,9 @@ export abstract class TimelineView {
     }
 
     calculateLaneHeight(resourceApi: ResourceApi): number {
-        const milestoneNumbers = resourceApi.getMilestoneApis().length;
+        const startDate = this.schedulantApi.getTimelineApi().getStart();
+        const endDate = this.schedulantApi.getTimelineApi().getEnd();
+        const milestoneNumbers = resourceApi.getMilestoneApis().filter(milestone => !milestone.getTime().isBefore(startDate) && !milestone.getTime().isAfter(endDate)).length;
         if (milestoneNumbers === 0) {
             return this.schedulantApi.getLineHeight();
         } else {
