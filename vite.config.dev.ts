@@ -27,7 +27,7 @@ export default defineConfig({
             fileName: "schedulant",
         },
         rollupOptions: {
-            external: ["react", "react-dom"],
+            external: [/^react($|\/)/, /^react-dom($|\/)/],
         },
         outDir: "lib/dist",
         copyPublicDir: false,
