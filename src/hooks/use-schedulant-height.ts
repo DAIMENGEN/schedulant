@@ -13,17 +13,23 @@ export const useSchedulantHeight = (schedulantMaxHeight: number) => {
         if (schedulantViewHarness) {
             schedulantViewHarness.style.height = numberToPixels(schedulantHeight)
         }
-        const resizeObserver = new ResizeObserver(entries => {
-            for (const entry of entries) {
-                const newHeight = entry.contentRect.height + headerHeight + 13;
-                const schedulantHeight = schedulantMaxHeight - newHeight > 0 ? newHeight : schedulantMaxHeight;
-                if (schedulantViewHarness) {
-                    schedulantViewHarness.style.height = numberToPixels(schedulantHeight)
-                }
+        const recalculateHeight = () => {
+            const currentBodyHeight = schedulantDataGridBody ? schedulantDataGridBody.getBoundingClientRect().height : 0;
+            const currentHeaderHeight = schedulantTimelineHeader ? schedulantTimelineHeader.getBoundingClientRect().height : 0;
+            const newHeight = currentBodyHeight + currentHeaderHeight + 13;
+            const newSchedulantHeight = schedulantMaxHeight - newHeight > 0 ? newHeight : schedulantMaxHeight;
+            if (schedulantViewHarness) {
+                schedulantViewHarness.style.height = numberToPixels(newSchedulantHeight);
             }
+        };
+        const resizeObserver = new ResizeObserver(() => {
+            recalculateHeight();
         });
         if (schedulantDataGridBody) {
             resizeObserver.observe(schedulantDataGridBody);
+        }
+        if (schedulantTimelineHeader) {
+            resizeObserver.observe(schedulantTimelineHeader);
         }
         return () => {
             resizeObserver.disconnect();
