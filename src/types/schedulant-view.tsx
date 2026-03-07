@@ -1,7 +1,8 @@
 import {SchedulantApi, type SchedulantProps} from "./schedulant";
 import type {TimelineView} from "@schedulant/types/timeline-view.tsx";
-import React, {type RefObject, type ReactNode} from "react";
+import {type RefObject, type ReactNode} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
+import type {DragDropState} from "@schedulant/hooks/use-move-resource.tsx";
 import {HeadCell} from "@schedulant/components/datagrid/head-cell.tsx";
 import {BodyCell} from "@schedulant/components/datagrid/body-cell.tsx";
 import {DatagridColgroup} from "@schedulant/components/datagrid/datagrid-colgroup.tsx";
@@ -14,8 +15,6 @@ import type {
     ResizerMouseDownFunc,
     ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
-import {selectResourceRow} from "@schedulant/utils/selection.ts";
-
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
 export class SchedulantView {
@@ -69,18 +68,10 @@ export class SchedulantView {
             const milestoneApis = resourceApi.getMilestoneApis().filter(milestone => !milestone.getTime().isBefore(startDate) && !milestone.getTime().isAfter(endDate));
             const lineHeight = milestoneApis.length > 0 ? this.schedulantApi.getLineHeight() * 1.5 : this.schedulantApi.getLineHeight();
 
-            const handleLaneClick = () => {
-                if (this.schedulantApi.isSelectable()) {
-                    selectResourceRow(resourceApi.getId());
-                }
-            };
-
             return (
                 <tr key={resourceApi.getId()}>
                     <td data-resource-id={resourceApi.getId()}
-                        className={"schedulant-timeline-lane schedulant-resource"}
-                        onClick={handleLaneClick}
-                        onContextMenu={handleLaneClick}>
+                        className={"schedulant-timeline-lane schedulant-resource"}>
                         <div className={"schedulant-timeline-lane-frame"} style={{height: lineHeight}}>
                             {this.timelineView.renderLane()}
                             <div className={"schedulant-timeline-lane-bg"}></div>
@@ -137,16 +128,7 @@ export class SchedulantView {
         cellResizerMouseDownFunc: ResizerMouseDownFunc,
         dragDropHandlers?: {
             isDraggable: boolean;
-            dragState: {
-                draggedResource: ResourceApi | null;
-                dragOverResource: ResourceApi | null;
-                dropPosition: 'before' | 'after' | 'child' | null;
-            };
-            handleDragStart: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
-            handleDragOver: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
-            handleDragLeave: (e: React.DragEvent) => void;
-            handleDrop: (resourceApi: ResourceApi) => (e: React.DragEvent) => void;
-            handleDragEnd: () => void;
+            dragState: DragDropState;
         }
     ): ReactNode {
         const resourceApis = this.schedulantApi.getResourceApis();
@@ -155,14 +137,9 @@ export class SchedulantView {
             return resourceAreaColumns.map((resourceAreaColumn, index) => {
                 const dragProps = dragDropHandlers ? {
                     isDraggable: dragDropHandlers.isDraggable,
-                    isDragging: dragDropHandlers.dragState.draggedResource?.getId() === resourceApi.getId(),
-                    isDragOver: dragDropHandlers.dragState.dragOverResource?.getId() === resourceApi.getId(),
+                    activeId: dragDropHandlers.dragState.activeId,
+                    overId: dragDropHandlers.dragState.overId,
                     dropPosition: dragDropHandlers.dragState.dropPosition,
-                    onDragStart: dragDropHandlers.handleDragStart(resourceApi),
-                    onDragOver: dragDropHandlers.handleDragOver(resourceApi),
-                    onDragLeave: dragDropHandlers.handleDragLeave,
-                    onDrop: dragDropHandlers.handleDrop(resourceApi),
-                    onDragEnd: dragDropHandlers.handleDragEnd,
                 } : {};
                 return <BodyCell
                     key={resourceAreaColumn.field}

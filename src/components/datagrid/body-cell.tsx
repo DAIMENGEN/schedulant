@@ -1,6 +1,6 @@
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {Resource, ResourceApi, ResourceAreaColumn} from "@schedulant/types/resource.ts";
-import React, {useCallback, useRef} from "react";
+import {useCallback, useRef} from "react";
 import {useResourceLaneMount} from "@schedulant/hooks/mounts/use-resource-lane-mount.tsx";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown, Space} from "antd";
@@ -11,7 +11,10 @@ import {
     type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {If} from "@schedulant/utils/if.tsx";
-import {selectResourceRow} from "@schedulant/utils/selection.ts";
+import {getSelectedResourceId} from "@schedulant/utils/selection.ts";
+import {useSortable} from "@dnd-kit/sortable";
+import type {DropPosition} from "@schedulant/hooks/use-move-resource.tsx";
+import type {UniqueIdentifier} from "@dnd-kit/core";
 
 export const BodyCell = (props: {
     schedulantApi: SchedulantApi,
@@ -24,14 +27,9 @@ export const BodyCell = (props: {
     cellResizerMouseUp: ResizerMouseUp,
     cellResizerMouseDownFunc: ResizerMouseDownFunc,
     isDraggable?: boolean,
-    isDragging?: boolean,
-    isDragOver?: boolean,
-    dropPosition?: 'before' | 'after' | 'child' | null,
-    onDragStart?: (e: React.DragEvent) => void,
-    onDragOver?: (e: React.DragEvent) => void,
-    onDragLeave?: (e: React.DragEvent) => void,
-    onDrop?: (e: React.DragEvent) => void,
-    onDragEnd?: (e: React.DragEvent) => void,
+    activeId?: UniqueIdentifier | null,
+    overId?: UniqueIdentifier | null,
+    dropPosition?: DropPosition | null,
 }) => {
     const {dispatch} = useSchedulantContext();
     const resourceLaneCellRef = useRef<HTMLDivElement>(null);
@@ -57,34 +55,34 @@ export const BodyCell = (props: {
     }, []);
     useResourceLaneMount(resourceLaneCellRef, props.resourceAreaColumn, props.schedulantApi, props.resourceApi);
 
-    const handleCellClick = useCallback(() => {
-        if (props.schedulantApi.isSelectable()) {
-            selectResourceRow(props.resourceApi.getId());
-        }
-    }, [props.schedulantApi, props.resourceApi]);
+    const resourceId = props.resourceApi.getId();
+    const isDragDisabled = !props.isDraggable || !props.showPlusSquare;
+    const {attributes, listeners, setNodeRef, isDragging} = useSortable({
+        id: resourceId,
+        disabled: isDragDisabled,
+        transition: null,
+    });
 
+    const isOver = props.overId === resourceId && props.activeId !== resourceId;
     const getCellClassName = () => {
         const classes = ["schedulant-datagrid-cell", "schedulant-resource"];
-        if (props.isDraggable && props.isDragging) {
+        if (getSelectedResourceId() === resourceId) {
+            classes.push("schedulant-resource-selected");
+        }
+        if (props.isDraggable && isDragging) {
             classes.push("schedulant-resource-dragging");
         }
-        if (props.isDraggable && props.isDragOver && props.dropPosition) {
+        if (props.isDraggable && isOver && props.dropPosition) {
             classes.push(`schedulant-resource-drop-${props.dropPosition}`);
         }
         return classes.join(" ");
     };
     return (
-        <td role={"gridcell"}
+        <td ref={setNodeRef}
             data-resource-id={props.resourceApi.getId()}
             className={getCellClassName()}
-            onClick={handleCellClick}
-            onContextMenu={handleCellClick}
-            draggable={props.isDraggable && props.showPlusSquare}
-            onDragStart={props.isDraggable ? props.onDragStart : undefined}
-            onDragOver={props.isDraggable ? props.onDragOver : undefined}
-            onDragLeave={props.isDraggable ? props.onDragLeave : undefined}
-            onDrop={props.isDraggable ? props.onDrop : undefined}
-            onDragEnd={props.isDraggable ? props.onDragEnd : undefined}>
+            {...(isDragDisabled ? {} : {...attributes, ...listeners})}
+        >
             <Dropdown disabled={!props.schedulantApi.isEnableResourceLaneContextMenu()}
                       destroyOnHidden={true}
                       trigger={["contextMenu"]}

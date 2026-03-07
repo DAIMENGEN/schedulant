@@ -1,118 +1,143 @@
-import React, {useCallback, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
+import {
+    type DragStartEvent,
+    type DragMoveEvent,
+    type DragEndEvent,
+    type UniqueIdentifier,
+} from "@dnd-kit/core";
+
+export type DropPosition = "before" | "after" | "child";
 
 export type DragDropState = {
-    draggedResource: ResourceApi | null;
-    dragOverResource: ResourceApi | null;
-    dropPosition: 'before' | 'after' | 'child' | null;
+    activeId: UniqueIdentifier | null;
+    overId: UniqueIdentifier | null;
+    dropPosition: DropPosition | null;
+};
+
+function computeDropPosition(
+    pointerY: number,
+    rect: { top: number; height: number }
+): DropPosition {
+    const y = pointerY - rect.top;
+    const height = rect.height;
+    if (y < height * 0.25) return "before";
+    if (y > height * 0.75) return "after";
+    return "child";
 }
 
-export const useMoveResource = (onReorder: (el: HTMLElement, draggedId: string, targetId: string, position: 'before' | 'after' | 'child') => void) => {
+function isAncestor(
+    draggedId: string,
+    targetResourceApi: ResourceApi
+): boolean {
+    let current: ResourceApi | undefined = targetResourceApi;
+    while (current) {
+        if (current.getId() === draggedId) return true;
+        const parentOption = current.getParent();
+        current = parentOption.isDefined() ? parentOption.get() : undefined;
+    }
+    return false;
+}
+
+export const useMoveResource = (
+    flatResources: ResourceApi[],
+    onReorder: (el: HTMLElement, draggedId: string, targetId: string, position: DropPosition) => void
+) => {
     const [dragState, setDragState] = useState<DragDropState>({
-        draggedResource: null,
-        dragOverResource: null,
+        activeId: null,
+        overId: null,
         dropPosition: null,
     });
 
-    const handleDragStart = useCallback((resourceApi: ResourceApi) => (e: React.DragEvent) => {
-        e.stopPropagation();
-        setDragState(prev => ({
-            ...prev,
-            draggedResource: resourceApi,
-        }));
-        // Set drag image
-        if (e.dataTransfer) {
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', resourceApi.getId());
-        }
-    }, []);
+    const dropPositionRef = useRef<DropPosition | null>(null);
+    const overIdRef = useRef<UniqueIdentifier | null>(null);
 
-    const handleDragOver = useCallback((resourceApi: ResourceApi) => (e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
+    const resourceLookupRef = useRef(
+        new Map(flatResources.map((r) => [r.getId(), r]))
+    );
+    resourceLookupRef.current = new Map(flatResources.map((r) => [r.getId(), r]));
 
-        if (!dragState.draggedResource || dragState.draggedResource.getId() === resourceApi.getId()) {
-            return;
-        }
-
-        // Prevent dragging a parent into its own child
-        let current: ResourceApi | undefined = resourceApi;
-        while (current) {
-            if (current.getId() === dragState.draggedResource.getId()) {
-                return;
-            }
-            const parentOption = current.getParent();
-            current = parentOption.isDefined() ? parentOption.get() : undefined;
-        }
-
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const y = e.clientY - rect.top;
-        const height = rect.height;
-
-        let position: 'before' | 'after' | 'child';
-        if (y < height * 0.25) {
-            position = 'before';
-        } else if (y > height * 0.75) {
-            position = 'after';
-        } else {
-            position = 'child';
-        }
-
-        setDragState(prev => ({
-            ...prev,
-            dragOverResource: resourceApi,
-            dropPosition: position,
-        }));
-    }, [dragState.draggedResource]);
-
-    const handleDragLeave = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragState(prev => ({
-            ...prev,
-            dragOverResource: null,
+    const handleDragStart = useCallback((event: DragStartEvent) => {
+        dropPositionRef.current = null;
+        overIdRef.current = null;
+        setDragState({
+            activeId: event.active.id,
+            overId: null,
             dropPosition: null,
-        }));
+        });
     }, []);
 
-    const handleDrop = useCallback((resourceApi: ResourceApi) => (e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!dragState.draggedResource || !dragState.dropPosition) {
+    const handleDragMove = useCallback((event: DragMoveEvent) => {
+        const {active, over, activatorEvent, delta} = event;
+        if (!over || active.id === over.id) {
+            if (overIdRef.current !== null) {
+                overIdRef.current = null;
+                dropPositionRef.current = null;
+                setDragState((prev) => ({...prev, overId: null, dropPosition: null}));
+            }
             return;
         }
 
-        if (dragState.draggedResource.getId() !== resourceApi.getId()) {
+        const targetResource = resourceLookupRef.current.get(String(over.id));
+        if (!targetResource || isAncestor(String(active.id), targetResource)) {
+            if (overIdRef.current !== null) {
+                overIdRef.current = null;
+                dropPositionRef.current = null;
+                setDragState((prev) => ({...prev, overId: null, dropPosition: null}));
+            }
+            return;
+        }
+
+        const pointerY = (activatorEvent as MouseEvent).clientY + delta.y;
+        const dropPosition = computeDropPosition(pointerY, {
+            top: over.rect.top,
+            height: over.rect.height,
+        });
+
+        if (overIdRef.current !== over.id || dropPositionRef.current !== dropPosition) {
+            overIdRef.current = over.id;
+            dropPositionRef.current = dropPosition;
+            setDragState((prev) => ({
+                ...prev,
+                overId: over.id,
+                dropPosition,
+            }));
+        }
+    }, []);
+
+    const handleDragEnd = useCallback((event: DragEndEvent) => {
+        const {active, over} = event;
+        const finalDropPosition = dropPositionRef.current;
+        const finalOverId = overIdRef.current;
+
+        if (over && active.id !== over.id && finalDropPosition && finalOverId) {
+            const overNode = document.querySelector(
+                `[data-resource-id="${String(finalOverId)}"]`
+            );
             onReorder(
-                e.currentTarget as HTMLElement,
-                dragState.draggedResource.getId(),
-                resourceApi.getId(),
-                dragState.dropPosition
+                (overNode as HTMLElement) || document.body,
+                String(active.id),
+                String(finalOverId),
+                finalDropPosition,
             );
         }
 
-        setDragState({
-            draggedResource: null,
-            dragOverResource: null,
-            dropPosition: null,
-        });
-    }, [dragState, onReorder]);
+        dropPositionRef.current = null;
+        overIdRef.current = null;
+        setDragState({activeId: null, overId: null, dropPosition: null});
+    }, [onReorder]);
 
-    const handleDragEnd = useCallback(() => {
-        setDragState({
-            draggedResource: null,
-            dragOverResource: null,
-            dropPosition: null,
-        });
+    const handleDragCancel = useCallback(() => {
+        dropPositionRef.current = null;
+        overIdRef.current = null;
+        setDragState({activeId: null, overId: null, dropPosition: null});
     }, []);
 
     return {
         dragState,
         handleDragStart,
-        handleDragOver,
-        handleDragLeave,
-        handleDrop,
+        handleDragMove,
         handleDragEnd,
+        handleDragCancel,
     };
 };

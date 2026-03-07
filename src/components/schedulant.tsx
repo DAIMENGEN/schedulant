@@ -1,6 +1,6 @@
 import "@schedulant/styles/schedulant.scss";
 import {SchedulantProvider} from "@schedulant/context/schedulant-provider.tsx";
-import React, {useMemo, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
@@ -14,6 +14,7 @@ import {TimelineDrawingBoard} from "@schedulant/components/timeline/timeline-dra
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
 import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
+import {handleSelectionClick, clearResourceSelection} from "@schedulant/utils/selection.ts";
 
 export const Schedulant = (props: SchedulantProps) => {
     return (
@@ -50,8 +51,25 @@ const Main = (props: SchedulantProps) => {
     useSyncScroll(bodyLeftScrollerElRef, Array.of(bodyRightScrollerElRef), "top");
     useSyncScroll(bodyLeftScrollerElRef, Array.of(headerLeftScrollerElRef), "left");
     useSyncScroll(bodyRightScrollerElRef, Array.of(headerRightScrollerElRef), "left");
+
+    const handleClick = useCallback((event: React.MouseEvent) => {
+        if (schedulantApi.isSelectable()) {
+            handleSelectionClick(event.nativeEvent);
+        }
+    }, [schedulantApi]);
+
+    useEffect(() => {
+        const handleOutsideClick = (event: MouseEvent) => {
+            if (scheduleElRef.current && !scheduleElRef.current.contains(event.target as Node)) {
+                clearResourceSelection();
+            }
+        };
+        document.addEventListener("click", handleOutsideClick);
+        return () => document.removeEventListener("click", handleOutsideClick);
+    }, []);
+
     return (
-        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} style={cssVariables}>
+        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} onClick={handleClick} style={cssVariables}>
             <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
                 <div className={"schedulant-view"}>
                     <table role={"grid"} className={"schedulant-scrollgrid"}>
