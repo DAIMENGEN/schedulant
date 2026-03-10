@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "author": "mengen.dai@outlook.com",
-  "version": "2.0.7-fixed.4",
+  "version": "2.0.7-fixed.5",
   "main": "dist/schedulant.js",
   "typings": "dist/schedulant.d.ts",
   "keywords": [
@@ -34,6 +34,7 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.13.21",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

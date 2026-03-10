@@ -15,6 +15,7 @@ import type {
     ResizerMouseDownFunc,
     ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
+import type {VirtualItem} from "@tanstack/react-virtual";
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
 export class SchedulantView {
@@ -60,7 +61,7 @@ export class SchedulantView {
         return this.timelineView.renderHeaderSlots();
     }
 
-    renderTimelineDrawingBoardTable(collapseIds: Array<string>, timelineWidth: number): ReactNode {
+    renderTimelineDrawingBoardTable(visibleResources: ResourceApi[], virtualItems: VirtualItem[], totalSize: number, timelineWidth: number): ReactNode {
         const drawElements = (resourceApi: ResourceApi) => {
             const startDate = this.schedulantApi.getTimelineApi().getStart();
             const endDate = this.schedulantApi.getTimelineApi().getEnd();
@@ -83,17 +84,18 @@ export class SchedulantView {
                 </tr>
             )
         }
-        const renderElements = (resourceApi: ResourceApi): Array<ReactNode> => {
-            if (!collapseIds.some(resourceId => resourceId === resourceApi.getId()) && resourceApi.getChildren().length > 0) {
-                const children = resourceApi.getChildren();
-                return [drawElements(resourceApi), ...children.flatMap(child => renderElements(child))];
-            } else {
-                return [drawElements(resourceApi)];
-            }
-        }
+
+        const paddingTop = virtualItems.length > 0 ? virtualItems[0].start : 0;
+        const paddingBottom = virtualItems.length > 0 ? totalSize - virtualItems[virtualItems.length - 1].end : 0;
+
         return (
             <tbody>
-            {this.schedulantApi.getResourceApis().flatMap(resourceApi => renderElements(resourceApi))}
+            {paddingTop > 0 && <tr><td style={{height: paddingTop, padding: 0, border: "none"}} /></tr>}
+            {virtualItems.map(virtualRow => {
+                const resource = visibleResources[virtualRow.index];
+                return drawElements(resource);
+            })}
+            {paddingBottom > 0 && <tr><td style={{height: paddingBottom, padding: 0, border: "none"}} /></tr>}
             </tbody>
         );
     }
@@ -123,6 +125,9 @@ export class SchedulantView {
     }
 
     renderResourceLane(
+        visibleResources: ResourceApi[],
+        virtualItems: VirtualItem[],
+        totalSize: number,
         collapseIds: Array<string>,
         cellResizerMouseUp: ResizerMouseUp,
         cellResizerMouseDownFunc: ResizerMouseDownFunc,
@@ -131,7 +136,6 @@ export class SchedulantView {
             dragState: DragDropState;
         }
     ): ReactNode {
-        const resourceApis = this.schedulantApi.getResourceApis();
         const resourceAreaColumns = this.schedulantApi.getResourceAreaColumns();
         const renderResource = (resourceApi: ResourceApi) => {
             return resourceAreaColumns.map((resourceAreaColumn, index) => {
@@ -157,23 +161,17 @@ export class SchedulantView {
             })
         }
 
-        const renderTableRows = (resourceApi: ResourceApi): Array<ReactNode> => {
-            if (!collapseIds.some((resourceId: string) => resourceId === resourceApi.getId()) && resourceApi.getChildren().length > 0) {
-                const children = resourceApi.getChildren();
-                return [<tr key={resourceApi.getId()}
-                            role={"row"}>{renderResource(resourceApi)}</tr>, ...children.flatMap(child => renderTableRows(child))];
-            } else {
-                return [<tr key={resourceApi.getId()} role={"row"}>{renderResource(resourceApi)}</tr>];
-            }
-        }
+        const paddingTop = virtualItems.length > 0 ? virtualItems[0].start : 0;
+        const paddingBottom = virtualItems.length > 0 ? totalSize - virtualItems[virtualItems.length - 1].end : 0;
 
         return (
             <tbody>
-            {
-                resourceApis.flatMap(resourceApi => {
-                    return renderTableRows(resourceApi)
-                })
-            }
+            {paddingTop > 0 && <tr><td colSpan={resourceAreaColumns.length} style={{height: paddingTop, padding: 0, border: "none"}} /></tr>}
+            {virtualItems.map(virtualRow => {
+                const resource = visibleResources[virtualRow.index];
+                return <tr key={resource.getId()} role={"row"}>{renderResource(resource)}</tr>;
+            })}
+            {paddingBottom > 0 && <tr><td colSpan={resourceAreaColumns.length} style={{height: paddingBottom, padding: 0, border: "none"}} /></tr>}
             </tbody>
         );
     }

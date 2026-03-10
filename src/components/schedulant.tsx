@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {SchedulantProps} from "@schedulant/types";
 import {useSchedulantHeight} from "@schedulant/hooks/use-schedulant-height.ts";
-import {useSyncScroll} from "@schedulant/hooks/use-sync-scroll.ts";
+import {useScrollSync} from "@schedulant/hooks/use-sync-scroll.ts";
 import {useResourceAreaWidth} from "@schedulant/hooks/use-resource-area-width.ts";
 import {DatagridHead} from "@schedulant/components/datagrid/datagrid-head.tsx";
 import {TimelineHeader} from "@schedulant/components/timeline/timeline-header.tsx";
@@ -15,6 +15,7 @@ import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
 import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {handleSelectionClick, clearResourceSelection} from "@schedulant/utils/selection.ts";
+import {useVirtualizedRows} from "@schedulant/hooks/use-virtualized-rows.ts";
 
 export const Schedulant = (props: SchedulantProps) => {
     return (
@@ -44,13 +45,19 @@ const Main = (props: SchedulantProps) => {
         datagridCellResizerMouseUp,
         datagridCellResizerMouseDownFunc
     } = useResourceAreaResizer(dispatch, scheduleElRef, resourceAreaColElRef);
+    const timelineApi = schedulantApi.getTimelineApi();
+    const {virtualizer, visibleResources} = useVirtualizedRows(
+        bodyRightScrollerElRef,
+        schedulantApi.getResourceApis(),
+        state.collapseIds,
+        schedulantApi.getLineHeight(),
+        timelineApi.getStart(),
+        timelineApi.getEnd(),
+    );
     useSchedulantHeight(props.schedulantMaxHeight);
     useSchedulantMount(scheduleElRef, scheduleView);
     useResourceAreaWidth(resourceAreaColElRef, props.resourceAreaWidth);
-    useSyncScroll(bodyRightScrollerElRef, Array.of(bodyLeftScrollerElRef), "top");
-    useSyncScroll(bodyLeftScrollerElRef, Array.of(bodyRightScrollerElRef), "top");
-    useSyncScroll(bodyLeftScrollerElRef, Array.of(headerLeftScrollerElRef), "left");
-    useSyncScroll(bodyRightScrollerElRef, Array.of(headerRightScrollerElRef), "left");
+    useScrollSync(bodyLeftScrollerElRef, bodyRightScrollerElRef, headerLeftScrollerElRef, headerRightScrollerElRef);
 
     const handleClick = useCallback((event: React.MouseEvent) => {
         if (schedulantApi.isSelectable()) {
@@ -111,6 +118,9 @@ const Main = (props: SchedulantProps) => {
                                 <div className={"schedulant-scroller-harness"}>
                                     <div className={"schedulant-scroller-body-left"} ref={bodyLeftScrollerElRef}>
                                         <DatagridBody schedulantView={scheduleView}
+                                                      virtualizer={virtualizer}
+                                                      visibleResources={visibleResources}
+                                                      collapseIds={state.collapseIds}
                                                       cellResizerMouseUp={datagridCellResizerMouseUp}
                                                       cellResizerMouseDownFunc={datagridCellResizerMouseDownFunc}/>
                                     </div>
@@ -123,7 +133,9 @@ const Main = (props: SchedulantProps) => {
                                     <div className={"schedulant-scroller-body-right"} ref={bodyRightScrollerElRef}>
                                         <div className={"schedulant-timeline-body"}>
                                             <TimelineBody schedulantView={scheduleView}/>
-                                            <TimelineDrawingBoard schedulantView={scheduleView}/>
+                                            <TimelineDrawingBoard schedulantView={scheduleView}
+                                                                  virtualizer={virtualizer}
+                                                                  visibleResources={visibleResources}/>
                                         </div>
                                     </div>
                                 </div>

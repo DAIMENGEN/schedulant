@@ -1343,6 +1343,18 @@
     argparse "~1.0.9"
     string-argv "~0.3.1"
 
+"@tanstack/react-virtual@^3.13.21":
+  version "3.13.21"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-virtual/-/react-virtual-3.13.21.tgz#4e6feb326d2fc57f591046bad372ef4ff7d6d82f"
+  integrity sha512-SYXFrmrbPgXBvf+HsOsKhFgqSe4M6B29VHOsX9Jih9TlNkNkDWx0hWMiMLUghMEzyUz772ndzdEeCEBx+3GIZw==
+  dependencies:
+    "@tanstack/virtual-core" "3.13.21"
+
+"@tanstack/virtual-core@3.13.21":
+  version "3.13.21"
+  resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.13.21.tgz#925eec83d17d28a30ad4c3645d54d5fbe797bbb3"
+  integrity sha512-ww+fmLHyCbPSf7JNbWZP3g7wl6SdNo3ah5Aiw+0e9FDErkVHLKprYUrwTm7dF646FtEkN/KkAKPYezxpmvOjxw==
+
 "@types/argparse@1.0.38":
   version "1.0.38"
   resolved "https://registry.yarnpkg.com/@types/argparse/-/argparse-1.0.38.tgz#a81fd8606d481f873a3800c6ebae4f1d768a56a9"

@@ -175,7 +175,8 @@
 
             .schedulant-scroller-body-left {
               inset: 0;
-              overflow: scroll;
+              overflow-x: scroll;
+              overflow-y: hidden;
               position: absolute;
 
               .schedulant-datagrid-body {

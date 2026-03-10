@@ -1,5 +1,4 @@
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
-import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import type {ResizerMouseDownFunc, ResizerMouseUp} from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {useCallback, useMemo} from "react";
 import {useMoveResource, type DropPosition} from "@schedulant/hooks/use-move-resource.tsx";
@@ -7,6 +6,8 @@ import {DndContext, DragOverlay, PointerSensor, KeyboardSensor, useSensor, useSe
 import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import type {Modifier} from "@dnd-kit/core";
+import type {ResourceApi} from "@schedulant/types/resource.ts";
+import type {Virtualizer} from "@tanstack/react-virtual";
 
 const overlayOffsetModifier: Modifier = ({transform, activatorEvent}) => {
     if (!activatorEvent) return transform;
@@ -19,11 +20,13 @@ const overlayOffsetModifier: Modifier = ({transform, activatorEvent}) => {
 
 export const DatagridBody = (props: {
     schedulantView: SchedulantView,
+    virtualizer: Virtualizer<HTMLDivElement, Element>,
+    visibleResources: ResourceApi[],
+    collapseIds: string[],
     cellResizerMouseUp: ResizerMouseUp,
     cellResizerMouseDownFunc: ResizerMouseDownFunc
 }) => {
-    const {state} = useSchedulantContext();
-    const {schedulantView, cellResizerMouseUp, cellResizerMouseDownFunc} = props;
+    const {schedulantView, virtualizer, visibleResources, collapseIds, cellResizerMouseUp, cellResizerMouseDownFunc} = props;
     const schedulantApi = schedulantView.getScheduleApi();
     const flatResources = schedulantApi.getFlatMapResourceApis();
 
@@ -51,8 +54,10 @@ export const DatagridBody = (props: {
         useSensor(KeyboardSensor)
     );
 
-    const sortableItems = flatResources.map((r) => r.getId());
+    const sortableItems = visibleResources.map((r) => r.getId());
     const isEditable = schedulantApi.isEditable();
+    const virtualItems = virtualizer.getVirtualItems();
+    const totalSize = virtualizer.getTotalSize();
 
     const activeResource = useMemo(() => {
         if (!dragState.activeId) return null;
@@ -73,7 +78,7 @@ export const DatagridBody = (props: {
                 <table role={"presentation"} id={"schedulant-datagrid-body"}
                        className={"schedulant-datagrid-body schedulant-scrollgrid-sync-table"}>
                     {schedulantView.renderResourceTableColgroup()}
-                    {schedulantView.renderResourceLane(state.collapseIds, cellResizerMouseUp, cellResizerMouseDownFunc, {
+                    {schedulantView.renderResourceLane(visibleResources, virtualItems, totalSize, collapseIds, cellResizerMouseUp, cellResizerMouseDownFunc, {
                         isDraggable: isEditable,
                         dragState,
                     })}
