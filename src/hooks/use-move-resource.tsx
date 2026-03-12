@@ -6,6 +6,7 @@ import {
     type DragEndEvent,
     type UniqueIdentifier,
 } from "@dnd-kit/core";
+import {DROP_POSITION_BEFORE_THRESHOLD, DROP_POSITION_AFTER_THRESHOLD} from "@schedulant/constants.ts";
 
 export type DropPosition = "before" | "after" | "child";
 
@@ -21,8 +22,8 @@ function computeDropPosition(
 ): DropPosition {
     const y = pointerY - rect.top;
     const height = rect.height;
-    if (y < height * 0.25) return "before";
-    if (y > height * 0.75) return "after";
+    if (y < height * DROP_POSITION_BEFORE_THRESHOLD) return "before";
+    if (y > height * DROP_POSITION_AFTER_THRESHOLD) return "after";
     return "child";
 }
 

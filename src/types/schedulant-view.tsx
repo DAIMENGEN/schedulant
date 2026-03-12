@@ -16,6 +16,7 @@ import type {
     ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 import type {VirtualItem} from "@tanstack/react-virtual";
+
 export type SchedulantViewType = "Day" | "Week" | "Month" | "Quarter" | "Year";
 
 export class SchedulantView {
@@ -63,11 +64,7 @@ export class SchedulantView {
 
     renderTimelineDrawingBoardTable(visibleResources: ResourceApi[], virtualItems: VirtualItem[], totalSize: number, timelineWidth: number): ReactNode {
         const drawElements = (resourceApi: ResourceApi) => {
-            const startDate = this.schedulantApi.getTimelineApi().getStart();
-            const endDate = this.schedulantApi.getTimelineApi().getEnd();
-            // Calculate if there are milestones within the timeline range
-            const milestoneApis = resourceApi.getMilestoneApis().filter(milestone => !milestone.getTime().isBefore(startDate) && !milestone.getTime().isAfter(endDate));
-            const lineHeight = milestoneApis.length > 0 ? this.schedulantApi.getLineHeight() * 1.5 : this.schedulantApi.getLineHeight();
+            const lineHeight = this.timelineView.calculateLaneHeight(resourceApi);
 
             return (
                 <tr key={resourceApi.getId()}>

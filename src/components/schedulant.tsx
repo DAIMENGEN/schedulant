@@ -33,8 +33,25 @@ const Main = (props: SchedulantProps) => {
     const bodyRightScrollerElRef = useRef<HTMLDivElement>(null);
     const bodyLeftScrollerElRef = useRef<HTMLDivElement>(null);
     const resourceAreaColElRef = useRef<HTMLTableColElement>(null);
-    const scheduleView = useMemo(() => new SchedulantView(props, scheduleElRef), [props]);
+    const {
+        start, end, editable, selectable, lineHeight, slotMinWidth,
+        schedulantMaxHeight, schedulantViewType, events, resources,
+        milestones, checkpoints, resourceAreaColumns, resourceAreaWidth,
+        companyHolidays, specialWorkdays, nationalHolidays,
+        dragHintColor, selectionColor,
+    } = props;
+    const scheduleView = useMemo(
+        () => new SchedulantView(props, scheduleElRef),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [start, end, editable, selectable, lineHeight, slotMinWidth,
+         schedulantMaxHeight, schedulantViewType, events, resources,
+         milestones, checkpoints, resourceAreaColumns, resourceAreaWidth,
+         companyHolidays, specialWorkdays, nationalHolidays,
+         dragHintColor, selectionColor]
+    );
     const schedulantApi = useMemo(() => scheduleView.getScheduleApi(), [scheduleView]);
+    // Keep callback props in sync without rebuilding the entire view
+    schedulantApi.updateProps(props);
     const cssVariables = useMemo(() => ({
         '--schedulant-drag-hint-color': schedulantApi.getDragHintColor(),
         '--schedulant-selection-color': schedulantApi.getSelectionColor(),
@@ -76,7 +93,7 @@ const Main = (props: SchedulantProps) => {
     }, []);
 
     return (
-        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} onClick={handleClick} style={cssVariables}>
+        <div className={"schedulant"} ref={scheduleElRef} onMouseUp={datagridResizerMouseUp} onClick={handleClick} onContextMenu={handleClick} style={cssVariables}>
             <div id={"schedulant-view-harness"} className={"schedulant-view-harness"}>
                 <div className={"schedulant-view"}>
                     <table role={"grid"} className={"schedulant-scrollgrid"}>

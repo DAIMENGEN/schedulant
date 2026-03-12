@@ -85,7 +85,7 @@ export const useResourceAreaResizer = (
                 cellElements = trElement.getElementsByTagName("th");
             }
             for (let i = 0; i < cellElements.length; i++) {
-                if (cellElements[i] == targetCellElement) {
+                if (cellElements[i] === targetCellElement) {
                     indexRef.current = i;
                 }
             }

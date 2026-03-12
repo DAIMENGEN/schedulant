@@ -151,7 +151,7 @@ export class ResourceApi {
         return this.checkpointApis;
     }
 
-    getExtendProps(): Option<Dictionary> {
+    getExtendedProps(): Option<Dictionary> {
         return Option.fromNullable(this.resource.extendedProps);
     }
 }
@@ -159,8 +159,8 @@ export class ResourceApi {
 export class ResourceApiHelper {
 
     static compare(prev: ResourceApi, next: ResourceApi): number {
-        const prevOrderCandidate = prev.getExtendProps().getOrElse({order: 0}).order;
-        const nextOrderCandidate = next.getExtendProps().getOrElse({order: 0}).order;
+        const prevOrderCandidate = prev.getExtendedProps().getOrElse({order: 0}).order;
+        const nextOrderCandidate = next.getExtendedProps().getOrElse({order: 0}).order;
         const prevOrder = typeof prevOrderCandidate === 'number' ? prevOrderCandidate : 0;
         const nextOrder = typeof nextOrderCandidate === 'number' ? nextOrderCandidate : 0;
         return prevOrder - nextOrder;
@@ -251,4 +251,4 @@ export type PublicResourceApi = Pick<ResourceApi,
     "getEventApis" |
     "getMilestoneApis" |
     "getCheckpointApis" |
-    "getExtendProps">;
+    "getExtendedProps">;

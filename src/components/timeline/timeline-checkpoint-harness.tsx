@@ -1,14 +1,14 @@
 import type {CheckpointApi} from "@schedulant/types/checkpoint.ts";
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {Position} from "@schedulant/types/base.ts";
-import {useRef} from "react";
+import {memo, useRef} from "react";
 import {useCheckpointMount} from "@schedulant/hooks/mounts/use-checkpoint-mount.tsx";
 import {useMoveTimelineMarker} from "@schedulant/hooks/use-move-timeline-marker.tsx";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown} from "antd";
 import {DropletIcon} from "@schedulant/icons/droplet-icon.tsx";
 
-export const TimelineCheckpointHarness = (props: {
+export const TimelineCheckpointHarness = memo((props: {
     schedulantApi: SchedulantApi,
     checkpointApi: CheckpointApi,
     timelineWidth: number,
@@ -69,4 +69,4 @@ export const TimelineCheckpointHarness = (props: {
             </Dropdown>
         </div>
     )
-}
+})

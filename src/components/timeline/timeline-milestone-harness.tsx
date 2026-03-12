@@ -1,14 +1,15 @@
 import type {Position} from "@schedulant/types/base";
 import type {MilestoneApi} from "@schedulant/types/milestone.ts";
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
-import {useRef} from "react";
+import {memo, useRef} from "react";
 import {useMilestoneMount} from "@schedulant/hooks/mounts/use-milestone-mount.tsx";
 import { useMoveTimelineMarker } from "@schedulant/hooks/use-move-timeline-marker";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown} from "antd";
 import {FlagIcon} from "@schedulant/icons/flag-icon.tsx";
+import {MILESTONE_TOP_OFFSET_RATIO, MILESTONE_ICON_SIZE_RATIO} from "@schedulant/constants.ts";
 
-export const TimelineMilestoneHarness = (props: {
+export const TimelineMilestoneHarness = memo((props: {
     schedulantApi: SchedulantApi,
     milestoneApi: MilestoneApi,
     timelineWidth: number,
@@ -21,7 +22,7 @@ export const TimelineMilestoneHarness = (props: {
     const color = props.milestoneApi.getColor().getOrElse(status === "Success" ? "green" : (status === "Failure" ? "red" : "yellow"));
     const timelineView = props.schedulantApi.getScheduleView().getTimelineView();
     const laneHeight = timelineView.calculateLaneHeight(props.milestoneApi.getResourceApi());
-    const top = laneHeight * 0.1 * -1;
+    const top = laneHeight * MILESTONE_TOP_OFFSET_RATIO * -1;
     const {isPast, isFuture, isProcess} = useMilestoneMount(timelineMilestoneRef, props.schedulantApi, props.milestoneApi);
     const {handleMouseUp, handleMouseDown} = useMoveTimelineMarker({
         markerRef: timelineMilestoneHarnessRef,
@@ -58,10 +59,10 @@ export const TimelineMilestoneHarness = (props: {
                       }}>
                 <div className={"schedulant-timeline-milestone"} ref={timelineMilestoneRef}>
                     <div className={"schedulant-milestone-main"}>
-                        <FlagIcon width={laneHeight * 0.5} height={laneHeight * 0.5} color={color}/>
+                        <FlagIcon width={laneHeight * MILESTONE_ICON_SIZE_RATIO} height={laneHeight * MILESTONE_ICON_SIZE_RATIO} color={color}/>
                     </div>
                 </div>
             </Dropdown>
         </div>
     )
-}
+})

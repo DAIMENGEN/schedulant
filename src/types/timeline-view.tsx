@@ -4,6 +4,7 @@ import type {TimelineApi} from "@schedulant/types/timeline.ts";
 import type {ReactNode} from "react";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
+import {MILESTONE_LANE_HEIGHT_MULTIPLIER, EVENT_HEIGHT_RATIO} from "@schedulant/constants.ts";
 import {TimelineLane} from "@schedulant/components/timeline/timeline-lane.tsx";
 import {TimelineEventHarness} from "@schedulant/components/timeline/timeline-event-harness.tsx";
 import {TimelineMilestoneHarness} from "@schedulant/components/timeline/timeline-milestone-harness.tsx";
@@ -98,12 +99,12 @@ export abstract class TimelineView {
         if (milestoneNumbers === 0) {
             return this.schedulantApi.getLineHeight();
         } else {
-            return this.schedulantApi.getLineHeight() * 1.5;
+            return this.schedulantApi.getLineHeight() * MILESTONE_LANE_HEIGHT_MULTIPLIER;
         }
     }
 
     calculateEventHeight(): number {
-        return this.schedulantApi.getLineHeight() * 0.7;
+        return this.schedulantApi.getLineHeight() * EVENT_HEIGHT_RATIO;
     }
 
     abstract getTotalSlots(): number;

@@ -99,7 +99,7 @@ export class EventApi {
     }
 
 
-    getExtendProps(): Option<Dictionary> {
+    getExtendedProps(): Option<Dictionary> {
         return Option.fromNullable(this.event.extendedProps);
     }
 }
@@ -117,4 +117,4 @@ export type PublicEventApi = Pick<EventApi,
     "getTextColor" |
     "getBorderColor" |
     "getBackgroundColor" |
-    "getExtendProps">;
+    "getExtendedProps">;

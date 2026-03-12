@@ -4,6 +4,7 @@ import {EventApi} from "@schedulant/types/event.ts";
 import {ResourceApi} from "@schedulant/types/resource.ts";
 import {numberToPixels, pixelsToNumber} from "@schedulant/utils/dom.ts";
 import throttle from "lodash/throttle";
+import {DRAG_THROTTLE_MS} from "@schedulant/constants.ts";
 
 
 export const useMoveTimelineEvent = (props: {
@@ -33,10 +34,10 @@ export const useMoveTimelineEvent = (props: {
     }, [props]);
 
     const createPositionGuide = useCallback((element: HTMLDivElement) => {
-        const milestoneApis = props.resourceApi.getMilestoneApis();
+        const timelineView = props.schedulantApi.getScheduleView().getTimelineView();
         const left = element.style.left;
         const right = element.style.right;
-        const height = milestoneApis.length > 0 ? props.schedulantApi.getLineHeight() * 1.5 : props.schedulantApi.getLineHeight();
+        const height = timelineView.calculateLaneHeight(props.resourceApi);
         const positionGuide = document.createElement("div");
         positionGuide.className = eventPositionGuide;
         Object.assign(positionGuide.style, {
@@ -158,7 +159,7 @@ export const useMoveTimelineEvent = (props: {
 
     // Throttled version for better performance
     const throttledHandleMouseMove = useMemo(
-        () => throttle(handleMouseMove, 16), // ~60fps
+        () => throttle(handleMouseMove, DRAG_THROTTLE_MS),
         [handleMouseMove]
     );
 
@@ -217,6 +218,9 @@ export const useMoveTimelineEvent = (props: {
                 return () => {
                     timelineLaneFrame.removeEventListener("mouseup", handleMouseOutOrUp);
                     timelineLaneFrame.removeEventListener("mouseout", handleMouseOutOrUp);
+                    // Ensure mousemove listener is removed on unmount to prevent leaks
+                    scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
+                    throttledHandleMouseMove.cancel();
                 }
             }
         }

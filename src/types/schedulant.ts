@@ -109,7 +109,7 @@ export type SchedulantProps = {
 }
 
 export class SchedulantApi implements PublicSchedulantApi {
-    private readonly schedulantProps: SchedulantProps;
+    private schedulantProps: SchedulantProps;
     private readonly schedulantView: SchedulantView;
     private readonly timelineApi: TimelineApi;
     private readonly eventApis: EventApi[];
@@ -165,6 +165,10 @@ export class SchedulantApi implements PublicSchedulantApi {
         this.timelineApi = this.generateTimelineApi(props);
         this.resourceApis = ResourceApiHelper.createTree(props.resources, this.eventApis, this.milestoneApis, this.checkpointApis);
         this.flatMapResourceApis = ResourceApiHelper.flatMapTree(this.resourceApis);
+    }
+
+    updateProps(props: SchedulantProps): void {
+        this.schedulantProps = props;
     }
 
     getProps(): SchedulantProps {
@@ -233,7 +237,7 @@ export class SchedulantApi implements PublicSchedulantApi {
 
     isEditable(): boolean {
         const viewType = this.schedulantProps.schedulantViewType;
-        return this.schedulantProps.editable && viewType == "Day";
+        return this.schedulantProps.editable && viewType === "Day";
     }
 
     isSelectable(): boolean {
@@ -281,9 +285,8 @@ export class SchedulantApi implements PublicSchedulantApi {
     }
 
 
-    isEnableEventContextMenu() {
-        const isEnable = this.schedulantProps.enableEventContextMenu;
-        return isEnable as boolean;
+    isEnableEventContextMenu(): boolean {
+        return this.schedulantProps.enableEventContextMenu ?? false;
     }
 
     getEventContextMenuItems() {
@@ -306,9 +309,8 @@ export class SchedulantApi implements PublicSchedulantApi {
         this.schedulantProps.resourceLaneWillUnmount?.(arg);
     }
 
-    isEnableResourceLaneContextMenu() {
-        const isEnable = this.schedulantProps.enableResourceLaneContextMenu;
-        return isEnable as boolean;
+    isEnableResourceLaneContextMenu(): boolean {
+        return this.schedulantProps.enableResourceLaneContextMenu ?? false;
     }
 
     getResourceLaneContextMenuItems() {
@@ -328,9 +330,8 @@ export class SchedulantApi implements PublicSchedulantApi {
     }
 
 
-    isEnableResourceLabelContextMenu() {
-        const isEnable = this.schedulantProps.enableResourceLabelContextMenu;
-        return isEnable as boolean;
+    isEnableResourceLabelContextMenu(): boolean {
+        return this.schedulantProps.enableResourceLabelContextMenu ?? false;
     }
 
     getResourceLabelContextMenuItems() {
@@ -350,9 +351,8 @@ export class SchedulantApi implements PublicSchedulantApi {
     }
 
 
-    isEnableMilestoneContextMenu() {
-        const isEnable = this.schedulantProps.enableMilestoneContextMenu;
-        return isEnable as boolean;
+    isEnableMilestoneContextMenu(): boolean {
+        return this.schedulantProps.enableMilestoneContextMenu ?? false;
     }
 
     getMilestoneContextMenuItems() {
@@ -376,9 +376,8 @@ export class SchedulantApi implements PublicSchedulantApi {
     }
 
 
-    isEnableCheckpointContextMenu() {
-        const isEnable = this.schedulantProps.enableCheckpointContextMenu;
-        return isEnable as boolean;
+    isEnableCheckpointContextMenu(): boolean {
+        return this.schedulantProps.enableCheckpointContextMenu ?? false;
     }
 
     getCheckpointContextMenuItems() {

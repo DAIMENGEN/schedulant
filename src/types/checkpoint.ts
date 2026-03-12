@@ -71,7 +71,7 @@ export class CheckpointApi {
         return this.checkpoint.tooltip;
     }
 
-    getExtendProps(): Option<Dictionary> {
+    getExtendedProps(): Option<Dictionary> {
         return Option.fromNullable(this.checkpoint.extendedProps);
     }
 }
@@ -84,4 +84,4 @@ export type PublicCheckpointApi = Pick<CheckpointApi,
     "getResourceApi" |
     "getColor" |
     "getTooltip" |
-    "getExtendProps">;
+    "getExtendedProps">;

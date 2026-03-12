@@ -79,7 +79,7 @@ export class MilestoneApi {
     }
 
 
-    getExtendProps(): Option<Dictionary> {
+    getExtendedProps(): Option<Dictionary> {
         return Option.fromNullable(this.milestone.extendedProps);
     }
 }
@@ -93,4 +93,4 @@ export type PublicMilestoneApi = Pick<MilestoneApi,
     "getResourceId" |
     "getColor" |
     "getTooltip" |
-    "getExtendProps">;
+    "getExtendedProps">;

@@ -1,6 +1,7 @@
 import {type RefObject, useCallback, useMemo} from "react";
 import {useVirtualizer, type Virtualizer} from "@tanstack/react-virtual";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
+import {MILESTONE_LANE_HEIGHT_MULTIPLIER} from "@schedulant/constants.ts";
 
 export type VirtualizedRowsResult = {
     virtualizer: Virtualizer<HTMLDivElement, Element>;
@@ -45,7 +46,7 @@ export const useVirtualizedRows = (
         const hasMilestone = resource.getMilestoneApis().some(
             m => !m.getTime().isBefore(timelineStart) && !m.getTime().isAfter(timelineEnd)
         );
-        return hasMilestone ? lineHeight * 1.5 : lineHeight;
+        return hasMilestone ? lineHeight * MILESTONE_LANE_HEIGHT_MULTIPLIER : lineHeight;
     }, [visibleResources, lineHeight, timelineStart, timelineEnd]);
 
     const virtualizer = useVirtualizer({

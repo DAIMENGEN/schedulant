@@ -1,9 +1,9 @@
 import type {Dayjs} from "dayjs";
-import {useRef} from "react";
+import {memo, useRef} from "react";
 import {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import {useTimelineSlotLaneMount} from "@schedulant/hooks/mounts/use-timeline-slot-lane-mount.ts";
 
-export const TimelineBodySlot = (props: {
+export const TimelineBodySlot = memo((props: {
     date: Dayjs,
     dataDate: string,
     classNames: string[],
@@ -17,4 +17,4 @@ export const TimelineBodySlot = (props: {
             <div className={`schedulant-timeline-slot-frame ${props.classNames?.join(" ")}`}></div>
         </td>
     )
-}
+})

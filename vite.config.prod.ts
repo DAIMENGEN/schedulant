@@ -18,7 +18,14 @@ export default defineConfig({
             fileName: "schedulant",
         },
         rollupOptions: {
-            external: [/^react($|\/)/, /^react-dom($|\/)/],
+            external: [
+                /^react($|\/)/,
+                /^react-dom($|\/)/,
+                /^antd($|\/)/,
+                /^@ant-design\/icons($|\/)/,
+                /^@dnd-kit\//,
+                /^dayjs($|\/)/,
+            ],
         },
         copyPublicDir: false,
     },

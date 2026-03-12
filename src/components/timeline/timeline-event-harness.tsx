@@ -2,7 +2,7 @@ import type {EventApi} from "@schedulant/types/event.ts";
 import type {ResourceApi} from "@schedulant/types/resource.ts";
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {Position} from "@schedulant/types/base.ts";
-import {useRef} from "react";
+import {memo, useRef} from "react";
 import {useEventMount} from "@schedulant/hooks/mounts/use-event-mount";
 import {useMoveTimelineEvent} from "@schedulant/hooks/use-move-timeline-event";
 import {numberToPixels} from "@schedulant/utils/dom";
@@ -11,8 +11,9 @@ import {If} from "@schedulant/utils/if";
 import {TriangleLeftIcon} from "@schedulant/icons/triangle-left-icon.tsx";
 import {DragIcon} from "@schedulant/icons/drag-icon.tsx";
 import {TriangleRightIcon} from "@schedulant/icons/triangle-right-icon.tsx";
+import {RESIZE_HANDLE_WIDTH} from "@schedulant/constants.ts";
 
-export const TimelineEventHarness = (props: {
+export const TimelineEventHarness = memo((props: {
     schedulantApi: SchedulantApi,
     resourceApi: ResourceApi,
     eventApi: EventApi,
@@ -69,15 +70,15 @@ export const TimelineEventHarness = (props: {
                      ref={timelineEventRef}>
                     <If condition={props.schedulantApi.isEditable()}
                         fallback={<If condition={props.eventApi.getStart().isBefore(timelineApi.getStart())}
-                                      fallback={<div style={{width: 10, height: eventHeight}}></div>}>
-                            <TriangleLeftIcon width={10} height={eventHeight} color={`#FFFFFF`}/>
+                                      fallback={<div style={{width: RESIZE_HANDLE_WIDTH, height: eventHeight}}></div>}>
+                            <TriangleLeftIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={`#FFFFFF`}/>
                         </If>}>
                         <If condition={!props.eventApi.getStart().isBefore(timelineApi.getStart())}
-                            fallback={<TriangleLeftIcon width={10} height={eventHeight} color={`#FFFFFF`}/>}>
+                            fallback={<TriangleLeftIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={`#FFFFFF`}/>}>
                             <div className={"schedulant-event-resize-handle"}
                                  onMouseDown={leftHandleMouseDown}
-                                 style={{width: 10, height: eventHeight, cursor: "ew-resize"}}>
-                                <DragIcon width={10} height={eventHeight} color={`#FFFFFF`}/>
+                                 style={{width: RESIZE_HANDLE_WIDTH, height: eventHeight, cursor: "ew-resize"}}>
+                                <DragIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={`#FFFFFF`}/>
                             </div>
                         </If>
                     </If>
@@ -85,7 +86,7 @@ export const TimelineEventHarness = (props: {
                     <If condition={props.schedulantApi.isEditable() && !props.eventApi.getStart().isBefore(timelineApi.getStart()) && props.eventApi.getEnd().isSameOrBefore(timelineApi.getEnd())}
                         fallback={
                             <div className={"schedulant-event-main"}
-                                 style={{color: textColor, width: "calc(100% - 20px)"}}>
+                                 style={{color: textColor, width: `calc(100% - ${RESIZE_HANDLE_WIDTH * 2}px)`}}>
                                 <If condition={props.eventApi.getUrl().isDefined()}
                                     fallback={<span>{props.eventApi.getTitle()}</span>}>
                                     {props.eventApi.getUrl().isDefined() && <a href={props.eventApi.getUrl().get()}
@@ -93,7 +94,7 @@ export const TimelineEventHarness = (props: {
                                 </If>
                             </div>}>
                         <div className={"schedulant-event-main"}
-                             style={{color: textColor, width: "calc(100% - 20px)", cursor: "grab"}}
+                             style={{color: textColor, width: `calc(100% - ${RESIZE_HANDLE_WIDTH * 2}px)`, cursor: "grab"}}
                              onMouseDown={handleMouseDown}>
                             <If condition={props.eventApi.getUrl().isDefined()}
                                 fallback={<span>{props.eventApi.getTitle()}</span>}>
@@ -106,15 +107,15 @@ export const TimelineEventHarness = (props: {
                     <If condition={props.schedulantApi.isEditable()}
                         fallback={<If
                             condition={props.eventApi.getEnd().isAfter(timelineApi.getEnd())}
-                            fallback={<div style={{width: 10, height: eventHeight}}></div>}>
-                            <TriangleRightIcon width={10} height={eventHeight} color={"#FFFFFF"}/>
+                            fallback={<div style={{width: RESIZE_HANDLE_WIDTH, height: eventHeight}}></div>}>
+                            <TriangleRightIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={"#FFFFFF"}/>
                         </If>}>
                         <If condition={props.eventApi.getEnd().isSameOrBefore(timelineApi.getEnd())}
-                            fallback={<TriangleRightIcon width={10} height={eventHeight} color={"#FFFFFF"}/>}>
+                            fallback={<TriangleRightIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={"#FFFFFF"}/>}>
                             <div className={"schedulant-event-resize-handle"}
                                  onMouseDown={rightHandleMouseDown}
-                                 style={{width: 10, height: eventHeight, cursor: "ew-resize"}}>
-                                <DragIcon width={10} height={eventHeight} color={`#FFFFFF`}/>
+                                 style={{width: RESIZE_HANDLE_WIDTH, height: eventHeight, cursor: "ew-resize"}}>
+                                <DragIcon width={RESIZE_HANDLE_WIDTH} height={eventHeight} color={`#FFFFFF`}/>
                             </div>
                         </If>
                     </If>
@@ -122,4 +123,4 @@ export const TimelineEventHarness = (props: {
             </Dropdown>
         </div>
     )
-}
+})
