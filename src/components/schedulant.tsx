@@ -14,7 +14,7 @@ import {TimelineDrawingBoard} from "@schedulant/components/timeline/timeline-dra
 import {SchedulantView} from "@schedulant/types/schedulant-view.tsx";
 import {useSchedulantMount} from "@schedulant/hooks/mounts/use-schedulant-mount.tsx";
 import {useResourceAreaResizer} from "@schedulant/hooks/use-resource-area-resizer.ts";
-import {handleSelectionClick, clearResourceSelection} from "@schedulant/utils/selection.ts";
+import {handleSelectionClick, clearResourceSelection, type SelectionChangeCallback} from "@schedulant/utils/selection.ts";
 import {useVirtualizedRows} from "@schedulant/hooks/use-virtualized-rows.ts";
 
 export const Schedulant = (props: SchedulantProps) => {
@@ -76,16 +76,26 @@ const Main = (props: SchedulantProps) => {
     useResourceAreaWidth(resourceAreaColElRef, props.resourceAreaWidth);
     useScrollSync(bodyLeftScrollerElRef, bodyRightScrollerElRef, headerLeftScrollerElRef, headerRightScrollerElRef);
 
+    const onResourceSelectRef = useRef(schedulantApi.onResourceSelect());
+    onResourceSelectRef.current = schedulantApi.onResourceSelect();
+    const selectionCallback = useCallback<SelectionChangeCallback>((ids) => {
+        onResourceSelectRef.current?.(ids);
+    }, []);
+    const visibleResourceIds = useMemo(
+        () => visibleResources.map(r => r.getId()),
+        [visibleResources]
+    );
+
     const handleClick = useCallback((event: React.MouseEvent) => {
         if (schedulantApi.isSelectable()) {
-            handleSelectionClick(event.nativeEvent);
+            handleSelectionClick(event.nativeEvent, visibleResourceIds, selectionCallback);
         }
-    }, [schedulantApi]);
+    }, [schedulantApi, visibleResourceIds, selectionCallback]);
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (scheduleElRef.current && !scheduleElRef.current.contains(event.target as Node)) {
-                clearResourceSelection();
+                clearResourceSelection(onResourceSelectRef.current);
             }
         };
         document.addEventListener("click", handleOutsideClick);

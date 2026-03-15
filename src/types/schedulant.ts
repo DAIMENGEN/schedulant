@@ -18,6 +18,7 @@ import {
     type ResourceLabelContextMenuArg,
     type ResourceLabelMountArg,
     type ResourceLaneContextMenuArg,
+    type ResourceLaneMultiSelectContextMenuArg,
     type ResourceLaneMountArg
 } from "@schedulant/types/resource.ts";
 import {
@@ -92,6 +93,8 @@ export type SchedulantProps = {
     enableResourceLaneContextMenu?: boolean;
     resourceLaneContextMenuClick?: ContextMenuClickHandler<ResourceLaneContextMenuArg>;
     resourceLaneContextMenuItems?: ResourceContextMenuItems;
+    resourceLaneMultiSelectContextMenuClick?: ContextMenuClickHandler<ResourceLaneMultiSelectContextMenuArg>;
+    resourceLaneMultiSelectContextMenuItems?: ResourceContextMenuItems;
     resourceLaneDidMount?: DidMountHandler<ResourceLaneMountArg>;
     resourceLaneWillUnmount?: WillUnmountHandler<ResourceLaneMountArg>;
     resourceLaneMove?: MoveHandler<ResourceLaneMoveMountArg>;
@@ -106,6 +109,7 @@ export type SchedulantProps = {
     timelineSlotLaneWillUnmount?: WillUnmountHandler<TimelineSlotLaneMountArg>;
     schedulantDidMount?: DidMountHandler<SchedulantMountArg>;
     schedulantWillUnmount?: DidMountHandler<SchedulantMountArg>;
+    onResourceSelect?: (selectedResourceIds: string[]) => void;
 }
 
 export class SchedulantApi implements PublicSchedulantApi {
@@ -321,6 +325,14 @@ export class SchedulantApi implements PublicSchedulantApi {
         this.schedulantProps.resourceLaneContextMenuClick?.(arg);
     }
 
+    getResourceLaneMultiSelectContextMenuItems() {
+        return this.schedulantProps.resourceLaneMultiSelectContextMenuItems;
+    }
+
+    onResourceLaneMultiSelectContextMenuClick(arg: ResourceLaneMultiSelectContextMenuArg): void {
+        this.schedulantProps.resourceLaneMultiSelectContextMenuClick?.(arg);
+    }
+
     resourceLabelDidMount(arg: ResourceLabelMountArg): void {
         this.schedulantProps.resourceLabelDidMount?.(arg);
     }
@@ -422,6 +434,10 @@ export class SchedulantApi implements PublicSchedulantApi {
 
     getSelectionColor(): string {
         return this.schedulantProps.selectionColor || "rgba(66, 133, 244, 0.08)";
+    }
+
+    onResourceSelect(): ((selectedResourceIds: string[]) => void) | undefined {
+        return this.schedulantProps.onResourceSelect;
     }
 }
 

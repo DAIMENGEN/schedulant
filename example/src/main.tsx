@@ -171,6 +171,20 @@ const App = () => {
                         milestones={milestones}
                         dragHintColor={"rgb(66, 133, 244, 0.08)"}
                         selectionColor={"rgba(66, 133, 244, 0.08)"}
+                        enableResourceLaneContextMenu={true}
+                        // 单选右键菜单
+                        resourceLaneContextMenuItems={[{ key: "edit", label: "编辑" }]}
+                        resourceLaneContextMenuClick={(arg) => {
+                            console.log("单个资源:", arg.resourceApi.getId());
+                        }}
+                        // 多选右键菜单
+                        resourceLaneMultiSelectContextMenuItems={[{ key: "batchDelete", label: "批量删除" }]}
+                        resourceLaneMultiSelectContextMenuClick={(arg) => {
+                            console.log("选中的资源:", arg.selectedResourceIds);
+                        }}
+                        onResourceSelect={ids => {
+                            console.log(ids);
+                        }}
                         // timelineSlotLaneDidMount={(timelineSlotLaneMountArg) => {
                         //     const {el} = timelineSlotLaneMountArg;
                         //     console.log(el)

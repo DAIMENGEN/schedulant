@@ -27,6 +27,12 @@ export type ResourceLabelMountArg = MountArg<ResourceLabelArg>;
 
 export type ResourceLaneContextMenuArg = MenuArg<ResourceLaneArg>;
 
+export type ResourceLaneMultiSelectContextMenuArg = MenuArg<{
+    selectedResourceIds: string[];
+    label: ResourceAreaColumn;
+    schedulantApi: PublicSchedulantApi;
+}>;
+
 export type ResourceLabelContextMenuArg = MenuArg<ResourceLabelArg>;
 
 export type ResourceLaneMoveMountArg = MountArg<{schedulantApi: PublicSchedulantApi, draggedResourceApi: PublicResourceApi, targetResourceApi: PublicResourceApi, position: 'before' | 'after' | 'child', oldParentResourceApi?: PublicResourceApi}>;

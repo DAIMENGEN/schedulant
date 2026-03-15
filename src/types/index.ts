@@ -48,6 +48,7 @@ export type {
     ResourceContextMenuItems,
     ResourceLaneContextMenuArg,
     ResourceLabelContextMenuArg,
+    ResourceLaneMultiSelectContextMenuArg,
 } from "@schedulant/types/resource.ts"
 
 export type {

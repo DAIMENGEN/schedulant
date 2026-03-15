@@ -1,9 +1,10 @@
 import type {SchedulantApi} from "@schedulant/types/schedulant.ts";
 import type {Resource, ResourceApi, ResourceAreaColumn} from "@schedulant/types/resource.ts";
-import {useCallback, useRef} from "react";
+import {useCallback, useRef, useState} from "react";
 import {useResourceLaneMount} from "@schedulant/hooks/mounts/use-resource-lane-mount.tsx";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
 import {Dropdown, Space} from "antd";
+import type {MenuProps} from "antd";
 import {MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {useSchedulantContext} from "@schedulant/hooks/use-schedulant-context.ts";
 import {
@@ -11,10 +12,43 @@ import {
     type ResizerMouseUp
 } from "@schedulant/hooks/use-resource-area-resizer.ts";
 import {If} from "@schedulant/utils/if.tsx";
-import {getSelectedResourceId} from "@schedulant/utils/selection.ts";
+import {getSelectedResourceIds} from "@schedulant/utils/selection.ts";
 import {useSortable} from "@dnd-kit/sortable";
 import type {DropPosition} from "@schedulant/hooks/use-move-resource.tsx";
 import type {UniqueIdentifier} from "@dnd-kit/core";
+
+function buildContextMenu(schedulantApi: SchedulantApi, resourceApi: ResourceApi, label: ResourceAreaColumn): MenuProps {
+    const selectedIds = getSelectedResourceIds();
+    const isMultiSelect = selectedIds.size > 1 && selectedIds.has(resourceApi.getId());
+    if (isMultiSelect) {
+        return {
+            items: schedulantApi.getResourceLaneMultiSelectContextMenuItems(),
+            onClick: (arg) => {
+                schedulantApi.onResourceLaneMultiSelectContextMenuClick({
+                    key: arg.key,
+                    keyPath: arg.keyPath,
+                    domEvent: arg.domEvent,
+                    selectedResourceIds: Array.from(selectedIds),
+                    schedulantApi: schedulantApi,
+                    label: label,
+                });
+            }
+        };
+    }
+    return {
+        items: schedulantApi.getResourceLaneContextMenuItems(),
+        onClick: (arg) => {
+            schedulantApi.onResourceLaneContextMenuClick({
+                key: arg.key,
+                keyPath: arg.keyPath,
+                domEvent: arg.domEvent,
+                schedulantApi: schedulantApi,
+                resourceApi: resourceApi,
+                label: label,
+            });
+        }
+    };
+}
 
 export const BodyCell = (props: {
     schedulantApi: SchedulantApi,
@@ -66,7 +100,7 @@ export const BodyCell = (props: {
     const isOver = props.overId === resourceId && props.activeId !== resourceId;
     const getCellClassName = () => {
         const classes = ["schedulant-datagrid-cell", "schedulant-resource"];
-        if (getSelectedResourceId() === resourceId) {
+        if (getSelectedResourceIds().has(resourceId)) {
             classes.push("schedulant-resource-selected");
         }
         if (props.isDraggable && isDragging) {
@@ -77,6 +111,14 @@ export const BodyCell = (props: {
         }
         return classes.join(" ");
     };
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [menuConfig, setMenuConfig] = useState<MenuProps>({});
+    const handleDropdownOpenChange = useCallback((open: boolean) => {
+        if (open) {
+            setMenuConfig(buildContextMenu(props.schedulantApi, props.resourceApi, props.resourceAreaColumn));
+        }
+        setDropdownOpen(open);
+    }, [props.schedulantApi, props.resourceApi, props.resourceAreaColumn]);
     return (
         <td ref={setNodeRef}
             data-resource-id={props.resourceApi.getId()}
@@ -86,20 +128,9 @@ export const BodyCell = (props: {
             <Dropdown disabled={!props.schedulantApi.isEnableResourceLaneContextMenu()}
                       destroyOnHidden={true}
                       trigger={["contextMenu"]}
-                      menu={{
-                          items: props.schedulantApi.getResourceLaneContextMenuItems(),
-                          onClick: (arg) => {
-                              const {key, keyPath, domEvent} = arg;
-                              props.schedulantApi.onResourceLaneContextMenuClick({
-                                  key: key,
-                                  keyPath: keyPath,
-                                  domEvent: domEvent,
-                                  schedulantApi: props.schedulantApi,
-                                  resourceApi: props.resourceApi,
-                                  label: props.resourceAreaColumn,
-                              });
-                          }
-                      }}>
+                      open={dropdownOpen}
+                      onOpenChange={handleDropdownOpenChange}
+                      menu={menuConfig}>
                 <div className={"schedulant-datagrid-cell-frame"} style={{height: numberToPixels(laneHeight)}}
                      ref={resourceLaneCellRef}>
                     <div className={"schedulant-datagrid-cell-cushion schedulant-scrollgrid-sync-inner"}>
