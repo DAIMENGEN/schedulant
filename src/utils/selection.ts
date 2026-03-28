@@ -28,6 +28,14 @@ export function clearResourceSelection(callback?: SelectionChangeCallback) {
     notifyChange(callback);
 }
 
+export function selectSingleResource(resourceId: string, callback?: SelectionChangeCallback) {
+    currentSelectedResourceIds.clear();
+    currentSelectedResourceIds.add(resourceId);
+    lastSelectedResourceId = resourceId;
+    applySelectionToDOM();
+    notifyChange(callback);
+}
+
 export function handleSelectionClick(
     event: MouseEvent,
     visibleResourceIds: string[],

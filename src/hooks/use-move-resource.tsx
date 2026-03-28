@@ -7,6 +7,7 @@ import {
     type UniqueIdentifier,
 } from "@dnd-kit/core";
 import {DROP_POSITION_BEFORE_THRESHOLD, DROP_POSITION_AFTER_THRESHOLD} from "@schedulant/constants.ts";
+import {selectSingleResource} from "@schedulant/utils/selection.ts";
 
 export type DropPosition = "before" | "after" | "child";
 
@@ -61,6 +62,7 @@ export const useMoveResource = (
     const handleDragStart = useCallback((event: DragStartEvent) => {
         dropPositionRef.current = null;
         overIdRef.current = null;
+        selectSingleResource(String(event.active.id));
         setDragState({
             activeId: event.active.id,
             overId: null,

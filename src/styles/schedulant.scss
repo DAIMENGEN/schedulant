@@ -62,12 +62,27 @@
             justify-content: flex-start;
             align-items: center;
             position: relative;
-            cursor: pointer;
 
             .schedulant-datagrid-cell-cushion {
               overflow: hidden;
               padding-left: 8px;
               white-space: nowrap;
+            }
+
+            .schedulant-datagrid-cell-main {
+              user-select: text;
+              cursor: text;
+              display: inline-flex;
+              align-items: center;
+
+              .schedulant-milestone-indicator {
+                display: inline-flex;
+                align-items: center;
+                margin-left: 6px;
+                flex-shrink: 0;
+                position: relative;
+                top: 1px;
+              }
             }
           }
 

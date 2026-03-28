@@ -3,6 +3,7 @@ import type {Resource, ResourceApi, ResourceAreaColumn} from "@schedulant/types/
 import {useCallback, useRef, useState} from "react";
 import {useResourceLaneMount} from "@schedulant/hooks/mounts/use-resource-lane-mount.tsx";
 import {numberToPixels} from "@schedulant/utils/dom.ts";
+import {MilestoneIcon} from "@schedulant/icons/milestone-icon.tsx";
 import {Dropdown, Space} from "antd";
 import type {MenuProps} from "antd";
 import {MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
@@ -163,6 +164,11 @@ export const BodyCell = (props: {
                             }
                             <div className={"schedulant-datagrid-cell-main"}>
                                 {getResourceColumnValue(props.resourceAreaColumn.field, props.resourceApi)}
+                                {props.showPlusSquare && props.resourceApi.getMilestoneApis().length > 0 && (
+                                    <span className={"schedulant-milestone-indicator"}>
+                                        <MilestoneIcon width={14} height={14} color={"#91003c"}/>
+                                    </span>
+                                )}
                             </div>
                         </Space>
                     </div>

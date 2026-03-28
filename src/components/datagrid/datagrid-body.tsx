@@ -50,7 +50,7 @@ export const DatagridBody = (props: {
         useMoveResource(flatResources, handleResourceMove);
 
     const sensors = useSensors(
-        useSensor(PointerSensor, {activationConstraint: {distance: 5}}),
+        useSensor(PointerSensor, {activationConstraint: {delay: 300, tolerance: 5}}),
         useSensor(KeyboardSensor)
     );
 
