@@ -62,14 +62,11 @@ const Main = (props: SchedulantProps) => {
         datagridCellResizerMouseUp,
         datagridCellResizerMouseDownFunc
     } = useResourceAreaResizer(dispatch, scheduleElRef, resourceAreaColElRef);
-    const timelineApi = schedulantApi.getTimelineApi();
     const {virtualizer, visibleResources} = useVirtualizedRows(
         bodyRightScrollerElRef,
         schedulantApi.getResourceApis(),
         state.collapseIds,
         schedulantApi.getLineHeight(),
-        timelineApi.getStart(),
-        timelineApi.getEnd(),
     );
     useSchedulantHeight(props.schedulantMaxHeight);
     useSchedulantMount(scheduleElRef, scheduleView);

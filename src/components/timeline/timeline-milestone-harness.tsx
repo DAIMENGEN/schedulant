@@ -19,11 +19,17 @@ export const TimelineMilestoneHarness = memo((props: {
     const timelineMilestoneHarnessRef = useRef<HTMLDivElement | null>(null);
     const isEditable = props.schedulantApi.isEditable();
     const status = props.milestoneApi.getStatus();
-    const color = props.milestoneApi.getColor().getOrElse(status === "Success" ? "green" : (status === "Failure" ? "red" : "yellow"));
     const timelineView = props.schedulantApi.getScheduleView().getTimelineView();
     const laneHeight = timelineView.calculateLaneHeight(props.milestoneApi.getResourceApi());
     const top = laneHeight * MILESTONE_TOP_OFFSET_RATIO * -1;
     const {isPast, isFuture, isProcess} = useMilestoneMount(timelineMilestoneRef, props.schedulantApi, props.milestoneApi);
+    const color = props.milestoneApi.getColor().getOrElse(
+        isFuture
+            ? "#1677ff"
+            : isProcess
+                ? (status === "Success" ? "#1677ff" : (status === "Failure" ? "#f5222d" : "#faad14"))
+                : (status === "Success" ? "#52c41a" : (status === "Failure" ? "#f5222d" : "#faad14"))
+    );
     const {handleMouseUp, handleMouseDown} = useMoveTimelineMarker({
         markerRef: timelineMilestoneHarnessRef,
         timelineWidth: props.timelineWidth,
@@ -57,7 +63,9 @@ export const TimelineMilestoneHarness = memo((props: {
                               })
                           }
                       }}>
-                <div className={"schedulant-timeline-milestone"} ref={timelineMilestoneRef}>
+                <div className={`schedulant-timeline-milestone${isProcess ? " schedulant-milestone-today" : ""}`}
+                     style={isProcess ? {"--milestone-glow-color": color} as React.CSSProperties : undefined}
+                     ref={timelineMilestoneRef}>
                     <div className={"schedulant-milestone-main"}>
                         <FlagIcon width={laneHeight * MILESTONE_ICON_SIZE_RATIO} height={laneHeight * MILESTONE_ICON_SIZE_RATIO} color={color}/>
                     </div>

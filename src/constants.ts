@@ -1,6 +1,3 @@
-/** Height multiplier for lanes containing milestones */
-export const MILESTONE_LANE_HEIGHT_MULTIPLIER = 1.5;
-
 /** Ratio of event bar height relative to lane height */
 export const EVENT_HEIGHT_RATIO = 0.7;
 
@@ -14,10 +11,10 @@ export const DRAG_THROTTLE_MS = 16;
 export const SCHEDULANT_HEIGHT_OFFSET = 13;
 
 /** Top offset ratio for milestone harness positioning */
-export const MILESTONE_TOP_OFFSET_RATIO = 0.1;
+export const MILESTONE_TOP_OFFSET_RATIO = 0.3;
 
 /** Size ratio for milestone flag icon relative to lane height */
-export const MILESTONE_ICON_SIZE_RATIO = 0.5;
+export const MILESTONE_ICON_SIZE_RATIO = 0.8;
 
 /** Drop position threshold ratios for drag-and-drop resource reordering */
 export const DROP_POSITION_BEFORE_THRESHOLD = 0.25;

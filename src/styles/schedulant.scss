@@ -1,5 +1,16 @@
 @use "scrollbar";
 
+@keyframes milestone-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 3px var(--milestone-glow-color, #1677ff))
+            drop-shadow(0 0 6px var(--milestone-glow-color, #1677ff));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--milestone-glow-color, #1677ff))
+            drop-shadow(0 0 16px var(--milestone-glow-color, #1677ff));
+  }
+}
+
 .schedulant, .schedulant * {
   box-sizing: border-box;
 }
@@ -300,6 +311,10 @@
                           transform: scale(1.2);
                           cursor: pointer;
                         }
+                      }
+
+                      &.schedulant-milestone-today .schedulant-milestone-main svg {
+                        animation: milestone-glow 2s ease-in-out infinite;
                       }
                     }
                   }

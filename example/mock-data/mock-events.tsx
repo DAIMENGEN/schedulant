@@ -94,7 +94,7 @@ export const mockEvents: Array<Event> = [
         title: "Real-Time Data Processor",
         color: "rgba(0,0,0,0.57)",
         start: dayjs("2024-08-10"),
-        end: dayjs("2024-09-30"),
+        end: dayjs("2026-09-30"),
         resourceId: "8638818878966724025",
     },
     {

@@ -4,7 +4,7 @@ import type {TimelineApi} from "@schedulant/types/timeline.ts";
 import type {ReactNode} from "react";
 import type {Dayjs} from "dayjs";
 import type {Position} from "@schedulant/types/base.ts";
-import {MILESTONE_LANE_HEIGHT_MULTIPLIER, EVENT_HEIGHT_RATIO} from "@schedulant/constants.ts";
+import {EVENT_HEIGHT_RATIO} from "@schedulant/constants.ts";
 import {TimelineLane} from "@schedulant/components/timeline/timeline-lane.tsx";
 import {TimelineEventHarness} from "@schedulant/components/timeline/timeline-event-harness.tsx";
 import {TimelineMilestoneHarness} from "@schedulant/components/timeline/timeline-milestone-harness.tsx";
@@ -92,15 +92,8 @@ export abstract class TimelineView {
         );
     }
 
-    calculateLaneHeight(resourceApi: ResourceApi): number {
-        const startDate = this.schedulantApi.getTimelineApi().getStart();
-        const endDate = this.schedulantApi.getTimelineApi().getEnd();
-        const milestoneNumbers = resourceApi.getMilestoneApis().filter(milestone => !milestone.getTime().isBefore(startDate) && !milestone.getTime().isAfter(endDate)).length;
-        if (milestoneNumbers === 0) {
-            return this.schedulantApi.getLineHeight();
-        } else {
-            return this.schedulantApi.getLineHeight() * MILESTONE_LANE_HEIGHT_MULTIPLIER;
-        }
+    calculateLaneHeight(_resourceApi: ResourceApi): number {
+        return this.schedulantApi.getLineHeight();
     }
 
     calculateEventHeight(): number {
