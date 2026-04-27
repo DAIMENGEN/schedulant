@@ -5,8 +5,8 @@ export const mockEvents: Array<Event> = [
         id: "8968845952632643583",
         title: "AI Learning Platform",
         color: "#FF6F61",
-        start: dayjs("2024-08-01"),
-        end: dayjs("2024-08-15"),
+        start: dayjs("2026-05-01"),
+        end: dayjs("2026-05-15"),
         resourceId: "8968845952632643583"
     },
     {

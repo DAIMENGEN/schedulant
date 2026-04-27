@@ -63,8 +63,8 @@ const App = () => {
     const [resources, setResources] = useState(mockResources);
     const [milestones, setMilestones] = useState(mockMilestones);
     const [checkpoints, setCheckpoints] = useState(mockCheckpoints);
-    const [ganttStartDate, setGanttStartDate] = useState<dayjs.Dayjs>(dayjs("2026-03-15"));
-    const [ganttEndDate, setGanttEndDate] = useState<dayjs.Dayjs>(dayjs("2026-04-15"));
+    const [ganttStartDate, setGanttStartDate] = useState<dayjs.Dayjs>(dayjs("2026-05-01"));
+    const [ganttEndDate, setGanttEndDate] = useState<dayjs.Dayjs>(dayjs("2026-05-31"));
 
     // 视图类型状态
     const [viewType, setViewType] = useState<ViewType>("Day");

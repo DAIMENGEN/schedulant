@@ -197,31 +197,22 @@ export const useMoveTimelineEvent = (props: {
         const timelineEventHarness = props.timelineEventHarnessRef.current;
         const scheduleEl = props.schedulantApi.getSchedulantElRef().current;
         if (scheduleEl && timelineEventHarness) {
-            const timelineLaneFrame = timelineEventHarness.parentElement?.parentElement;
-            if (timelineLaneFrame) {
-                const handleMouseOutOrUp = (event: globalThis.MouseEvent) => {
-                    event.preventDefault();
-                    const isDraggable = isDraggableRef.current;
-                    if (isDraggable && !timelineLaneFrame.contains(event.relatedTarget as Node)) {
-                        removePositionGuide(timelineEventHarness);
-                        updateEventPosition(timelineEventHarness, event.clientX);
-                        // 重置样式到初始位置，等待数据驱动的重新渲染
-                        // timelineEventHarness.style.left = numberToPixels(startLeftRef.current);
-                        // timelineEventHarness.style.right = numberToPixels(startRightRef.current);
-                        scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
-                        isDraggableRef.current = false;
-                        pressEventPositionRef.current = "none";
-                    }
-                }
-                timelineLaneFrame.addEventListener("mouseup", handleMouseOutOrUp);
-                timelineLaneFrame.addEventListener("mouseout", handleMouseOutOrUp);
-                return () => {
-                    timelineLaneFrame.removeEventListener("mouseup", handleMouseOutOrUp);
-                    timelineLaneFrame.removeEventListener("mouseout", handleMouseOutOrUp);
-                    // Ensure mousemove listener is removed on unmount to prevent leaks
+            const handleMouseUp = (event: globalThis.MouseEvent) => {
+                event.preventDefault();
+                const isDraggable = isDraggableRef.current;
+                if (isDraggable) {
+                    removePositionGuide(timelineEventHarness);
+                    updateEventPosition(timelineEventHarness, event.clientX);
                     scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
-                    throttledHandleMouseMove.cancel();
+                    isDraggableRef.current = false;
+                    pressEventPositionRef.current = "none";
                 }
+            }
+            document.addEventListener("mouseup", handleMouseUp);
+            return () => {
+                document.removeEventListener("mouseup", handleMouseUp);
+                scheduleEl.removeEventListener("mousemove", throttledHandleMouseMove);
+                throttledHandleMouseMove.cancel();
             }
         }
     }, [throttledHandleMouseMove, props, removePositionGuide, updateEventPosition]);

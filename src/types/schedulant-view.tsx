@@ -69,10 +69,8 @@ export class SchedulantView {
             return (
                 <tr key={resourceApi.getId()}>
                     <td data-resource-id={resourceApi.getId()}
-                        className={"schedulant-timeline-lane schedulant-resource"}>
+                        className={"schedulant-resource"}>
                         <div className={"schedulant-timeline-lane-frame"} style={{height: lineHeight}}>
-                            {this.timelineView.renderLane()}
-                            <div className={"schedulant-timeline-lane-bg"}></div>
                             {this.timelineView.renderEvents(resourceApi, timelineWidth)}
                             {this.timelineView.renderMilestones(resourceApi, timelineWidth)}
                             {this.timelineView.renderCheckpoints(resourceApi, timelineWidth)}
